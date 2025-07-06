@@ -191,4 +191,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const code = document.getElementById('scriptInput').value;
     runScript(code);
   });
-})
+});
