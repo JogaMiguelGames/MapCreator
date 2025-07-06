@@ -65,6 +65,12 @@ function waitForConsoleInput(promptText) {
   });
 }
 
+async function runBlock(lines) {
+  for (const line of lines) {
+    await runLines([line]);
+  }
+}
+
 async function runIfBlock(lines, startIndex) {
   const blocks = [];
   let i = startIndex;
@@ -73,8 +79,7 @@ async function runIfBlock(lines, startIndex) {
     const [varName, expected] = condStr.split('=').map(s => s.trim());
     return () => {
       let expectedVal;
-      if ((expected.startsWith('"') && expected.endsWith('"')) ||
-          (expected.startsWith("'") && expected.endsWith("'"))) {
+      if ((expected.startsWith('"') && expected.endsWith('"')) || (expected.startsWith("'") && expected.endsWith("'"))) {
         expectedVal = expected.slice(1, -1);
       } else if (!isNaN(Number(expected))) {
         expectedVal = Number(expected);
@@ -112,10 +117,9 @@ async function runIfBlock(lines, startIndex) {
 
   for (const block of blocks) {
     if (block.type === 'else' || (block.condition && block.condition())) {
-      for (let j = block.startLine; j < block.endLine; j++) {
-        const indent = lines[block.startLine]?.match(/^(\s+)/)?.[1] || '';
-        await runLines([lines[j].slice(indent.length)]);
-      }
+      const indent = lines[block.startLine]?.match(/^(\s+)/)?.[1] || '';
+      const sliced = lines.slice(block.startLine, block.endLine).map(l => l.slice(indent.length));
+      await runBlock(sliced);
       break;
     }
   }
@@ -128,7 +132,6 @@ async function runLines(lines) {
   while (i < lines.length) {
     const line = lines[i].trim();
 
-    // function Nome()
     if (line.startsWith('function ') && line.endsWith('()')) {
       const funcName = line.slice(9, -2).trim();
       const funcBody = [];
@@ -146,7 +149,6 @@ async function runLines(lines) {
       continue;
     }
 
-    // call(Nome)
     if (line.startsWith('call(') && line.endsWith(')')) {
       const funcName = line.slice(5, -1).trim();
       if (functions.hasOwnProperty(funcName)) {
@@ -158,7 +160,6 @@ async function runLines(lines) {
       continue;
     }
 
-    // v = input("Pergunta")
     if (/^[a-zA-Z_]\w*\s*=\s*input\((.+)\)$/.test(line)) {
       const match = line.match(/^([a-zA-Z_]\w*)\s*=\s*input\((.+)\)$/);
       const varName = match[1];
@@ -174,7 +175,6 @@ async function runLines(lines) {
       continue;
     }
 
-    // Atribuição
     if (/^[a-zA-Z_]\w*\s*=/.test(line)) {
       const [varName, ...rest] = line.split('=');
       const valueRaw = rest.join('=').trim();
@@ -200,7 +200,6 @@ async function runLines(lines) {
       continue;
     }
 
-    // console.print(...)
     if (line.startsWith('console.print(') && line.endsWith(')')) {
       let param = line.slice(14, -1).trim();
 
@@ -229,7 +228,6 @@ async function runLines(lines) {
       continue;
     }
 
-    // wait(ms)
     if (line.startsWith('wait(') && line.endsWith(')')) {
       const ms = Number(line.slice(5, -1).trim());
       if (!isNaN(ms) && ms >= 0) await sleep(ms);
@@ -238,7 +236,6 @@ async function runLines(lines) {
       continue;
     }
 
-    // calc(...)
     if (line.startsWith('calc(') && line.endsWith(')')) {
       const expr = line.slice(5, -1).trim();
       try {
@@ -250,13 +247,11 @@ async function runLines(lines) {
       continue;
     }
 
-    // if / elseif / else
     if (line.startsWith('if ') && line.includes('=') && line.endsWith(' then')) {
       i = await runIfBlock(lines, i);
       continue;
     }
 
-    // linha vazia ou inválida
     if (line !== '') {
       console.print('Error: comando inválido -> ' + line);
     }
