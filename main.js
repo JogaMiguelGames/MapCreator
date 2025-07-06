@@ -256,9 +256,12 @@ colorHexInput.addEventListener('input', () => {
   }
 });
 
-window.addEventListener('keydown', e => {
-  if ((e.key === 'Delete' || e.key === 'Backspace') && selectedCube) {
-    e.preventDefault(); // evita comportamento padrão do Backspace (voltar página)
+document.addEventListener('keydown', e => {
+  const tag = document.activeElement.tagName;
+  const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
+
+  if ((e.key === 'Delete' || e.key === 'Backspace') && !isTyping && selectedCube) {
+    e.preventDefault(); // Impede o navegador de voltar página
     const idx = cubes.indexOf(selectedCube);
     if (idx !== -1) {
       scene.remove(selectedCube);
