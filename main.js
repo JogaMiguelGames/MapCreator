@@ -256,14 +256,14 @@ colorHexInput.addEventListener('input', () => {
   }
 });
 
-// Delete cubo selecionado
 window.addEventListener('keydown', e => {
-  if(e.key === 'Delete' && selectedCube){
+  if ((e.key === 'Delete' || e.key === 'Backspace') && selectedCube) {
+    e.preventDefault(); // evita comportamento padrão do Backspace (voltar página)
     const idx = cubes.indexOf(selectedCube);
-    if(idx !== -1){
+    if (idx !== -1) {
       scene.remove(selectedCube);
       cubes.splice(idx, 1);
-      selectedCube = cubes[idx-1] || cubes[0] || null;
+      selectedCube = cubes[idx - 1] || cubes[0] || null;
       updatePanelForCube(selectedCube);
       updateCubeList();
     }
