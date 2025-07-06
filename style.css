@@ -1,0 +1,329 @@
+/* RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background-color: #111;
+  color: #fff;
+  overflow: hidden;
+}
+
+button {
+  transition: all 0.2s ease;
+  box-shadow: 0 0 0 transparent;
+}
+
+button:hover {
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+  transform: scale(1.02);
+}
+
+#scriptInput {
+  border-radius: 4px;
+  border: 1px solid #333;
+}
+
+#topMenu button {
+  margin: 0 2px;
+}
+
+canvas {
+  display: block;
+}
+
+.colorInputWrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap; /* impede quebra de linha */
+}
+
+.colorInputWrapper input[type="text"] {
+  flex: 0 0 auto;      /* largura fixa */
+  width: 80px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px 8px;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+.colorPreview {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid #444;
+  box-shadow: 0 0 2px #000;
+  background-color: #000; /* padrão */
+}
+
+/* TOPO */
+#topMenu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 280px;
+  height: 70px;
+  background: #1a1a1a;
+  border-bottom: 1px solid #444;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 12px;
+  z-index: 1000;
+  user-select: none;
+}
+
+#leftButtons,
+#rightButtons {
+  display: flex;
+  gap: 10px;
+}
+
+#leftButtons button,
+#rightButtons button {
+  width: 60px;
+  height: 60px;
+  background: #333;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: background-color 0.2s ease;
+}
+
+#leftButtons button:hover,
+#rightButtons button:hover,
+#leftButtons button:focus,
+#rightButtons button:focus {
+  background: #444;
+  outline: none;
+}
+
+#leftButtons img,
+#rightButtons img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Campo de texto para cor do céu */
+#rightButtons label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: white;
+  font-size: 14px;
+}
+
+#rightButtons input[type="text"] {
+  width: 80px;
+  padding: 6px 8px;
+  border: none;
+  border-radius: 4px;
+  background: #333;
+  color: white;
+  font-family: monospace;
+  text-align: right;
+  transition: background-color 0.2s ease;
+}
+
+#rightButtons input[type="text"]:focus {
+  background: #444;
+  outline: none;
+}
+
+/* PAINEL LATERAL */
+#panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 280px;
+  height: 100vh;
+  background: #222;
+  padding: 15px;
+  overflow-y: auto;
+  border-left: 1px solid #444;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  user-select: none;
+}
+
+#panel {
+  display: flex;
+  flex-direction: column;
+  gap: 12px; /* espaço entre cubeList e scripting */
+  height: 100vh;
+  padding: 15px;
+  box-sizing: border-box;
+  overflow: hidden; /* Para controlar scroll interno dos filhos */
+}
+
+/* Cube list com altura fixa */
+#cubeList {
+  max-height: 200px;
+  min-height: 200px;
+  overflow-y: auto;
+  background: #1a1a1a;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 14px;
+  color: white;
+  user-select: none;
+  cursor: pointer;
+  outline: none;
+}
+
+#scriptingSection {
+  background: #1a1a1a;
+  border-radius: 6px;
+  padding: 10px;
+  margin-top: 8px;
+  color: white;
+  font-family: monospace;
+}
+
+#scriptInput {
+  width: 100%;
+  height: 120px;
+  background: #111;
+  color: #0f0;
+  border: none;
+  resize: vertical;
+  padding: 8px;
+  font-family: monospace;
+  font-size: 14px;
+}
+
+#runScriptBtn {
+  margin-top: 6px;
+  background: #333;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#runScriptBtn:hover {
+  background: #444;
+}
+
+#scriptOutput {
+  margin-top: 8px;
+  background: #111;
+  color: #0f0;
+  padding: 6px;
+  height: 100px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  border: 1px solid #333;
+  border-radius: 4px;
+}
+
+/* Grupos de controles */
+.control-group {
+  border-top: 1px solid #555;
+  padding-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.control-group label {
+  flex: 1 1 calc(33% - 8px);
+  display: flex;
+  flex-direction: column;
+  color: #ddd;
+  font-size: 13px;
+}
+
+.control-group input {
+  margin-top: 4px;
+  padding: 6px 8px;
+  width: 100%;
+  background: #333;
+  color: white;
+  font-family: monospace;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  text-align: right;
+}
+
+.control-group input:disabled {
+  background: #222;
+  color: #777;
+  cursor: not-allowed;
+}
+
+/* Corrige o layout horizontal dos inputs com cor */
+.control-group label.colorInputWrapper {
+  flex-direction: row;        /* coloca lado a lado */
+  align-items: center;        /* alinha verticalmente */
+  gap: 8px;                   /* espaço entre input e círculo */
+}
+
+/* Centraliza a seção do color HEX */
+#panel .control-group.color-center {
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+/* Ajusta o label horizontal */
+#panel .color-center label.colorInputWrapper {
+  flex-direction: row;
+  justify-content: center;
+}
+
+/* Lista de objetos */
+#cubeList {
+  max-height: 200px;
+  overflow-y: auto;
+  background: #1a1a1a;
+  border-radius: 6px;
+  padding: 8px;
+  font-size: 14px;
+  color: white;
+  user-select: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.cubeListItem {
+  padding: 6px;
+  border-radius: 4px;
+}
+
+.cubeListItem:hover {
+  background: #333;
+}
+
+/* Acessibilidade: apenas leitura por leitores de tela */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
