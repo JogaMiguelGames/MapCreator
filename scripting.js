@@ -12,11 +12,11 @@ const functions = {};
 function safeMathEval(expr) {
   const allowedFunctions = ['sin', 'cos', 'tan', 'sqrt', 'abs', 'log', 'pow', 'max', 'min', 'round', 'floor', 'ceil'];
 
-  if (!/^[0-9+\-*/%^()., a-zA-Z]+$/.test(expr)) throw new Error('Expressão inválida');
+  if (!/^[0-9+\-*/%^()., a-zA-Z]+$/.test(expr)) throw new Error('Invalid expression');
 
   const exprWithMath = expr.replace(/([a-zA-Z]+)\(/g, (m, f) => {
     if (allowedFunctions.includes(f)) return `Math.${f}(`;
-    throw new Error('Função não permitida: ' + f);
+    throw new Error('Function not allowed: ' + f);
   });
 
   return Function(`"use strict"; return (${exprWithMath})`)();
@@ -36,7 +36,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.print('Error: função não terminada -> ' + funcName);
+        console.print('Error: function not terminated -> ' + funcName);
         return;
       }
       functions[funcName] = funcBody;
@@ -49,7 +49,7 @@ async function runLines(lines) {
       if (functions[funcName]) {
         await runLines(functions[funcName]);
       } else {
-        console.print('Error: função não definida -> ' + funcName);
+        console.print('Error: function not defined -> ' + funcName);
       }
       i++;
       continue;
@@ -63,7 +63,7 @@ async function runLines(lines) {
       } else if (!isNaN(Number(valueRaw))) {
         variables[varName.trim()] = Number(valueRaw);
       } else {
-        console.print('Error: valor inválido -> ' + valueRaw);
+        console.print('Error: invalid value -> ' + valueRaw);
       }
       i++;
       continue;
@@ -76,7 +76,7 @@ async function runLines(lines) {
       } else if (variables.hasOwnProperty(param)) {
         console.print(String(variables[param]));
       } else {
-        console.print('Error: variável não definida -> ' + param);
+        console.print('Error: undefined variable -> ' + param);
       }
       i++;
       continue;
@@ -88,7 +88,7 @@ async function runLines(lines) {
         const result = safeMathEval(expr);
         console.print(result);
       } catch {
-        console.print('Error: expressão inválida');
+        console.print('Error: invalid expression');
       }
       i++;
       continue;
@@ -99,7 +99,7 @@ async function runLines(lines) {
       continue;
     }
 
-    console.print('Error: comando inválido -> ' + line);
+    console.print('Error: invalid command -> ' + line);
     i++;
   }
 }
@@ -111,7 +111,7 @@ async function runScript(code) {
   await runLines(code.split('\n'));
 }
 
-// Adiciona evento para o botão
+// Add event to button
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('runScriptBtn').addEventListener('click', () => {
     const code = document.getElementById('scriptInput').value;
