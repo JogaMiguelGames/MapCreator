@@ -8,6 +8,7 @@ const console = {
 
 const variables = {};
 const functions = {};
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
 
 function safeMathEval(expr) {
   const allowedFunctions = ['sin', 'cos', 'tan', 'sqrt', 'abs', 'log', 'pow', 'max', 'min', 'round', 'floor', 'ceil'];
@@ -22,7 +23,7 @@ function safeMathEval(expr) {
   const exprWithVars = exprWithMath.replace(/\b([a-zA-Z_]\w*(?:\[\d+\])?)\b/g, (match) => {
     if (match.includes('[')) {
       const varName = match.split('[')[0];
-      const index = parseInt(match.match(/\[(\d+)\]/)[1]) - 1; // <- SUBTRAI 1 AQUI
+      const index = parseInt(match.match(/\[(\d+)\]/)[1]) - 1;
       if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
         if (index < 0 || index >= variables[varName].length) throw new Error('Array index out of bounds: ' + match);
         return variables[varName][index];
@@ -126,7 +127,7 @@ async function runLines(lines) {
         console.print(param.slice(1, -1));
       } else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
         const varName = param.split('[')[0];
-        const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1; // <- SUBTRAI 1 AQUI
+        const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
         if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
           if (index < 0 || index >= variables[varName].length) {
             console.print('Error: array index out of bounds -> ' + param);
@@ -164,6 +165,25 @@ async function runLines(lines) {
         await new Promise(resolve => setTimeout(resolve, time * 1000));
       } else {
         console.print('Error: invalid wait time');
+      }
+      i++;
+      continue;
+    }
+
+    if (line.startsWith('play(') && line.endsWith(')')) {
+      const args = line.slice(5, -1).split(',').map(s => parseFloat(s.trim()));
+      if (args.length === 2 && !isNaN(args[0]) && !isNaN(args[1])) {
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(args[0], audioContext.currentTime);
+        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime); // volume
+        oscillator.connect(gainNode).connect(audioContext.destination);
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + args[1]);
+        await new Promise(resolve => setTimeout(resolve, args[1] * 1000));
+      } else {
+        console.print('Error: invalid play arguments');
       }
       i++;
       continue;
