@@ -8,14 +8,31 @@ const console = {
 
 const variables = {};
 const functions = {};
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+let audioContext = null; // inicializa nulo
+
+const noteFrequencies = {
+  'C4': 261.63,
+  'C#4': 277.18, 'Db4': 277.18,
+  'D4': 293.66,
+  'D#4': 311.13, 'Eb4': 311.13,
+  'E4': 329.63,
+  'F4': 349.23,
+  'F#4': 369.99, 'Gb4': 369.99,
+  'G4': 392.00,
+  'G#4': 415.30, 'Ab4': 415.30,
+  'A4': 440.00,
+  'A#4': 466.16, 'Bb4': 466.16,
+  'B4': 493.88
+};
 
 function safeMathEval(expr) {
-  const allowedFunctions = ['sin', 'cos', 'tan', 'sqrt', 'abs', 'log', 'pow', 'max', 'min', 'round', 'floor', 'ceil'];
+  const allowedFunctions = ['sin', 'cos', 'tan', 'sqrt', 'abs', 'log', 'pow', 'max', 'min', 'round', 'floor', 'ceil', 'random'];
 
   if (!/^[0-9+\-*/%^()., \[\]a-zA-Z0-9_]+$/.test(expr)) throw new Error('Invalid expression');
 
   const exprWithMath = expr.replace(/([a-zA-Z]+)\(/g, (m, f) => {
+    if (f === 'random') return `__custom_random__(`;
     if (allowedFunctions.includes(f)) return `Math.${f}(`;
     throw new Error('Function not allowed: ' + f);
   });
@@ -37,7 +54,31 @@ function safeMathEval(expr) {
     }
   });
 
-  return Function(`"use strict"; return (${exprWithVars})`)();
+  const __custom_random__ = (a = 0, b = 1, decimals = 10) => {
+    if (typeof a !== 'number' || typeof b !== 'number' || typeof decimals !== 'number') throw new Error('Invalid arguments for random');
+    if (decimals < 0) decimals = 0;
+    const rand = Math.random() * (b - a) + a;
+    const factor = Math.pow(10, decimals);
+    return Math.round(rand * factor) / factor;
+  };
+
+  return Function('__custom_random__', '"use strict"; return (' + exprWithVars + ')')(__custom_random__);
+}
+
+async function playTone(freq, duration) {
+  if (!audioContext) {
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (freq <= 0 || duration <= 0) return;
+  const oscillator = audioContext.createOscillator();
+  const gainNode = audioContext.createGain();
+  oscillator.type = 'square';
+  oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+  gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+  oscillator.connect(gainNode).connect(audioContext.destination);
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + duration);
+  await new Promise(resolve => setTimeout(resolve, duration * 1000));
 }
 
 async function runLines(lines) {
@@ -97,22 +138,22 @@ async function runLines(lines) {
       const valueRaw = rest.join('=').trim();
       const name = varName.trim();
 
-      if ((valueRaw.startsWith('"') && valueRaw.endsWith('"')) || (valueRaw.startsWith("'") && valueRaw.endsWith("'"))) {
-        variables[name] = valueRaw.slice(1, -1);
-      } else if (!isNaN(Number(valueRaw))) {
-        variables[name] = Number(valueRaw);
-      } else if (valueRaw.startsWith('[') && valueRaw.endsWith(']')) {
-        try {
+      try {
+        if ((valueRaw.startsWith('"') && valueRaw.endsWith('"')) || (valueRaw.startsWith("'") && valueRaw.endsWith("'"))) {
+          variables[name] = valueRaw.slice(1, -1);
+        } else if (!isNaN(Number(valueRaw))) {
+          variables[name] = Number(valueRaw);
+        } else if (valueRaw.startsWith('[') && valueRaw.endsWith(']')) {
           const arr = JSON.parse(valueRaw);
           if (Array.isArray(arr)) {
             variables[name] = arr;
           } else {
             console.print('Error: invalid array -> ' + valueRaw);
           }
-        } catch {
-          console.print('Error: invalid array format -> ' + valueRaw);
+        } else {
+          variables[name] = safeMathEval(valueRaw);
         }
-      } else {
+      } catch {
         console.print('Error: invalid value -> ' + valueRaw);
       }
 
@@ -152,7 +193,7 @@ async function runLines(lines) {
       try {
         const result = safeMathEval(expr);
         console.print(result);
-      } catch {
+      } catch (e) {
         console.print('Error: invalid expression');
       }
       i++;
@@ -173,17 +214,34 @@ async function runLines(lines) {
     if (line.startsWith('play(') && line.endsWith(')')) {
       const args = line.slice(5, -1).split(',').map(s => parseFloat(s.trim()));
       if (args.length === 2 && !isNaN(args[0]) && !isNaN(args[1])) {
-        const oscillator = audioContext.createOscillator();
-        const gainNode = audioContext.createGain();
-        oscillator.type = 'square';
-        oscillator.frequency.setValueAtTime(args[0], audioContext.currentTime);
-        gainNode.gain.setValueAtTime(0.2, audioContext.currentTime); // volume
-        oscillator.connect(gainNode).connect(audioContext.destination);
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + args[1]);
-        await new Promise(resolve => setTimeout(resolve, args[1] * 1000));
+        await playTone(args[0], args[1]);
       } else {
         console.print('Error: invalid play arguments');
+      }
+      i++;
+      continue;
+    }
+
+    if (line.startsWith('note(') && line.endsWith(')')) {
+      let argsRaw = line.slice(5, -1).split(',');
+      if (argsRaw.length === 2) {
+        let noteName = argsRaw[0].trim();
+        if ((noteName.startsWith('"') && noteName.endsWith('"')) || (noteName.startsWith("'") && noteName.endsWith("'"))) {
+          noteName = noteName.slice(1, -1);
+        }
+        let duration = parseFloat(argsRaw[1].trim());
+        if (!isNaN(duration) && duration > 0) {
+          const freq = noteFrequencies[noteName];
+          if (freq) {
+            await playTone(freq, duration);
+          } else {
+            console.print('Error: unknown note -> ' + noteName);
+          }
+        } else {
+          console.print('Error: invalid note duration');
+        }
+      } else {
+        console.print('Error: invalid note arguments');
       }
       i++;
       continue;
@@ -208,6 +266,9 @@ async function runScript(code) {
 
 document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('runScriptBtn').addEventListener('click', () => {
+    if (!audioContext) {
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    }
     const code = document.getElementById('scriptInput').value;
     runScript(code);
   });
