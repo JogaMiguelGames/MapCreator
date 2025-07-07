@@ -72,7 +72,6 @@
       </label>
     </section>
 
-    <!-- Posição -->
     <section class="control-group" aria-labelledby="positionLabel">
       <h2 id="positionLabel" class="sr-only">Position Controls</h2>
       <label for="posX">Position X:
@@ -86,7 +85,6 @@
       </label>
     </section>
 
-    <!-- Rotação -->
     <section class="control-group" aria-labelledby="rotationLabel">
       <h2 id="rotationLabel" class="sr-only">Rotation Controls</h2>
       <label for="rotX">Rotation X:
@@ -108,23 +106,19 @@
       </label>
     </section>
 
-    <!-- Lista de cubos -->
     <section id="cubeList" tabindex="0" aria-label="List of cubes"></section>
 
-    <!-- Console de script -->
     <section id="scriptingSection" aria-label="Scripting console">
       <h2>Scripting</h2>
-      <textarea id="scriptInput" placeholder="Digite comandos da linguagem do Map Creator aqui"></textarea>
+      <textarea id="scriptInput" placeholder='Example: console.print("Hello, World")'></textarea>
       <button id="runScriptBtn">Run Script</button>
       <div id="scriptOutput"></div>
     </section>
   </aside>
 
   <main id="sceneContainer" role="main">
-    <!-- Canvas do Three.js será injetado aqui -->
   </main>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <script src="OBJLoader.js"></script>
   <script src="main.js"></script>
