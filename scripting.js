@@ -9,34 +9,23 @@ const console = {
 const variables = {};
 const functions = {};
 
-let audioContext = null; // inicializa nulo
+let audioContext = null;
 
 const noteFrequencies = {
-  'C4': 261.63,
-  'C#4': 277.18, 'Db4': 277.18,
-  'D4': 293.66,
-  'D#4': 311.13, 'Eb4': 311.13,
-  'E4': 329.63,
-  'F4': 349.23,
-  'F#4': 369.99, 'Gb4': 369.99,
-  'G4': 392.00,
-  'G#4': 415.30, 'Ab4': 415.30,
-  'A4': 440.00,
-  'A#4': 466.16, 'Bb4': 466.16,
-  'B4': 493.88
+  'C4': 261.63, 'C#4': 277.18, 'Db4': 277.18, 'D4': 293.66, 'D#4': 311.13,
+  'Eb4': 311.13, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'Gb4': 369.99,
+  'G4': 392.00, 'G#4': 415.30, 'Ab4': 415.30, 'A4': 440.00, 'A#4': 466.16,
+  'Bb4': 466.16, 'B4': 493.88
 };
 
 function safeMathEval(expr) {
   const allowedFunctions = ['sin', 'cos', 'tan', 'sqrt', 'abs', 'log', 'pow', 'max', 'min', 'round', 'floor', 'ceil', 'random'];
-
   if (!/^[0-9+\-*/%^()., \[\]a-zA-Z0-9_]+$/.test(expr)) throw new Error('Invalid expression');
-
   const exprWithMath = expr.replace(/([a-zA-Z]+)\(/g, (m, f) => {
     if (f === 'random') return `__custom_random__(`;
     if (allowedFunctions.includes(f)) return `Math.${f}(`;
     throw new Error('Function not allowed: ' + f);
   });
-
   const exprWithVars = exprWithMath.replace(/\b([a-zA-Z_]\w*(?:\[\d+\])?)\b/g, (match) => {
     if (match.includes('[')) {
       const varName = match.split('[')[0];
@@ -79,6 +68,19 @@ async function playTone(freq, duration) {
   oscillator.start();
   oscillator.stop(audioContext.currentTime + duration);
   await new Promise(resolve => setTimeout(resolve, duration * 1000));
+}
+
+function setWireframeForAllObjects(enabled) {
+  scene.traverse(obj => {
+    if (obj.isMesh) {
+      const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+      materials.forEach(mat => {
+        if (mat && 'wireframe' in mat) {
+          mat.wireframe = enabled;
+        }
+      });
+    }
+  });
 }
 
 async function runLines(lines) {
@@ -133,11 +135,29 @@ async function runLines(lines) {
       continue;
     }
 
+    if (line === 'loop') {
+      const loopBody = [];
+      i++;
+      while (i < lines.length && lines[i].trim() !== 'end') {
+        loopBody.push(lines[i]);
+        i++;
+      }
+      if (i >= lines.length) {
+        console.print('Error: loop block not terminated');
+        return;
+      }
+      // Infinite loop - run forever
+      while (true) {
+        await runLines([...loopBody]);
+      }
+      // i++; // never reached
+      continue;
+    }
+
     if (/^[a-zA-Z_]\w*\s*=/.test(line)) {
       const [varName, ...rest] = line.split('=');
       const valueRaw = rest.join('=').trim();
       const name = varName.trim();
-
       try {
         if ((valueRaw.startsWith('"') && valueRaw.endsWith('"')) || (valueRaw.startsWith("'") && valueRaw.endsWith("'"))) {
           variables[name] = valueRaw.slice(1, -1);
@@ -156,14 +176,12 @@ async function runLines(lines) {
       } catch {
         console.print('Error: invalid value -> ' + valueRaw);
       }
-
       i++;
       continue;
     }
 
     if (line.startsWith('console.print(') && line.endsWith(')')) {
       let param = line.slice(14, -1).trim();
-
       if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
         console.print(param.slice(1, -1));
       } else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
@@ -183,7 +201,6 @@ async function runLines(lines) {
       } else {
         console.print('Error: undefined variable -> ' + param);
       }
-
       i++;
       continue;
     }
@@ -243,6 +260,20 @@ async function runLines(lines) {
       } else {
         console.print('Error: invalid note arguments');
       }
+      i++;
+      continue;
+    }
+
+    if (line === 'wireframe.on') {
+      setWireframeForAllObjects(true);
+      console.print("Wireframe enabled.");
+      i++;
+      continue;
+    }
+
+    if (line === 'wireframe.off') {
+      setWireframeForAllObjects(false);
+      console.print("Wireframe disabled.");
       i++;
       continue;
     }
