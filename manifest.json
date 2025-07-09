@@ -1,3 +1,6 @@
 {
-    "title": "Map Creator 3D"
+  "page": {
+    "title": "Map Creator Test",
+    "icon": "resources/images/ui/icon.png"
+  }
 }
