@@ -146,11 +146,9 @@ async function runLines(lines) {
         console.print('Error: loop block not terminated');
         return;
       }
-      // Infinite loop - run forever
       while (true) {
         await runLines([...loopBody]);
       }
-      // i++; // never reached
       continue;
     }
 
@@ -180,26 +178,17 @@ async function runLines(lines) {
       continue;
     }
 
+    // ✅ Suporte a concatenação no console.print()
     if (line.startsWith('console.print(') && line.endsWith(')')) {
-      let param = line.slice(14, -1).trim();
-      if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
-        console.print(param.slice(1, -1));
-      } else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
-        const varName = param.split('[')[0];
-        const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
-        if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
-          if (index < 0 || index >= variables[varName].length) {
-            console.print('Error: array index out of bounds -> ' + param);
-          } else {
-            console.print(String(variables[varName][index]));
-          }
-        } else {
-          console.print('Error: list not defined -> ' + varName);
-        }
-      } else if (variables.hasOwnProperty(param)) {
-        console.print(String(variables[param]));
-      } else {
-        console.print('Error: undefined variable -> ' + param);
+      let expr = line.slice(14, -1).trim();
+      try {
+        const result = Function(...Object.keys(variables), `
+          "use strict";
+          return ${expr};
+        `)(...Object.values(variables));
+        console.print(String(result));
+      } catch (e) {
+        console.print('Error: invalid print expression -> ' + expr);
       }
       i++;
       continue;
