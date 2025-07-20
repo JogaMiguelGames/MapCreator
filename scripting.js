@@ -180,7 +180,7 @@ async function runLines(lines) {
       continue;
     }
 
-    if (line.startsWith('print(') && line.endsWith(')')) {
+    if (line.startsWith('console.print(') && line.endsWith(')')) {
       let param = line.slice(14, -1).trim();
       if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
         console.print(param.slice(1, -1));
