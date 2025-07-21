@@ -294,7 +294,7 @@ async function runLines(lines) {
       continue;
     }
 
-    if (line.startsWith('open.url(') && line.endsWith(')')) {
+    if (line.startsWith('open.url.https(') && line.endsWith(')')) {
       let raw = line.slice(9, -1).trim();
       if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
         let url = raw.slice(1, -1);
