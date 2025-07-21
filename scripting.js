@@ -253,7 +253,7 @@ async function runLines(lines) {
       continue;
     }
 
-    if (line.startsWith('open.url(') && line.endsWith(')')) {
+    if (line.startsWith('open.url.https(') && line.endsWith(')')) {
       let raw = line.slice(9, -1).trim();
       if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
         let url = raw.slice(1, -1);
@@ -263,7 +263,23 @@ async function runLines(lines) {
         window.open(url, '_blank');
         console.print('Opening URL: ' + url);
       } else {
-        console.print('Error: invalid URL string');
+        console.print('Error: invalid Https URL string');
+      }
+      i++;
+      continue;
+    }
+
+    if (line.startsWith('open.url.http(') && line.endsWith(')')) {
+      let raw = line.slice(9, -1).trim();
+      if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
+        let url = raw.slice(1, -1);
+        if (!/^http?:\/\//.test(url)) {
+          url = 'http://' + url;
+        }
+        window.open(url, '_blank');
+        console.print('Opening URL: ' + url);
+      } else {
+        console.print('Error: invalid Http URL string');
       }
       i++;
       continue;
