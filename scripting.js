@@ -10,6 +10,7 @@ const variables = {};
 const functions = {};
 
 let audioContext = null;
+let globalVolume = 0.2; // volume padrão: 20%
 
 const noteFrequencies = {
   'C4': 261.63, 'C#4': 277.18, 'Db4': 277.18, 'D4': 293.66, 'D#4': 311.13,
@@ -59,11 +60,14 @@ async function playTone(freq, duration) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
   if (freq <= 0 || duration <= 0) return;
+
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
+
   oscillator.type = 'square';
   oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
-  gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
+  gainNode.gain.setValueAtTime(globalVolume, audioContext.currentTime);
+
   oscillator.connect(gainNode).connect(audioContext.destination);
   oscillator.start();
   oscillator.stop(audioContext.currentTime + duration);
@@ -149,7 +153,6 @@ async function runLines(lines) {
       while (true) {
         await runLines([...loopBody]);
       }
-      continue;
     }
 
     if (/^[a-zA-Z_]\w*\s*=/.test(line)) {
@@ -178,17 +181,26 @@ async function runLines(lines) {
       continue;
     }
 
-    // ✅ Suporte a concatenação no console.print()
     if (line.startsWith('console.print(') && line.endsWith(')')) {
-      let expr = line.slice(14, -1).trim();
-      try {
-        const result = Function(...Object.keys(variables), `
-          "use strict";
-          return ${expr};
-        `)(...Object.values(variables));
-        console.print(String(result));
-      } catch (e) {
-        console.print('Error: invalid print expression -> ' + expr);
+      let param = line.slice(14, -1).trim();
+      if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
+        console.print(param.slice(1, -1));
+      } else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
+        const varName = param.split('[')[0];
+        const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
+        if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
+          if (index < 0 || index >= variables[varName].length) {
+            console.print('Error: array index out of bounds -> ' + param);
+          } else {
+            console.print(String(variables[varName][index]));
+          }
+        } else {
+          console.print('Error: list not defined -> ' + varName);
+        }
+      } else if (variables.hasOwnProperty(param)) {
+        console.print(String(variables[param]));
+      } else {
+        console.print('Error: undefined variable -> ' + param);
       }
       i++;
       continue;
@@ -212,6 +224,35 @@ async function runLines(lines) {
         await new Promise(resolve => setTimeout(resolve, time * 1000));
       } else {
         console.print('Error: invalid wait time');
+      }
+      i++;
+      continue;
+    }
+
+    if (line.startsWith('volume(') && line.endsWith(')')) {
+      const raw = line.slice(7, -1).trim();
+      let percent = parseFloat(raw.replace('%', ''));
+      if (!isNaN(percent) && percent >= 0 && percent <= 100) {
+        globalVolume = percent / 100;
+        console.print(`Volume set to ${percent}%`);
+      } else {
+        console.print('Error: invalid volume value');
+      }
+      i++;
+      continue;
+    }
+
+    if (line.startsWith('skycolor(') && line.endsWith(')')) {
+      const hex = line.slice(9, -1).trim();
+      if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)) {
+        try {
+          scene.background = new THREE.Color(hex);
+          console.print(`Sky color set to ${hex}`);
+        } catch {
+          console.print('Error: invalid color format');
+        }
+      } else {
+        console.print('Error: invalid hex color');
       }
       i++;
       continue;
@@ -253,7 +294,7 @@ async function runLines(lines) {
       continue;
     }
 
-    if (line.startsWith('open.url.https(') && line.endsWith(')')) {
+    if (line.startsWith('open.url(') && line.endsWith(')')) {
       let raw = line.slice(9, -1).trim();
       if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
         let url = raw.slice(1, -1);
@@ -263,27 +304,12 @@ async function runLines(lines) {
         window.open(url, '_blank');
         console.print('Opening URL: ' + url);
       } else {
-        console.print('Error: invalid Https URL string');
+        console.print('Error: invalid URL string');
       }
       i++;
       continue;
     }
 
-    if (line.startsWith('open.url.http(') && line.endsWith(')')) {
-      let raw = line.slice(9, -1).trim();
-      if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
-        let url = raw.slice(1, -1);
-        if (!/^http?:\/\//.test(url)) {
-          url = 'http://' + url;
-        }
-        window.open(url, '_blank');
-        console.print('Opening URL: ' + url);
-      } else {
-        console.print('Error: invalid Http URL string');
-      }
-      i++;
-      continue;
-    }
 
     if (line === 'wireframe.on') {
       setWireframeForAllObjects(true);
