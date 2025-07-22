@@ -161,6 +161,26 @@
   </script>
 
   <script>
+    const focusBtn = document.getElementById("focusScriptBtn");
+    const panel = document.getElementById("panel");
+  
+    let scriptFocusActive = false;
+  
+    focusBtn.addEventListener("click", () => {
+      scriptFocusActive = !scriptFocusActive;
+  
+      if (scriptFocusActive) {
+        panel.classList.add("focus-script");
+        document.body.classList.add("focusing-script");
+      } else {
+        panel.classList.remove("focus-script");
+        document.body.classList.remove("focusing-script");
+      }
+    });
+  </script>
+
+
+  <script>
     document.getElementById('importTextureBtn').addEventListener('click', () => {
       document.getElementById('importButton').click();
     });
