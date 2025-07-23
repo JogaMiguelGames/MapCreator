@@ -327,20 +327,27 @@ canvas {
   white-space: nowrap !important;
   border: 0 !important;
 }
+/* === Foco total no scriptingSection === */
+body.focusing-script {
+  overflow: hidden;
+}
 
-/* === Foco no scriptingSection em tela cheia === */
+body.focusing-script #topMenu,
+body.focusing-script #sceneContainer {
+  display: none;
+}
+
 body.focusing-script #panel {
   width: 100vw;
   height: 100vh;
   position: fixed;
   top: 0;
-  right: 0;
   left: 0;
-  bottom: 0;
-  z-index: 9999;
-  background: #1a1a1a;
-  overflow: hidden;
   padding: 20px;
+  background: #111;
+  border-left: none;
+  z-index: 9999;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -356,14 +363,29 @@ body.focusing-script #scriptingSection {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  padding: 20px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  box-shadow: 0 0 10px #000;
 }
 
 body.focusing-script #scriptInput {
-  flex-grow: 1;
+  flex: 1;
   resize: none;
   font-size: 16px;
+  background: #000;
+  color: #0f0;
+  padding: 12px;
+  border-radius: 4px;
+  border: 1px solid #333;
 }
 
 body.focusing-script #scriptOutput {
   height: 150px;
+  background: #000;
+  color: #0f0;
+  padding: 10px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  overflow-y: auto;
 }
