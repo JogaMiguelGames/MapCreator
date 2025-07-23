@@ -169,19 +169,20 @@
 
   <script>
     const focusBtn = document.getElementById("focusScriptBtn");
-    const exitBtn = document.getElementById("exitScriptFocusBtn");
-    const scriptingSection = document.getElementById("scriptingSection");
+    const panel = document.getElementById("panel");
+  
+    let scriptFocusActive = false;
   
     focusBtn.addEventListener("click", () => {
-      document.body.classList.add("script-focus");
-      scriptingSection.classList.add("focus-only");
-      exitBtn.style.display = "block";
-    });
+      scriptFocusActive = !scriptFocusActive;
   
-    exitBtn.addEventListener("click", () => {
-      document.body.classList.remove("script-focus");
-      scriptingSection.classList.remove("focus-only");
-      exitBtn.style.display = "none";
+      if (scriptFocusActive) {
+        panel.classList.add("focus-script");
+        document.body.classList.add("focusing-script");
+      } else {
+        panel.classList.remove("focus-script");
+        document.body.classList.remove("focusing-script");
+      }
     });
   </script>
 
