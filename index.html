@@ -170,11 +170,10 @@
   <script>
     const focusBtn = document.getElementById("focusScriptBtn");
     const exitBtn = document.getElementById("exitScriptFocusBtn");
-    const panel = document.getElementById("panel");
   
     focusBtn.addEventListener("click", () => {
       document.body.classList.add("focusing-script");
-      exitBtn.style.display = "block";
+      exitBtn.style.display = "inline-block";
     });
   
     exitBtn.addEventListener("click", () => {
