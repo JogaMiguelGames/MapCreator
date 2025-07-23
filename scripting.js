@@ -206,6 +206,44 @@ async function runLines(lines) {
       continue;
     }
 
+    if (line.startsWith('if (') && line.endsWith(')')) {
+      const condition = line.slice(4, -1).trim();
+      const ifBlock = [];
+      const elseBlock = [];
+      let inElse = false;
+      i++;
+      while (i < lines.length && lines[i].trim() !== 'end') {
+        const innerLine = lines[i].trim();
+        if (innerLine === 'else') {
+          inElse = true;
+          i++;
+          continue;
+        }
+        if (inElse) {
+          elseBlock.push(lines[i]);
+        } else {
+          ifBlock.push(lines[i]);
+        }
+        i++;
+      }
+      if (i >= lines.length) {
+        console.print('Error: if block not terminated');
+        return;
+      }
+      try {
+        const conditionResult = !!safeMathEval(condition);
+        if (conditionResult) {
+          await runLines(ifBlock);
+        } else {
+          await runLines(elseBlock);
+        }
+      } catch {
+        console.print('Error: invalid if condition');
+      }
+      i++;
+      continue;
+    }
+
     if (line.startsWith('calc(') && line.endsWith(')')) {
       const expr = line.slice(5, -1).trim();
       try {
