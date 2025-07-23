@@ -328,8 +328,8 @@ canvas {
   border: 0 !important;
 }
 
-/* Foco apenas no scriptingSection */
-#scriptingSection.focus-only {
+/* Estilo para modo de foco no script */
+#panel.focus-script {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -338,16 +338,14 @@ canvas {
   transform: translate(-50%, -50%);
   z-index: 9999;
   background: #1a1a1a;
+  border: 2px solid #666;
   box-shadow: 0 0 20px #000;
-  padding: 20px;
   overflow: auto;
-  border: 2px solid #555;
-  border-radius: 8px;
 }
 
-/* Esconde o resto da UI */
-body.script-focus #topMenu,
-body.script-focus #panel,
-body.script-focus #sceneContainer {
-  display: none;
+body.focusing-script #topMenu,
+body.focusing-script #sceneContainer {
+  filter: blur(2px);
+  pointer-events: none;
+  user-select: none;
 }
