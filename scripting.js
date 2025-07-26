@@ -3,7 +3,7 @@ const console = {
     const output = document.getElementById('scriptOutput');
     const line = document.createElement('div');
     line.textContent = text;
-    line.style.color = '#0f0';
+    line.style.color = '#0f0'; // verde
     output.appendChild(line);
     output.scrollTop = output.scrollHeight;
   },
@@ -11,7 +11,7 @@ const console = {
     const output = document.getElementById('scriptOutput');
     const line = document.createElement('div');
     line.textContent = text;
-    line.style.color = '#f33';
+    line.style.color = '#f33'; // vermelho
     output.appendChild(line);
     output.scrollTop = output.scrollHeight;
   }
@@ -21,7 +21,7 @@ const variables = {};
 const functions = {};
 
 let audioContext = null;
-let globalVolume = 0.2;
+let globalVolume = 0.2; // volume padrão: 20%
 
 const noteFrequencies = {
   'C4': 261.63, 'C#4': 277.18, 'Db4': 277.18, 'D4': 293.66, 'D#4': 311.13,
@@ -103,6 +103,7 @@ async function runLines(lines) {
   while (i < lines.length) {
     const line = lines[i].trim();
 
+    // Função
     if (line.startsWith('function ') && line.endsWith('()')) {
       const funcName = line.slice(9, -2).trim();
       const funcBody = [];
@@ -120,6 +121,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Chamada de função
     if (line.startsWith('call(') && line.endsWith(')')) {
       const funcName = line.slice(5, -1).trim();
       if (functions[funcName]) {
@@ -131,6 +133,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Repeat
     if (line.startsWith('repeat(') && line.endsWith(')')) {
       const count = parseInt(line.slice(7, -1).trim());
       const repeatBody = [];
@@ -150,6 +153,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Loop infinito
     if (line === 'loop') {
       const loopBody = [];
       i++;
@@ -166,6 +170,7 @@ async function runLines(lines) {
       }
     }
 
+    // Atribuição
     if (/^[a-zA-Z_]\w*\s*=/.test(line)) {
       const [varName, ...rest] = line.split('=');
       const valueRaw = rest.join('=').trim();
@@ -192,6 +197,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // console.print(...)
     if (line.startsWith('console.print(') && line.endsWith(')')) {
       let param = line.slice(14, -1).trim();
       if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
@@ -217,6 +223,33 @@ async function runLines(lines) {
       continue;
     }
 
+    // console.error(...)
+    if (line.startsWith('console.error(') && line.endsWith(')')) {
+      let param = line.slice(14, -1).trim();
+      if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
+        console.error(param.slice(1, -1));
+      } else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
+        const varName = param.split('[')[0];
+        const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
+        if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
+          if (index < 0 || index >= variables[varName].length) {
+            console.error('Error: array index out of bounds -> ' + param);
+          } else {
+            console.error(String(variables[varName][index]));
+          }
+        } else {
+          console.error('Error: list not defined -> ' + varName);
+        }
+      } else if (variables.hasOwnProperty(param)) {
+        console.error(String(variables[param]));
+      } else {
+        console.error('Error: undefined variable -> ' + param);
+      }
+      i++;
+      continue;
+    }
+
+    // If
     if (line.startsWith('if (') && line.endsWith(')')) {
       const condition = line.slice(4, -1).trim();
       const ifBlock = [];
@@ -255,18 +288,20 @@ async function runLines(lines) {
       continue;
     }
 
+    // calc(...)
     if (line.startsWith('calc(') && line.endsWith(')')) {
       const expr = line.slice(5, -1).trim();
       try {
         const result = safeMathEval(expr);
         console.print(result);
-      } catch {
+      } catch (e) {
         console.error('Error: invalid expression');
       }
       i++;
       continue;
     }
 
+    // wait(...)
     if (line.startsWith('wait(') && line.endsWith(')')) {
       const time = parseFloat(line.slice(5, -1).trim());
       if (!isNaN(time) && time >= 0) {
@@ -278,6 +313,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // volume(...)
     if (line.startsWith('volume(') && line.endsWith(')')) {
       const raw = line.slice(7, -1).trim();
       let percent = parseFloat(raw.replace('%', ''));
@@ -291,6 +327,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // skycolor(...)
     if (line.startsWith('skycolor(') && line.endsWith(')')) {
       const hex = line.slice(9, -1).trim();
       if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)) {
@@ -307,6 +344,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // play(...)
     if (line.startsWith('play(') && line.endsWith(')')) {
       const args = line.slice(5, -1).split(',').map(s => parseFloat(s.trim()));
       if (args.length === 2 && !isNaN(args[0]) && !isNaN(args[1])) {
@@ -318,6 +356,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // note(...)
     if (line.startsWith('note(') && line.endsWith(')')) {
       let argsRaw = line.slice(5, -1).split(',');
       if (argsRaw.length === 2) {
@@ -343,6 +382,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // open.url(...)
     if (line.startsWith('open.url(') && line.endsWith(')')) {
       let raw = line.slice(9, -1).trim();
       if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
@@ -384,7 +424,8 @@ async function runLines(lines) {
 }
 
 async function runScript(code) {
-  document.getElementById('scriptOutput').textContent = '';
+  const output = document.getElementById('scriptOutput');
+  output.textContent = '';
   Object.keys(variables).forEach(k => delete variables[k]);
   Object.keys(functions).forEach(k => delete functions[k]);
   await runLines(code.split('\n'));
