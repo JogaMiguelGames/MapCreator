@@ -1,7 +1,18 @@
 const console = {
   print: (text) => {
     const output = document.getElementById('scriptOutput');
-    output.textContent += text + '\n';
+    const line = document.createElement('div');
+    line.textContent = text;
+    line.style.color = '#0f0';
+    output.appendChild(line);
+    output.scrollTop = output.scrollHeight;
+  },
+  error: (text) => {
+    const output = document.getElementById('scriptOutput');
+    const line = document.createElement('div');
+    line.textContent = text;
+    line.style.color = '#f33';
+    output.appendChild(line);
     output.scrollTop = output.scrollHeight;
   }
 };
@@ -10,7 +21,7 @@ const variables = {};
 const functions = {};
 
 let audioContext = null;
-let globalVolume = 0.2; // volume padrão: 20%
+let globalVolume = 0.2;
 
 const noteFrequencies = {
   'C4': 261.63, 'C#4': 277.18, 'Db4': 277.18, 'D4': 293.66, 'D#4': 311.13,
@@ -101,7 +112,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.print('Error: function not terminated -> ' + funcName);
+        console.error('Error: function not terminated -> ' + funcName);
         return;
       }
       functions[funcName] = funcBody;
@@ -114,7 +125,7 @@ async function runLines(lines) {
       if (functions[funcName]) {
         await runLines(functions[funcName]);
       } else {
-        console.print('Error: function not defined -> ' + funcName);
+        console.error('Error: function not defined -> ' + funcName);
       }
       i++;
       continue;
@@ -129,7 +140,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.print('Error: repeat block not terminated');
+        console.error('Error: repeat block not terminated');
         return;
       }
       for (let r = 0; r < count; r++) {
@@ -147,7 +158,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.print('Error: loop block not terminated');
+        console.error('Error: loop block not terminated');
         return;
       }
       while (true) {
@@ -169,13 +180,13 @@ async function runLines(lines) {
           if (Array.isArray(arr)) {
             variables[name] = arr;
           } else {
-            console.print('Error: invalid array -> ' + valueRaw);
+            console.error('Error: invalid array -> ' + valueRaw);
           }
         } else {
           variables[name] = safeMathEval(valueRaw);
         }
       } catch {
-        console.print('Error: invalid value -> ' + valueRaw);
+        console.error('Error: invalid value -> ' + valueRaw);
       }
       i++;
       continue;
@@ -190,17 +201,17 @@ async function runLines(lines) {
         const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
         if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
           if (index < 0 || index >= variables[varName].length) {
-            console.print('Error: array index out of bounds -> ' + param);
+            console.error('Error: array index out of bounds -> ' + param);
           } else {
             console.print(String(variables[varName][index]));
           }
         } else {
-          console.print('Error: list not defined -> ' + varName);
+          console.error('Error: list not defined -> ' + varName);
         }
       } else if (variables.hasOwnProperty(param)) {
         console.print(String(variables[param]));
       } else {
-        console.print('Error: undefined variable -> ' + param);
+        console.error('Error: undefined variable -> ' + param);
       }
       i++;
       continue;
@@ -227,7 +238,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.print('Error: if block not terminated');
+        console.error('Error: if block not terminated');
         return;
       }
       try {
@@ -238,7 +249,7 @@ async function runLines(lines) {
           await runLines(elseBlock);
         }
       } catch {
-        console.print('Error: invalid if condition');
+        console.error('Error: invalid if condition');
       }
       i++;
       continue;
@@ -249,8 +260,8 @@ async function runLines(lines) {
       try {
         const result = safeMathEval(expr);
         console.print(result);
-      } catch (e) {
-        console.print('Error: invalid expression');
+      } catch {
+        console.error('Error: invalid expression');
       }
       i++;
       continue;
@@ -261,7 +272,7 @@ async function runLines(lines) {
       if (!isNaN(time) && time >= 0) {
         await new Promise(resolve => setTimeout(resolve, time * 1000));
       } else {
-        console.print('Error: invalid wait time');
+        console.error('Error: invalid wait time');
       }
       i++;
       continue;
@@ -274,7 +285,7 @@ async function runLines(lines) {
         globalVolume = percent / 100;
         console.print(`Volume set to ${percent}%`);
       } else {
-        console.print('Error: invalid volume value');
+        console.error('Error: invalid volume value');
       }
       i++;
       continue;
@@ -287,10 +298,10 @@ async function runLines(lines) {
           scene.background = new THREE.Color(hex);
           console.print(`Sky color set to ${hex}`);
         } catch {
-          console.print('Error: invalid color format');
+          console.error('Error: invalid color format');
         }
       } else {
-        console.print('Error: invalid hex color');
+        console.error('Error: invalid hex color');
       }
       i++;
       continue;
@@ -301,7 +312,7 @@ async function runLines(lines) {
       if (args.length === 2 && !isNaN(args[0]) && !isNaN(args[1])) {
         await playTone(args[0], args[1]);
       } else {
-        console.print('Error: invalid play arguments');
+        console.error('Error: invalid play arguments');
       }
       i++;
       continue;
@@ -320,13 +331,13 @@ async function runLines(lines) {
           if (freq) {
             await playTone(freq, duration);
           } else {
-            console.print('Error: unknown note -> ' + noteName);
+            console.error('Error: unknown note -> ' + noteName);
           }
         } else {
-          console.print('Error: invalid note duration');
+          console.error('Error: invalid note duration');
         }
       } else {
-        console.print('Error: invalid note arguments');
+        console.error('Error: invalid note arguments');
       }
       i++;
       continue;
@@ -342,12 +353,11 @@ async function runLines(lines) {
         window.open(url, '_blank');
         console.print('Opening URL: ' + url);
       } else {
-        console.print('Error: invalid URL string');
+        console.error('Error: invalid URL string');
       }
       i++;
       continue;
     }
-
 
     if (line === 'wireframe.on') {
       setWireframeForAllObjects(true);
@@ -368,7 +378,7 @@ async function runLines(lines) {
       continue;
     }
 
-    console.print('Error: invalid command -> ' + line);
+    console.error('Error: invalid command -> ' + line);
     i++;
   }
 }
