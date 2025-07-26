@@ -1,18 +1,7 @@
 const console = {
   print: (text) => {
     const output = document.getElementById('scriptOutput');
-    const line = document.createElement('div');
-    line.textContent = text;
-    line.style.color = '#0f0'; // verde
-    output.appendChild(line);
-    output.scrollTop = output.scrollHeight;
-  },
-  error: (text) => {
-    const output = document.getElementById('scriptOutput');
-    const line = document.createElement('div');
-    line.textContent = text;
-    line.style.color = '#f33'; // vermelho
-    output.appendChild(line);
+    output.textContent += text + '\n';
     output.scrollTop = output.scrollHeight;
   }
 };
@@ -34,8 +23,8 @@ function safeMathEval(expr) {
   const allowedFunctions = ['sin', 'cos', 'tan', 'sqrt', 'abs', 'log', 'pow', 'max', 'min', 'round', 'floor', 'ceil', 'random'];
   if (!/^[0-9+\-*/%^()., \[\]a-zA-Z0-9_]+$/.test(expr)) throw new Error('Invalid expression');
   const exprWithMath = expr.replace(/([a-zA-Z]+)\(/g, (m, f) => {
-    if (f === 'random') return `__custom_random__(`;
-    if (allowedFunctions.includes(f)) return `Math.${f}(`;
+    if (f === 'random') return __custom_random__(;
+    if (allowedFunctions.includes(f)) return Math.${f}(;
     throw new Error('Function not allowed: ' + f);
   });
   const exprWithVars = exprWithMath.replace(/\b([a-zA-Z_]\w*(?:\[\d+\])?)\b/g, (match) => {
@@ -103,7 +92,6 @@ async function runLines(lines) {
   while (i < lines.length) {
     const line = lines[i].trim();
 
-    // Função
     if (line.startsWith('function ') && line.endsWith('()')) {
       const funcName = line.slice(9, -2).trim();
       const funcBody = [];
@@ -113,7 +101,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.error('Error: function not terminated -> ' + funcName);
+        console.print('Error: function not terminated -> ' + funcName);
         return;
       }
       functions[funcName] = funcBody;
@@ -121,19 +109,17 @@ async function runLines(lines) {
       continue;
     }
 
-    // Chamada de função
     if (line.startsWith('call(') && line.endsWith(')')) {
       const funcName = line.slice(5, -1).trim();
       if (functions[funcName]) {
         await runLines(functions[funcName]);
       } else {
-        console.error('Error: function not defined -> ' + funcName);
+        console.print('Error: function not defined -> ' + funcName);
       }
       i++;
       continue;
     }
 
-    // Repeat
     if (line.startsWith('repeat(') && line.endsWith(')')) {
       const count = parseInt(line.slice(7, -1).trim());
       const repeatBody = [];
@@ -143,7 +129,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.error('Error: repeat block not terminated');
+        console.print('Error: repeat block not terminated');
         return;
       }
       for (let r = 0; r < count; r++) {
@@ -153,7 +139,6 @@ async function runLines(lines) {
       continue;
     }
 
-    // Loop infinito
     if (line === 'loop') {
       const loopBody = [];
       i++;
@@ -162,7 +147,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.error('Error: loop block not terminated');
+        console.print('Error: loop block not terminated');
         return;
       }
       while (true) {
@@ -170,7 +155,6 @@ async function runLines(lines) {
       }
     }
 
-    // Atribuição
     if (/^[a-zA-Z_]\w*\s*=/.test(line)) {
       const [varName, ...rest] = line.split('=');
       const valueRaw = rest.join('=').trim();
@@ -185,19 +169,18 @@ async function runLines(lines) {
           if (Array.isArray(arr)) {
             variables[name] = arr;
           } else {
-            console.error('Error: invalid array -> ' + valueRaw);
+            console.print('Error: invalid array -> ' + valueRaw);
           }
         } else {
           variables[name] = safeMathEval(valueRaw);
         }
       } catch {
-        console.error('Error: invalid value -> ' + valueRaw);
+        console.print('Error: invalid value -> ' + valueRaw);
       }
       i++;
       continue;
     }
 
-    // console.print(...)
     if (line.startsWith('console.print(') && line.endsWith(')')) {
       let param = line.slice(14, -1).trim();
       if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
@@ -207,48 +190,22 @@ async function runLines(lines) {
         const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
         if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
           if (index < 0 || index >= variables[varName].length) {
-            console.error('Error: array index out of bounds -> ' + param);
+            console.print('Error: array index out of bounds -> ' + param);
           } else {
             console.print(String(variables[varName][index]));
           }
         } else {
-          console.error('Error: list not defined -> ' + varName);
+          console.print('Error: list not defined -> ' + varName);
         }
       } else if (variables.hasOwnProperty(param)) {
         console.print(String(variables[param]));
       } else {
-        console.error('Error: undefined variable -> ' + param);
+        console.print('Error: undefined variable -> ' + param);
       }
       i++;
       continue;
     }
 
-    if (line.startsWith('console.error(') && line.endsWith(')')) {
-    let param = line.slice('console.error('.length, -1).trim();
-  
-    // Verifica se é string entre aspas simples ou duplas
-    if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
-      const text = param.slice(1, -1);
-      console.error(text);
-    }
-    // Se for variável simples sem índices
-    else if (/^[a-zA-Z_]\w*$/.test(param)) {
-      if (variables.hasOwnProperty(param)) {
-        console.error(String(variables[param]));
-      } else {
-        console.error('Error: undefined variable -> ' + param);
-      }
-    }
-    else {
-      console.error('Error: invalid parameter in console.error -> ' + param);
-    }
-  
-    i++;
-    continue;
-  }
-
-
-    // If
     if (line.startsWith('if (') && line.endsWith(')')) {
       const condition = line.slice(4, -1).trim();
       const ifBlock = [];
@@ -270,7 +227,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.error('Error: if block not terminated');
+        console.print('Error: if block not terminated');
         return;
       }
       try {
@@ -281,81 +238,75 @@ async function runLines(lines) {
           await runLines(elseBlock);
         }
       } catch {
-        console.error('Error: invalid if condition');
+        console.print('Error: invalid if condition');
       }
       i++;
       continue;
     }
 
-    // calc(...)
     if (line.startsWith('calc(') && line.endsWith(')')) {
       const expr = line.slice(5, -1).trim();
       try {
         const result = safeMathEval(expr);
         console.print(result);
       } catch (e) {
-        console.error('Error: invalid expression');
+        console.print('Error: invalid expression');
       }
       i++;
       continue;
     }
 
-    // wait(...)
     if (line.startsWith('wait(') && line.endsWith(')')) {
       const time = parseFloat(line.slice(5, -1).trim());
       if (!isNaN(time) && time >= 0) {
         await new Promise(resolve => setTimeout(resolve, time * 1000));
       } else {
-        console.error('Error: invalid wait time');
+        console.print('Error: invalid wait time');
       }
       i++;
       continue;
     }
 
-    // volume(...)
     if (line.startsWith('volume(') && line.endsWith(')')) {
       const raw = line.slice(7, -1).trim();
       let percent = parseFloat(raw.replace('%', ''));
       if (!isNaN(percent) && percent >= 0 && percent <= 100) {
         globalVolume = percent / 100;
-        console.print(`Volume set to ${percent}%`);
+        console.print(Volume set to ${percent}%);
       } else {
-        console.error('Error: invalid volume value');
+        console.print('Error: invalid volume value');
       }
       i++;
       continue;
     }
 
-    // skycolor(...)
     if (line.startsWith('skycolor(') && line.endsWith(')')) {
       const hex = line.slice(9, -1).trim();
       if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)) {
         try {
           scene.background = new THREE.Color(hex);
-          console.print(`Sky color set to ${hex}`);
+          console.print(Sky color set to ${hex});
         } catch {
-          console.error('Error: invalid color format');
+          console.print('Error: invalid color format');
         }
       } else {
-        console.error('Error: invalid hex color');
+        console.print('Error: invalid hex color');
       }
       i++;
       continue;
     }
 
-    // play(...)
     if (line.startsWith('play(') && line.endsWith(')')) {
       const args = line.slice(5, -1).split(',').map(s => parseFloat(s.trim()));
       if (args.length === 2 && !isNaN(args[0]) && !isNaN(args[1])) {
         await playTone(args[0], args[1]);
       } else {
-        console.error('Error: invalid play arguments');
+        console.print('Error: invalid play arguments');
       }
       i++;
       continue;
     }
 
-    // note(...)
     if (line.startsWith('note(') && line.endsWith(')')) {
       let argsRaw = line.slice(5, -1).split(',');
       if (argsRaw.length === 2) {
@@ -369,19 +320,18 @@ async function runLines(lines) {
           if (freq) {
             await playTone(freq, duration);
           } else {
-            console.error('Error: unknown note -> ' + noteName);
+            console.print('Error: unknown note -> ' + noteName);
           }
         } else {
-          console.error('Error: invalid note duration');
+          console.print('Error: invalid note duration');
         }
       } else {
-        console.error('Error: invalid note arguments');
+        console.print('Error: invalid note arguments');
       }
       i++;
       continue;
     }
 
-    // open.url(...)
     if (line.startsWith('open.url(') && line.endsWith(')')) {
       let raw = line.slice(9, -1).trim();
       if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
@@ -392,11 +342,12 @@ async function runLines(lines) {
         window.open(url, '_blank');
         console.print('Opening URL: ' + url);
       } else {
-        console.error('Error: invalid URL string');
+        console.print('Error: invalid URL string');
       }
       i++;
       continue;
     }
+
 
     if (line === 'wireframe.on') {
       setWireframeForAllObjects(true);
@@ -417,14 +368,13 @@ async function runLines(lines) {
       continue;
     }
 
-    console.error('Error: invalid command -> ' + line);
+    console.print('Error: invalid command -> ' + line);
     i++;
   }
 }
 
 async function runScript(code) {
-  const output = document.getElementById('scriptOutput');
-  output.textContent = '';
+  document.getElementById('scriptOutput').textContent = '';
   Object.keys(variables).forEach(k => delete variables[k]);
   Object.keys(functions).forEach(k => delete functions[k]);
   await runLines(code.split('\n'));
