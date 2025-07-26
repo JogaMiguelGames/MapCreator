@@ -223,31 +223,30 @@ async function runLines(lines) {
       continue;
     }
 
-    // console.error(...)
     if (line.startsWith('console.error(') && line.endsWith(')')) {
-      let param = line.slice(14, -1).trim();
-      if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
-        console.error(param.slice(1, -1));
-      } else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
-        const varName = param.split('[')[0];
-        const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
-        if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
-          if (index < 0 || index >= variables[varName].length) {
-            console.error('Error: array index out of bounds -> ' + param);
-          } else {
-            console.error(String(variables[varName][index]));
-          }
-        } else {
-          console.error('Error: list not defined -> ' + varName);
-        }
-      } else if (variables.hasOwnProperty(param)) {
+    let param = line.slice('console.error('.length, -1).trim();
+  
+    // Verifica se é string entre aspas simples ou duplas
+    if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
+      const text = param.slice(1, -1);
+      console.error(text);
+    }
+    // Se for variável simples sem índices
+    else if (/^[a-zA-Z_]\w*$/.test(param)) {
+      if (variables.hasOwnProperty(param)) {
         console.error(String(variables[param]));
       } else {
         console.error('Error: undefined variable -> ' + param);
       }
-      i++;
-      continue;
     }
+    else {
+      console.error('Error: invalid parameter in console.error -> ' + param);
+    }
+  
+    i++;
+    continue;
+  }
+
 
     // If
     if (line.startsWith('if (') && line.endsWith(')')) {
