@@ -349,9 +349,10 @@ async function runLines(lines) {
     }
     
     if (line.startsWith('warning(') && line.endsWith(')')) {
-      let param = line.slice(8, -1).trim(); // 8 = 'warning('.length
+      let param = line.slice(8, -1).trim(); // 'warning('.length === 8
+    
       if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
-        alert(param.slice(1, -1));
+        alert(param.slice(1, -1)); // Mostra a string sem aspas
       } else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
         const varName = param.split('[')[0];
         const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
@@ -369,6 +370,7 @@ async function runLines(lines) {
       } else {
         alert('Error: undefined variable -> ' + param);
       }
+    
       i++;
       continue;
     }
@@ -413,4 +415,5 @@ document.addEventListener('DOMContentLoaded', () => {
     runScript(code);
   });
 });
+
 
