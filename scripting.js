@@ -348,33 +348,6 @@ async function runLines(lines) {
       continue;
     }
     
-    if (line.startsWith('warning(') && line.endsWith(')')) {
-      let param = line.slice(8, -1).trim(); // 'warning('.length === 8
-    
-      if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
-        alert(param.slice(1, -1)); // Mostra a string sem aspas
-      } else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
-        const varName = param.split('[')[0];
-        const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
-        if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
-          if (index < 0 || index >= variables[varName].length) {
-            alert('Error: array index out of bounds -> ' + param);
-          } else {
-            alert(String(variables[varName][index]));
-          }
-        } else {
-          alert('Error: list not defined -> ' + varName);
-        }
-      } else if (variables.hasOwnProperty(param)) {
-        alert(String(variables[param]));
-      } else {
-        alert('Error: undefined variable -> ' + param);
-      }
-    
-      i++;
-      continue;
-    }
-    
     if (line === 'wireframe.on') {
       setWireframeForAllObjects(true);
       console.print("Wireframe enabled.");
