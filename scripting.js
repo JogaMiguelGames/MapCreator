@@ -23,8 +23,8 @@ function safeMathEval(expr) {
   const allowedFunctions = ['sin', 'cos', 'tan', 'sqrt', 'abs', 'log', 'pow', 'max', 'min', 'round', 'floor', 'ceil', 'random'];
   if (!/^[0-9+\-*/%^()., \[\]a-zA-Z0-9_]+$/.test(expr)) throw new Error('Invalid expression');
   const exprWithMath = expr.replace(/([a-zA-Z]+)\(/g, (m, f) => {
-    if (f === 'random') return __custom_random__(;
-    if (allowedFunctions.includes(f)) return Math.${f}(;
+    if (f === 'random') return `__custom_random__(`;
+    if (allowedFunctions.includes(f)) return `Math.${f}(`;
     throw new Error('Function not allowed: ' + f);
   });
   const exprWithVars = exprWithMath.replace(/\b([a-zA-Z_]\w*(?:\[\d+\])?)\b/g, (match) => {
@@ -272,7 +272,7 @@ async function runLines(lines) {
       let percent = parseFloat(raw.replace('%', ''));
       if (!isNaN(percent) && percent >= 0 && percent <= 100) {
         globalVolume = percent / 100;
-        console.print(Volume set to ${percent}%);
+        console.print(`Volume set to ${percent}%`);
       } else {
         console.print('Error: invalid volume value');
       }
@@ -285,7 +285,7 @@ async function runLines(lines) {
       if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)) {
         try {
           scene.background = new THREE.Color(hex);
-          console.print(Sky color set to ${hex});
+          console.print(`Sky color set to ${hex}`);
         } catch {
           console.print('Error: invalid color format');
         }
@@ -347,7 +347,32 @@ async function runLines(lines) {
       i++;
       continue;
     }
-    
+
+    if (line.startsWith('console.print(') && line.endsWith(')')) {
+      let param = line.slice(14, -1).trim();
+      if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
+        console.print(param.slice(1, -1));
+      } else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
+        const varName = param.split('[')[0];
+        const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
+        if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
+          if (index < 0 || index >= variables[varName].length) {
+            console.print('Error: array index out of bounds -> ' + param);
+          } else {
+            console.print(String(variables[varName][index]));
+          }
+        } else {
+          console.print('Error: list not defined -> ' + varName);
+        }
+      } else if (variables.hasOwnProperty(param)) {
+        console.print(String(variables[param]));
+      } else {
+        console.print('Error: undefined variable -> ' + param);
+      }
+      i++;
+      continue;
+    }
+
     if (line === 'wireframe.on') {
       setWireframeForAllObjects(true);
       console.print("Wireframe enabled.");
@@ -388,5 +413,3 @@ document.addEventListener('DOMContentLoaded', () => {
     runScript(code);
   });
 });
-
-
