@@ -213,20 +213,41 @@ function updateCubeList(){
   cubeListDiv.innerHTML = '';
   cubes.forEach(cube => {
     const name = cube.name || 'Unnamed';
+
     const div = document.createElement('div');
-    div.textContent = name;
+    div.className = 'cubeListItem';
+    div.style.display = 'flex';
+    div.style.alignItems = 'center';
     div.style.padding = '4px 8px';
     div.style.borderRadius = '3px';
     div.style.cursor = 'pointer';
+    div.style.gap = '6px';
+
+    // Ícone do cubo
+    const icon = document.createElement('img');
+    icon.src = 'resources/images/ui/icons/cube.png';
+    icon.alt = 'cube icon';
+    icon.style.width = '20px';
+    icon.style.height = '20px';
+    icon.style.objectFit = 'contain';
+
+    const text = document.createElement('span');
+    text.textContent = name;
+
+    div.appendChild(icon);
+    div.appendChild(text);
+
     if(cube === selectedCube){
       div.style.backgroundColor = '#3366ff';
       div.style.color = 'white';
     }
+
     div.addEventListener('click', () => {
       selectedCube = cube;
       updatePanelForCube(selectedCube);
       updateCubeList();
     });
+
     cubeListDiv.appendChild(div);
   });
 }
@@ -294,3 +315,4 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
