@@ -1,6 +1,6 @@
 // === Setup básico Three.js ===  
 const scene = new THREE.Scene();
-scene.background = new THREE.Color('#87ceeb'); // céu azul claro
+scene.background = new THREE.Color('#000000'); // céu azul claro
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({antialias:true});
@@ -8,15 +8,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true; // ativa sombras
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
-
-// --- Chão ---
-const floorGeometry = new THREE.PlaneGeometry(100, 100);
-const floorMaterial = new THREE.MeshStandardMaterial({color: 0x888888});
-const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-floor.rotation.x = -Math.PI / 2;
-floor.position.y = -1;
-floor.receiveShadow = true;
-scene.add(floor);
 
 // --- Cubo branco principal ---
 const cubeGeometry = new THREE.BoxGeometry(1,1,1);
@@ -330,4 +321,5 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
