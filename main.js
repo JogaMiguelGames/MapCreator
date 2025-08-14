@@ -1,55 +1,70 @@
 // === Setup básico Three.js ===  
 const scene = new THREE.Scene();
+scene.background = new THREE.Color('#87ceeb'); // céu azul claro
+
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(window.innerWidth, window.innerHeight);
+renderer.shadowMap.enabled = true; // ativa sombras
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
-// Cubo branco principal
+// --- Chão ---
+const floorGeometry = new THREE.PlaneGeometry(100, 100);
+const floorMaterial = new THREE.MeshStandardMaterial({color: 0x888888});
+const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+floor.rotation.x = -Math.PI / 2;
+floor.position.y = -1;
+floor.receiveShadow = true;
+scene.add(floor);
+
+// --- Cubo branco principal ---
 const cubeGeometry = new THREE.BoxGeometry(1,1,1);
-const cubeMaterial = new THREE.MeshBasicMaterial({color: 0xffffff});
+const cubeMaterial = new THREE.MeshStandardMaterial({color: 0xffffff});
 const mainCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 mainCube.position.set(0, 0, 0);
 mainCube.name = 'Cube';
+mainCube.castShadow = true; // cubo projeta sombra
 scene.add(mainCube);
-
-scene.background = new THREE.Color('#000000');
 
 // Lista de cubos/esferas criados
 const cubes = [mainCube];
 
-// Luz ambiente
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+// --- Luz ambiente e sol ---
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
 scene.add(ambientLight);
 
-camera.position.set(0, 1.6, 5);
+const sunLight = new THREE.DirectionalLight(0xffffff, 1);
+sunLight.position.set(10, 10, 10); // luz vinda do “sol”
+sunLight.castShadow = true;
+sunLight.shadow.mapSize.width = 2048;
+sunLight.shadow.mapSize.height = 2048;
+sunLight.shadow.camera.left = -20;
+sunLight.shadow.camera.right = 20;
+sunLight.shadow.camera.top = 20;
+sunLight.shadow.camera.bottom = -20;
+scene.add(sunLight);
 
+// Linhas de eixo
+function addAxisLine(from, to, color){
+  const line = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([from, to]),
+    new THREE.LineBasicMaterial({color})
+  );
+  scene.add(line);
+}
+addAxisLine(new THREE.Vector3(0,-9999,0), new THREE.Vector3(0,9999,0), 0x00ff00); // Y
+addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000); // X
+addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
+
+// --- Controle de câmera ---
+camera.position.set(0, 1.6, 5);
 let yaw = 0, pitch = 0;
 const moveSpeed = 5;
 const lookSpeed = 0.002;
 const keys = {};
-
-// Controle mouse
 const canvas = renderer.domElement;
 let isRightMouseDown = false;
-
-const yLine = new THREE.Line(
-  new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, -9999, 0), new THREE.Vector3(0,  9999, 0)]),
-  new THREE.LineBasicMaterial({ color: 0x00ff00 })
-);
-scene.add(yLine);
-
-const xLine = new THREE.Line(
-  new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(-9999, 0, 0), new THREE.Vector3( 9999, 0, 0)]),
-  new THREE.LineBasicMaterial({ color: 0xff0000 })
-);
-scene.add(xLine);
-
-const zLine = new THREE.Line(
-  new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, -9999), new THREE.Vector3(0, 0,  9999)]),
-  new THREE.LineBasicMaterial({ color: 0x0000ff })
-);
-scene.add(zLine);
 
 // Evita menu de contexto botão direito
 canvas.addEventListener('contextmenu', e => e.preventDefault());
