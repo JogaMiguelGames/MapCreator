@@ -61,68 +61,80 @@
   </header>
 
   <aside id="panel" aria-label="Map editor controls">
-    <div id="panel-resize-handle" aria-hidden="true"></div>
-    <section class="control-group" aria-labelledby="scaleLabel">
-      <h2 id="scaleLabel" class="sr-only">Scale Controls</h2>
-      <label for="scaleX">Scale X:
-        <input type="number" id="scaleX" step="0.1" min="0.1" value="1" disabled />
-      </label>
-      <label for="scaleY">Scale Y:
-        <input type="number" id="scaleY" step="0.1" min="0.1" value="1" disabled />
-      </label>
-      <label for="scaleZ">Scale Z:
-        <input type="number" id="scaleZ" step="0.1" min="0.1" value="1" disabled />
-      </label>
-    </section>
+    <button id="togglePanelBtn">Map</button>
 
-    <section class="control-group" aria-labelledby="positionLabel">
-      <h2 id="positionLabel" class="sr-only">Position Controls</h2>
-      <label for="posX">Position X:
-        <input type="number" id="posX" step="0.1" value="0" disabled />
-      </label>
-      <label for="posY">Position Y:
-        <input type="number" id="posY" step="0.1" value="0.5" disabled />
-      </label>
-      <label for="posZ">Position Z:
-        <input type="number" id="posZ" step="0.1" value="0" disabled />
-      </label>
-    </section>
+    <!-- Aba OBJECTS -->
+    <div id="objectSettings">
+      <section class="control-group" aria-labelledby="scaleLabel">
+        <h2 id="scaleLabel" class="sr-only">Scale Controls</h2>
+        <label for="scaleX">Scale X:
+          <input type="number" id="scaleX" step="0.1" min="0.1" value="1" disabled />
+        </label>
+        <label for="scaleY">Scale Y:
+          <input type="number" id="scaleY" step="0.1" min="0.1" value="1" disabled />
+        </label>
+        <label for="scaleZ">Scale Z:
+          <input type="number" id="scaleZ" step="0.1" min="0.1" value="1" disabled />
+        </label>
+      </section>
 
-    <section class="control-group" aria-labelledby="rotationLabel">
-      <h2 id="rotationLabel" class="sr-only">Rotation Controls</h2>
-      <label for="rotX">Rotation X:
-        <input type="number" id="rotX" step="0.1" />
-      </label>
-      <label for="rotY">Rotation Y:
-        <input type="number" id="rotY" step="0.1" />
-      </label>
-      <label for="rotZ">Rotation Z:
-        <input type="number" id="rotZ" step="0.1" />
-      </label>
-    </section>
+      <section class="control-group" aria-labelledby="positionLabel">
+        <h2 id="positionLabel" class="sr-only">Position Controls</h2>
+        <label for="posX">Position X:
+          <input type="number" id="posX" step="0.1" value="0" disabled />
+        </label>
+        <label for="posY">Position Y:
+          <input type="number" id="posY" step="0.1" value="0.5" disabled />
+        </label>
+        <label for="posZ">Position Z:
+          <input type="number" id="posZ" step="0.1" value="0" disabled />
+        </label>
+      </section>
 
-    <section class="control-group color-center" aria-labelledby="colorLabel">
-      <label for="colorHex" class="colorInputWrapper">
-        Color HEX:
-        <input type="text" id="colorHex" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#ffffff" disabled />
-      </label>
-    </section>
+      <section class="control-group" aria-labelledby="rotationLabel">
+        <h2 id="rotationLabel" class="sr-only">Rotation Controls</h2>
+        <label for="rotX">Rotation X:
+          <input type="number" id="rotX" step="0.1" />
+        </label>
+        <label for="rotY">Rotation Y:
+          <input type="number" id="rotY" step="0.1" />
+        </label>
+        <label for="rotZ">Rotation Z:
+          <input type="number" id="rotZ" step="0.1" />
+        </label>
+      </section>
 
-    <section id="cubeList" tabindex="0" aria-label="List of cubes"></section>
+      <section class="control-group color-center" aria-labelledby="colorLabel">
+        <label for="colorHex" class="colorInputWrapper">
+          Color HEX:
+          <input type="text" id="colorHex" maxlength="7" placeholder="#ffffff" disabled />
+        </label>
+      </section>
 
-    <section id="scriptingSection" aria-label="Scripting console">
-      <button id="exitScriptFocusBtn" style="display:none; margin-top:10px;">
-        🔙 Back
-      </button>
-      <h2>Scripting</h2>
-      <textarea id="scriptInput">console.print("Hello, World")</textarea>
-      <button id="runScriptBtn">Run Script</button>
-      <div id="scriptOutput"></div>
-    </section>
+      <section id="cubeList" tabindex="0" aria-label="List of cubes"></section>
+
+      <section id="scriptingSection" aria-label="Scripting console">
+        <button id="exitScriptFocusBtn" style="display:none; margin-top:10px;">
+          🔙 Back
+        </button>
+        <h2>Scripting</h2>
+        <textarea id="scriptInput">console.print("Hello, World")</textarea>
+        <button id="runScriptBtn">Run Script</button>
+        <div id="scriptOutput"></div>
+      </section>
+    </div>
+
+    <!-- Aba MAP -->
+    <div id="mapSettings" style="display:none;">
+      <section class="control-group">
+        <label for="sunIntensity">Sun Light Intensity:
+          <input type="number" id="sunIntensity" step="0.1" min="0" max="5" value="1" />
+        </label>
+      </section>
+    </div>
   </aside>
 
-  <main id="sceneContainer" role="main">
-  </main>
+  <main id="sceneContainer" role="main"></main>
 
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <script src="OBJLoader.js"></script>
@@ -139,55 +151,31 @@
   <script src="json.js"></script>
 
   <script>
-    function isMobileOrTablet() {
-      return /Mobi|Android|iPad|iPhone|iPod|Tablet/i.test(navigator.userAgent) || window.innerWidth < 1024;
-    }
+    // Alternar painel
+    const toggleBtn = document.getElementById("togglePanelBtn");
+    const objectSettings = document.getElementById("objectSettings");
+    const mapSettings = document.getElementById("mapSettings");
+    const sunIntensityInput = document.getElementById("sunIntensity");
 
-    if (isMobileOrTablet()) {
-      document.body.innerHTML = `
-        <div style="
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          height: 100vh;
-          background-color: #111;
-          color: white;
-          font-family: sans-serif;
-          padding: 20px;
-        ">
-          <div>
-            <h1 style="font-size: 2em;">Your device not is supported in this site.</h1>
-            <p style="font-size: 1.2em;">Use computers to use this site.</p>
-          </div>
-        </div>
-      `;
-    }
-  </script>
-
-  <script>
-    const focusBtn = document.getElementById("focusScriptBtn");
-    const exitBtn = document.getElementById("exitScriptFocusBtn");
-  
-    focusBtn.addEventListener("click", () => {
-      document.body.classList.add("focusing-script");
-      exitBtn.style.display = "inline-block";
+    toggleBtn.addEventListener("click", () => {
+      if (objectSettings.style.display !== "none") {
+        objectSettings.style.display = "none";
+        mapSettings.style.display = "block";
+        toggleBtn.textContent = "Objects";
+      } else {
+        objectSettings.style.display = "block";
+        mapSettings.style.display = "none";
+        toggleBtn.textContent = "Map";
+      }
     });
-  
-    exitBtn.addEventListener("click", () => {
-      document.body.classList.remove("focusing-script");
-      exitBtn.style.display = "none";
-    });
-  </script>
 
-  <script>
-    document.getElementById('importTextureBtn').addEventListener('click', () => {
-      document.getElementById('importButton').click();
+    // Atualiza intensidade do sol
+    sunIntensityInput.addEventListener("input", () => {
+      const val = parseFloat(sunIntensityInput.value);
+      if (!isNaN(val) && window.sunLight) {
+        sunLight.intensity = val;
+      }
     });
   </script>
 </body>
 </html>
-
-
-
-
