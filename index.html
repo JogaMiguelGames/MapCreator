@@ -1,167 +1,99 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Map Creator 3D</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <meta charset="utf-8" />
+  <title>Editor com Aba Objects/Map</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-
-  <header id="topMenu" role="navigation" aria-label="Main menu">
-    <nav id="leftButtons">
-      <button id="runButton" aria-label="Run">
-        <img src="resources/images/ui/buttons/run.png" role="presentation" />
-        <span>Run</span>
-      </button>
-      <button id="stopButton" aria-label="Stop">
-        <img src="resources/images/ui/buttons/stop.png" role="presentation" />
-        <span>Stop</span>
-      </button>
-      <button id="focusScriptBtn" aria-label="Focus Script">
-        <img src="resources/images/ui/buttons/fullScreen.png" />
-        <span>Script View</span>
-      </button>
-      <button id="addCubeBtn" aria-label="Add Cube">
-        <img src="resources/images/ui/buttons/add_cube.png" role="presentation" />
-        <span>Add Cube</span>
-      </button>
-    </nav>
-
-    <nav id="rightButtons">
-      <button id="loadButton" aria-label="Load Map" title="Load map">
-        📁 Load
-      </button>
-      <input type="file" id="loadInput" accept=".map,application/json" hidden />
-
-      <button id="saveButton" aria-label="Save Map" title="Save map">
-        💾 Save
-      </button>
-
-      <button id="wireframeToggleBtn" aria-label="Toggle Wireframe">
-        <img src="resources/images/ui/buttons/wireframe.png" role="presentation" />
-        <span>Wireframe</span>
-      </button>
-
-      <button id="importOBJBtn" aria-label="Import OBJ Model" title="Import .obj model">
-        Import OBJ
-      </button>
-      <input type="file" id="objFileInput" accept=".obj" hidden />
-
-      <button id="importTextureBtn" aria-label="Import Texture" title="Import texture">
-        Import Texture
-      </button>
-      <input type="file" id="importButton" accept="image/png, image/jpeg" hidden />
-
-      <label for="bgColorInput" id="skyColorLabel" class="colorInputWrapper">
-        Sky Color:
-        <input type="text" id="bgColorInput" maxlength="7" value="#000000" placeholder="#000000" autocomplete="off" />
-      </label>
-    </nav>
-  </header>
-
-  <aside id="panel" aria-label="Map editor controls">
+  <aside id="panel">
+    <!-- Botão para alternar abas -->
     <button id="togglePanelBtn">Map</button>
 
-    <!-- Aba OBJECTS -->
+    <!-- Aba Objects -->
     <div id="objectSettings">
-      <section class="control-group" aria-labelledby="scaleLabel">
-        <h2 id="scaleLabel" class="sr-only">Scale Controls</h2>
-        <label for="scaleX">Scale X:
-          <input type="number" id="scaleX" step="0.1" min="0.1" value="1" disabled />
-        </label>
-        <label for="scaleY">Scale Y:
-          <input type="number" id="scaleY" step="0.1" min="0.1" value="1" disabled />
-        </label>
-        <label for="scaleZ">Scale Z:
-          <input type="number" id="scaleZ" step="0.1" min="0.1" value="1" disabled />
-        </label>
+      <section class="control-group">
+        <label for="scaleX">Scale X: <input type="number" id="scaleX" step="0.1" value="1"></label>
+        <label for="scaleY">Scale Y: <input type="number" id="scaleY" step="0.1" value="1"></label>
+        <label for="scaleZ">Scale Z: <input type="number" id="scaleZ" step="0.1" value="1"></label>
       </section>
 
-      <section class="control-group" aria-labelledby="positionLabel">
-        <h2 id="positionLabel" class="sr-only">Position Controls</h2>
-        <label for="posX">Position X:
-          <input type="number" id="posX" step="0.1" value="0" disabled />
-        </label>
-        <label for="posY">Position Y:
-          <input type="number" id="posY" step="0.1" value="0.5" disabled />
-        </label>
-        <label for="posZ">Position Z:
-          <input type="number" id="posZ" step="0.1" value="0" disabled />
-        </label>
+      <section class="control-group">
+        <label for="posX">Pos X: <input type="number" id="posX" step="0.1" value="0"></label>
+        <label for="posY">Pos Y: <input type="number" id="posY" step="0.1" value="0"></label>
+        <label for="posZ">Pos Z: <input type="number" id="posZ" step="0.1" value="0"></label>
       </section>
 
-      <section class="control-group" aria-labelledby="rotationLabel">
-        <h2 id="rotationLabel" class="sr-only">Rotation Controls</h2>
-        <label for="rotX">Rotation X:
-          <input type="number" id="rotX" step="0.1" />
-        </label>
-        <label for="rotY">Rotation Y:
-          <input type="number" id="rotY" step="0.1" />
-        </label>
-        <label for="rotZ">Rotation Z:
-          <input type="number" id="rotZ" step="0.1" />
-        </label>
+      <section class="control-group">
+        <label for="rotX">Rot X: <input type="number" id="rotX" step="0.1" value="0"></label>
+        <label for="rotY">Rot Y: <input type="number" id="rotY" step="0.1" value="0"></label>
+        <label for="rotZ">Rot Z: <input type="number" id="rotZ" step="0.1" value="0"></label>
       </section>
 
-      <section class="control-group color-center" aria-labelledby="colorLabel">
-        <label for="colorHex" class="colorInputWrapper">
-          Color HEX:
-          <input type="text" id="colorHex" maxlength="7" placeholder="#ffffff" disabled />
-        </label>
+      <section class="control-group">
+        <label for="color">Color: <input type="color" id="color" value="#00ff00"></label>
       </section>
 
-      <section id="cubeList" tabindex="0" aria-label="List of cubes"></section>
+      <section class="control-group">
+        <button id="addCubeBtn">Add Cube</button>
+      </section>
 
-      <section id="scriptingSection" aria-label="Scripting console">
-        <button id="exitScriptFocusBtn" style="display:none; margin-top:10px;">
-          🔙 Back
-        </button>
-        <h2>Scripting</h2>
-        <textarea id="scriptInput">console.print("Hello, World")</textarea>
+      <section class="control-group">
+        <h3>Cubes List</h3>
+        <ul id="cubeList"></ul>
+      </section>
+
+      <section class="control-group">
+        <h3>Scripting</h3>
+        <textarea id="scriptEditor" rows="8" cols="30">// Write JS here...</textarea>
         <button id="runScriptBtn">Run Script</button>
-        <div id="scriptOutput"></div>
       </section>
     </div>
 
-    <!-- Aba MAP -->
+    <!-- Aba Map -->
     <div id="mapSettings" style="display:none;">
       <section class="control-group">
         <label for="sunIntensity">Sun Light Intensity:
-          <input type="number" id="sunIntensity" step="0.1" min="0" max="5" value="1" />
+          <input type="number" id="sunIntensity" step="0.1" min="0" max="5" value="1">
+        </label>
+      </section>
+      <section class="control-group">
+        <label for="ambientIntensity">Ambient Light Intensity:
+          <input type="number" id="ambientIntensity" step="0.1" min="0" max="2" value="0.3">
         </label>
       </section>
     </div>
   </aside>
 
-  <main id="sceneContainer" role="main"></main>
+  <main id="viewport"></main>
 
-  <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
-  <script src="OBJLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.152.0/build/three.min.js"></script>
   <script src="main.js"></script>
-  <script src="save.js"></script>
-  <script src="texture.js"></script>
-  <script src="import.js"></script>
-  <script src="add.js"></script>
-  <script src="history.js"></script>
-  <script src="wireframe.js"></script>
-  <script src="transform.js"></script>
-  <script src="scripting.js"></script>
-  <script src="color.js"></script>
-  <script src="json.js"></script>
 
   <script>
-    // Alternar painel
     const toggleBtn = document.getElementById("togglePanelBtn");
     const objectSettings = document.getElementById("objectSettings");
     const mapSettings = document.getElementById("mapSettings");
+
     const sunIntensityInput = document.getElementById("sunIntensity");
+    const ambientIntensityInput = document.getElementById("ambientIntensity");
+
+    // 🔄 Alternar aba
+    function syncMapControls() {
+      if (window.sunLight) {
+        sunIntensityInput.value = Number(window.sunLight.intensity).toFixed(2);
+      }
+      if (window.ambientLight) {
+        ambientIntensityInput.value = Number(window.ambientLight.intensity).toFixed(2);
+      }
+    }
 
     toggleBtn.addEventListener("click", () => {
       if (objectSettings.style.display !== "none") {
         objectSettings.style.display = "none";
         mapSettings.style.display = "block";
         toggleBtn.textContent = "Objects";
+        syncMapControls();
       } else {
         objectSettings.style.display = "block";
         mapSettings.style.display = "none";
@@ -169,11 +101,19 @@
       }
     });
 
-    // Atualiza intensidade do sol
+    // ☀️ Controle do Sol
     sunIntensityInput.addEventListener("input", () => {
       const val = parseFloat(sunIntensityInput.value);
       if (!isNaN(val) && window.sunLight) {
-        sunLight.intensity = val;
+        window.sunLight.intensity = val;
+      }
+    });
+
+    // 🌍 Controle da luz ambiente
+    ambientIntensityInput.addEventListener("input", () => {
+      const val = parseFloat(ambientIntensityInput.value);
+      if (!isNaN(val) && window.ambientLight) {
+        window.ambientLight.intensity = val;
       }
     });
   </script>
