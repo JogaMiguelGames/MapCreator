@@ -228,6 +228,7 @@ function updateCubeList(){
     div.style.borderRadius = '3px';
     div.style.cursor = 'pointer';
     div.style.gap = '6px';
+    div.style.position = 'relative'; // necessário para posicionamento do ícone de textura
 
     // Ícone do cubo
     const icon = document.createElement('img');
@@ -237,10 +238,23 @@ function updateCubeList(){
     icon.style.height = '20px';
     icon.style.objectFit = 'contain';
 
+    div.appendChild(icon);
+
+    // Ícone da textura
+    if(cube.hasTexture){
+      const textureIcon = document.createElement('img');
+      textureIcon.src = 'resources/images/ui/icons/texture.png';
+      textureIcon.alt = 'texture icon';
+      textureIcon.style.width = '16px';
+      textureIcon.style.height = '16px';
+      textureIcon.style.position = 'absolute';
+      textureIcon.style.right = '4px';
+      textureIcon.style.bottom = '4px';
+      div.appendChild(textureIcon);
+    }
+
     const text = document.createElement('span');
     text.textContent = name;
-
-    div.appendChild(icon);
     div.appendChild(text);
 
     if(cube === selectedCube){
@@ -321,5 +335,6 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
