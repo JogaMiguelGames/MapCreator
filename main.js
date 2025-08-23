@@ -228,30 +228,36 @@ function updateCubeList(){
     div.style.borderRadius = '3px';
     div.style.cursor = 'pointer';
     div.style.gap = '6px';
-    div.style.position = 'relative'; // necessário para posicionamento do ícone de textura
 
-    // Ícone do cubo
+    // Wrapper do ícone do cubo (para posicionar o ícone de textura)
+    const iconWrapper = document.createElement('div');
+    iconWrapper.style.position = 'relative';
+    iconWrapper.style.width = '20px';
+    iconWrapper.style.height = '20px';
+
     const icon = document.createElement('img');
     icon.src = 'resources/images/ui/icons/cube.png';
     icon.alt = 'cube icon';
-    icon.style.width = '20px';
-    icon.style.height = '20px';
+    icon.style.width = '100%';
+    icon.style.height = '100%';
     icon.style.objectFit = 'contain';
 
-    div.appendChild(icon);
+    iconWrapper.appendChild(icon);
 
     // Ícone da textura
     if(cube.hasTexture){
       const textureIcon = document.createElement('img');
       textureIcon.src = 'resources/images/ui/icons/texture.png';
       textureIcon.alt = 'texture icon';
-      textureIcon.style.width = '16px';
-      textureIcon.style.height = '16px';
+      textureIcon.style.width = '12px';
+      textureIcon.style.height = '12px';
       textureIcon.style.position = 'absolute';
-      textureIcon.style.right = '4px';
-      textureIcon.style.bottom = '4px';
-      div.appendChild(textureIcon);
+      textureIcon.style.right = '-4px'; // ajusta para aparecer fora do cubo
+      textureIcon.style.bottom = '-4px'; // ajusta para aparecer abaixo
+      iconWrapper.appendChild(textureIcon);
     }
+
+    div.appendChild(iconWrapper);
 
     const text = document.createElement('span');
     text.textContent = name;
@@ -335,6 +341,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
