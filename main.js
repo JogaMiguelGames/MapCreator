@@ -247,7 +247,7 @@ function updateCubeList(){
     // Ícone da textura
     if(cube.hasTexture){
       const textureIcon = document.createElement('img');
-      textureIcon.src = 'resources/images/icons/texture.png';
+      textureIcon.src = 'resources/images/ui/icons/texture.png';
       textureIcon.alt = 'texture icon';
       textureIcon.style.width = '12px';
       textureIcon.style.height = '12px';
@@ -341,6 +341,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
