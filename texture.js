@@ -12,7 +12,6 @@ document.getElementById('importButton').addEventListener('change', function(even
     const img = new Image();
     img.onload = function() {
       const texture = new THREE.Texture(img);
-
       texture.wrapS = THREE.RepeatWrapping;
       texture.wrapT = THREE.RepeatWrapping;
 
@@ -24,17 +23,20 @@ document.getElementById('importButton').addEventListener('change', function(even
       texture.rotation = rotationRadians;
       texture.needsUpdate = true;
 
-      // Aplica textura a todos os filhos do objeto (caso OBJ tenha múltiplos meshes)
       selectedCube.traverse(child => {
         if (child.isMesh) {
-          // Opcional: escala baseada no tamanho do mesh
           const scale = child.scale;
           texture.repeat.set(scale.x / repeatFactor, scale.z / repeatFactor);
-
           child.material = new THREE.MeshBasicMaterial({ map: texture });
           child.material.needsUpdate = true;
         }
       });
+
+      // Marca que o cubo tem textura
+      selectedCube.hasTexture = true;
+
+      // Atualiza o TreeView
+      updateCubeList();
     };
 
     img.src = e.target.result;
