@@ -236,7 +236,7 @@ function updateCubeList(){
     iconWrapper.style.height = '20px';
 
     const icon = document.createElement('img');
-    icon.src = 'resources/images/ui/icons/cube.png';
+    icon.src = 'resources/images/icons/cube.png';
     icon.alt = 'cube icon';
     icon.style.width = '100%';
     icon.style.height = '100%';
@@ -341,6 +341,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
