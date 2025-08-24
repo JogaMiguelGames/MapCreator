@@ -94,29 +94,11 @@ function onMouseMove(e){
 window.addEventListener('keydown', e => keys[e.code] = true);
 window.addEventListener('keyup', e => keys[e.code] = false);
 
-// --- Controle de rotação da câmera (mouse + setas) ---
 function updateCamera(delta){
-  const arrowSpeed = 1.5; // velocidade da rotação pelas setas
-  const lookSpeed = 0.002; // velocidade do mouse
-
-  // Se o usuário não estiver usando mouse, usa setas
-  if(!isRightMouseDown){
-    if(keys['ArrowUp']) pitch -= arrowSpeed * delta;   // olha para cima
-    if(keys['ArrowDown']) pitch += arrowSpeed * delta; // olha para baixo
-    if(keys['ArrowLeft']) yaw -= arrowSpeed * delta;   // gira para a esquerda
-    if(keys['ArrowRight']) yaw += arrowSpeed * delta;  // gira para a direita
-  }
-
-  // Limita pitch para não virar de cabeça para baixo
-  const maxPitch = Math.PI/2 - 0.01;
-  pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
-
-  // Aplica rotação
   camera.rotation.order = 'YXZ';
   camera.rotation.y = yaw;
   camera.rotation.x = pitch;
 
-  // Movimento da câmera
   const forward = new THREE.Vector3();
   camera.getWorldDirection(forward);
   forward.normalize();
@@ -358,15 +340,3 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
-
-
-
-
-
-
-
-
-
-
-
-
