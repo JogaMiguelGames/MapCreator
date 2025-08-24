@@ -25,7 +25,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
 
     // Verificação do comando
     if (command.toLowerCase() === "new.cube") {
-      addCube(); // <- aqui você chama a função que cria o cubo
+      createCube(); // <- aqui você chama a função que cria o cubo
     }
 
     // limpa o input depois de executar
@@ -52,3 +52,4 @@ function createCube() {
 
   pushToHistory({ type: 'delete', object: newCube });
 }
+
