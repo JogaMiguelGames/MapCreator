@@ -97,8 +97,8 @@ window.addEventListener('keyup', e => keys[e.code] = false);
 function updateCamera(delta){
   // --- Rotação com setas do teclado ---
   const arrowLookSpeed = 1.5 * delta; // velocidade de rotação
-  if(keys['ArrowUp']) pitch += arrowLookSpeed;   // olhar para cima
-  if(keys['ArrowDown']) pitch -= arrowLookSpeed; // olhar para baixo
+  if(keys['ArrowUp']) pitch -= arrowLookSpeed;   // olhar para cima
+  if(keys['ArrowDown']) pitch += arrowLookSpeed; // olhar para baixo
   if(keys['ArrowLeft']) yaw += arrowLookSpeed;   // rotaciona para a esquerda
   if(keys['ArrowRight']) yaw -= arrowLookSpeed;  // rotaciona para a direita
 
@@ -353,6 +353,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
