@@ -10,7 +10,7 @@ body {
   font-family: system-ui, sans-serif;
   background-color: #111;
   color: #fff;
-  overflow: hidden;
+  overflow-x: hidden; /* só corta no eixo horizontal */
 }
 
 button {
@@ -433,3 +433,4 @@ body.focusing-script #exitScriptFocusBtn {
 #commandLineWrapper input:focus {
   background: #222;
 }
+
