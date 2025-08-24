@@ -36,6 +36,8 @@ sunLight.shadow.camera.top = 20;
 sunLight.shadow.camera.bottom = -20;
 scene.add(sunLight);
 
+const shadowsCheckbox = document.getElementById('shadowsCheckbox');
+
 // Linhas de eixo
 function addAxisLine(from, to, color){
   const line = new THREE.Line(
@@ -327,6 +329,55 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// Função que aplica o estado das sombras a um cubo
+function applyShadows(cube, enabled) {
+  cube.castShadow = enabled;
+  cube.receiveShadow = enabled;
+}
+
+// Atualiza todos os cubos existentes ao mudar o checkbox
+shadowsCheckbox.addEventListener('change', () => {
+  const enabled = shadowsCheckbox.checked;
+  cubes.forEach(cube => applyShadows(cube, enabled));
+});
+
+// Garante que novos cubos respeitem o estado atual
+function createCubeWithShadows() {
+  const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+  const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
+  const newCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  newCube.position.set(0, 0, 0);
+  newCube.name = `Cube ${cubes.length}`;
+
+  applyShadows(newCube, shadowsCheckbox.checked);
+
+  scene.add(newCube);
+  cubes.push(newCube);
+
+  selectedCube = newCube;
+  updatePanelForCube(newCube);
+  updateCubeList();
+
+  pushToHistory({ type: 'delete', object: newCube });
+  return newCube;
+}
+
+// Substituir o uso de createCube() por createCubeWithShadows()
+addCubeBtn.addEventListener('click', () => {
+  createCubeWithShadows();
+});
+
+document.getElementById("commandLine").addEventListener("keydown", function(e) {
+  if (e.key === "Enter") {
+    const command = this.value.trim();
+    if (command.toLowerCase() === "new.cube") {
+      createCubeWithShadows();
+    }
+    this.value = "";
+  }
+});
+
 // Loop principal
 let lastTime = 0;
 function animate(time=0){
@@ -341,7 +392,6 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
-
 
 
 
