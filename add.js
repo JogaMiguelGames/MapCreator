@@ -5,6 +5,7 @@ addCubeBtn.addEventListener('click', () => {
 
   newCube.position.set(0, 0, 0);
   newCube.name = `Cube`;
+  newCube.castShadow = true;
 
   scene.add(newCube);
   cubes.push(newCube);
@@ -14,4 +15,5 @@ addCubeBtn.addEventListener('click', () => {
   updateCubeList();
 
   pushToHistory({ type: 'delete', object: newCube });
+
 });
