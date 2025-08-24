@@ -1,59 +1,64 @@
-const cubes = []; 
-let selectedCube = null;
+// Função única para criar cubo
+function createCube() {
+  const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+  const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
 
-function createObject(type) {
-  let geometry;
-  let name;
+  const newCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  newCube.position.set(0, 0, 0);
+  newCube.name = `Cube ${cubes.length}`;
+  newCube.castShadow = true;
+  newCube.receiveShadow = true;
 
-  if (type === "cube") {
-    geometry = new THREE.BoxGeometry(1, 1, 1);
-    name = `Cube ${cubes.length}`;
-  } else if (type === "sphere") {
-    geometry = new THREE.SphereGeometry(1, 16, 16);
-    name = `Sphere ${cubes.length}`;
-  } else {
-    console.warn("Tipo de objeto desconhecido:", type);
-    return;
-  }
+  scene.add(newCube);
+  cubes.push(newCube);
 
-  const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
-  const mesh = new THREE.Mesh(geometry, material);
-  mesh.position.set(0, 0, 0);
-  mesh.castShadow = true;
-  mesh.receiveShadow = true;
-  mesh.name = name;
-
-  scene.add(mesh);
-  cubes.push(mesh);
-
-  selectedCube = mesh;
-  updatePanelForCube(mesh);
+  selectedCube = newCube;
+  updatePanelForCube(newCube);
   updateCubeList();
 
-  pushToHistory({ type: 'delete', object: mesh });
+  pushToHistory({ type: 'delete', object: newCube });
 }
 
-const addCubeBtn = document.getElementById('addCubeBtn');
+function createSphere() {
+  const sphereGeometry = new THREE.SphereGeometry(1, 1, 1);
+  const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
+  const newSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+  newSphere.position.set(0, 0, 0);
+  newSphere.name = `Sphere ${sphere.length}`;
+  newSphere.castShadow = true;
+  newSphere.receiveShadow = true;
+
+  scene.add(newSphere);
+  cubes.push(newSphere);
+
+  selectedCube = newSphere;
+  updatePanelForCube(newSphere);
+  updateCubeList();
+
+  pushToHistory({ type: 'delete', object: newSphere });
+}
+
+// Botão usa a função
 addCubeBtn.addEventListener('click', () => {
-  createObject("cube");
+  createCube();
 });
 
-const commandInput = document.getElementById("commandLine");
-commandInput.addEventListener("keydown", function(e) {
+document.getElementById("commandLine").addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
     const command = this.value.trim().toLowerCase();
 
     switch (command) {
       case "new.cube":
-        createObject("cube");
+        createCube();
         break;
 
       case "new.sphere":
-        createObject("sphere");
+        createSphere();
         break;
 
       default:
-        console.log("Comando não reconhecido:", command);
+        console.log("Unknown command!", command);
         break;
     }
 
