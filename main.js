@@ -98,8 +98,8 @@ function updateCamera(delta){
   const arrowLookSpeed = 1.5 * delta; // velocidade de rotação
   if(keys['ArrowUp']) pitch -= arrowLookSpeed;   // olha para cima
   if(keys['ArrowDown']) pitch += arrowLookSpeed; // olha para baixo
-  if(keys['ArrowLeft']) yaw -= arrowLookSpeed;   // rotaciona para a esquerda
-  if(keys['ArrowRight']) yaw += arrowLookSpeed;  // rotaciona para a direita
+  if(keys['ArrowLeft']) yaw += arrowLookSpeed;   // rotaciona para a esquerda
+  if(keys['ArrowRight']) yaw -= arrowLookSpeed;  // rotaciona para a direita
   
   const maxPitch = Math.PI/2 - 0.01;
   pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
@@ -353,6 +353,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
