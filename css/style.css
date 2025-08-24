@@ -407,12 +407,14 @@ body.focusing-script #exitScriptFocusBtn {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 280px; /* deixa espaço para o painel lateral */
+  right: 280px; /* espaço pro painel lateral */
+  height: 50px;
   background: #1a1a1a;
   border-top: 1px solid #333;
-  padding: 10px;
   display: flex;
+  align-items: center;
   justify-content: center;
+  z-index: 2000; /* garante que fica acima do canvas */
 }
 
 #commandLineWrapper input {
