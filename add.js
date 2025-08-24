@@ -27,10 +27,10 @@ function createCube() {
 function createSphere() {
   const sphereGeometry = new THREE.SphereGeometry(1, 16, 16);
   const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const newSphere = new THREE.Mesh(sphereGeometry, sphereMaterial); // <-- const aqui
 
-  const newSphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
   newSphere.position.set(0, 0, 0);
-  newSphere.name = `Sphere ${cubes.length}`; // Pode usar o mesmo array se quiser
+  newSphere.name = `Sphere ${cubes.length}`;
   newSphere.castShadow = true;
   newSphere.receiveShadow = true;
 
@@ -40,7 +40,6 @@ function createSphere() {
   selectedCube = newSphere;
   updatePanelForCube(newSphere);
   updateCubeList();
-
   pushToHistory({ type: 'delete', object: newSphere });
 }
 
@@ -63,3 +62,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
