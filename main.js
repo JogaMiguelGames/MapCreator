@@ -1,26 +1,23 @@
 const scene = new THREE.Scene();
-scene.background = new THREE.Color('#000000'); // céu azul claro
+scene.background = new THREE.Color('#000000');
 
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true; // ativa sombras
+renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 document.body.appendChild(renderer.domElement);
 
-// --- Cubo branco principal ---
 const cubeGeometry = new THREE.BoxGeometry(1,1,1);
 const cubeMaterial = new THREE.MeshStandardMaterial({color: 0xffffff});
 const mainCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 mainCube.position.set(0, 0, 0);
 mainCube.name = 'Cube';
-mainCube.castShadow = true; // cubo projeta sombra
+mainCube.castShadow = true;
 scene.add(mainCube);
 
-// Lista de cubos/esferas criados
 const cubes = [mainCube];
 
-// --- Luz ambiente e sol ---
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
 scene.add(ambientLight);
 
@@ -340,3 +337,4 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
