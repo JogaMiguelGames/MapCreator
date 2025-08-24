@@ -95,16 +95,15 @@ window.addEventListener('keydown', e => keys[e.code] = true);
 window.addEventListener('keyup', e => keys[e.code] = false);
 
 function updateCamera(delta){
-  // --- Rotação com setas do teclado ---
-  const arrowLookSpeed = -1.5 * delta; // velocidade de rotação
+  const arrowLookSpeed = 1.5 * delta; // velocidade de rotação
   if(keys['ArrowUp']) pitch += arrowLookSpeed;   // olha para cima
   if(keys['ArrowDown']) pitch -= arrowLookSpeed; // olha para baixo
   if(keys['ArrowLeft']) yaw += arrowLookSpeed;   // rotaciona para a esquerda
   if(keys['ArrowRight']) yaw -= arrowLookSpeed;  // rotaciona para a direita
   
-  // Limita pitch para não virar de cabeça para baixo
   const maxPitch = Math.PI/2 - 0.01;
   pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
+
 
 
   // Aplica rotação
@@ -354,6 +353,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
