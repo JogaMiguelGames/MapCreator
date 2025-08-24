@@ -95,10 +95,23 @@ window.addEventListener('keydown', e => keys[e.code] = true);
 window.addEventListener('keyup', e => keys[e.code] = false);
 
 function updateCamera(delta){
+  // Rotação com setas do teclado
+  const arrowLookSpeed = 1.5 * delta; // velocidade de rotação com setas
+  if(keys['ArrowUp']) pitch -= arrowLookSpeed;
+  if(keys['ArrowDown']) pitch += arrowLookSpeed;
+  if(keys['ArrowLeft']) yaw -= arrowLookSpeed;
+  if(keys['ArrowRight']) yaw += arrowLookSpeed;
+
+  // Limita pitch para não virar de cabeça para baixo
+  const maxPitch = Math.PI/2 - 0.01;
+  pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
+
+  // Aplica rotação da câmera
   camera.rotation.order = 'YXZ';
   camera.rotation.y = yaw;
   camera.rotation.x = pitch;
 
+  // Movimento da câmera
   const forward = new THREE.Vector3();
   camera.getWorldDirection(forward);
   forward.normalize();
@@ -340,3 +353,4 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
