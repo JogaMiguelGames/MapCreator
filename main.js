@@ -1,32 +1,41 @@
-// === Setup básico Three.js ===  
+// === Setup básico Three.js ===
 const scene = new THREE.Scene();
-scene.background = new THREE.Color('#000000'); // céu azul claro
+scene.background = new THREE.Color('#000000'); // céu preto
 
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({antialias:true});
+const camera = new THREE.PerspectiveCamera(
+  75,
+  window.innerWidth / window.innerHeight,
+  0.1,
+  1000
+);
+
+const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.shadowMap.enabled = true; // ativa sombras
+renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
 document.body.appendChild(renderer.domElement);
 
 // --- Cubo branco principal ---
-const cubeGeometry = new THREE.BoxGeometry(1,1,1);
-const cubeMaterial = new THREE.MeshStandardMaterial({color: 0xffffff});
+const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+
 const mainCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 mainCube.position.set(0, 0, 0);
 mainCube.name = 'Cube';
-mainCube.castShadow = true; // cubo projeta sombra
+mainCube.castShadow = true;
+
 scene.add(mainCube);
 
 // Lista de cubos/esferas criados
 const cubes = [mainCube];
 
-// --- Luz ambiente e sol ---
+// --- Luz ambiente e luz direcional ---
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
 scene.add(ambientLight);
 
 const sunLight = new THREE.DirectionalLight(0xffffff, 1);
-sunLight.position.set(10, 10, 10); // luz vinda do “sol”
+sunLight.position.set(10, 10, 10);
 sunLight.castShadow = true;
 sunLight.shadow.mapSize.width = 2048;
 sunLight.shadow.mapSize.height = 2048;
@@ -36,88 +45,90 @@ sunLight.shadow.camera.top = 20;
 sunLight.shadow.camera.bottom = -20;
 scene.add(sunLight);
 
-const shadowsCheckbox = document.getElementById('shadowsCheckbox');
-
-// Linhas de eixo
-function addAxisLine(from, to, color){
+// --- Linhas de eixo ---
+function addAxisLine(from, to, color) {
   const line = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([from, to]),
-    new THREE.LineBasicMaterial({color})
+    new THREE.LineBasicMaterial({ color })
   );
   scene.add(line);
 }
-addAxisLine(new THREE.Vector3(0,-9999,0), new THREE.Vector3(0,9999,0), 0x00ff00); // Y
-addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000); // X
-addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
+
+addAxisLine(new THREE.Vector3(0, -9999, 0), new THREE.Vector3(0, 9999, 0), 0x00ff00); // Y
+addAxisLine(new THREE.Vector3(-9999, 0, 0), new THREE.Vector3(9999, 0, 0), 0xff0000); // X
+addAxisLine(new THREE.Vector3(0, 0, -9999), new THREE.Vector3(0, 0, 9999), 0x0000ff); // Z
 
 // --- Controle de câmera ---
 camera.position.set(0, 1.6, 5);
-let yaw = 0, pitch = 0;
+let yaw = 0,
+  pitch = 0;
 const moveSpeed = 5;
 const lookSpeed = 0.002;
 const keys = {};
 const canvas = renderer.domElement;
 let isRightMouseDown = false;
 
-// Evita menu de contexto botão direito
+// Evita menu de contexto do botão direito
 canvas.addEventListener('contextmenu', e => e.preventDefault());
 
 // Botão direito mouse para Pointer Lock
 canvas.addEventListener('mousedown', e => {
-  if(e.button === 2){
+  if (e.button === 2) {
     isRightMouseDown = true;
     canvas.requestPointerLock();
   }
 });
+
 document.addEventListener('mouseup', e => {
-  if(e.button === 2){
+  if (e.button === 2) {
     isRightMouseDown = false;
-    if(document.pointerLockElement === canvas){
+    if (document.pointerLockElement === canvas) {
       document.exitPointerLock();
     }
   }
 });
+
 document.addEventListener('pointerlockchange', () => {
-  if(document.pointerLockElement === canvas){
+  if (document.pointerLockElement === canvas) {
     document.addEventListener('mousemove', onMouseMove, false);
-  }else{
+  } else {
     document.removeEventListener('mousemove', onMouseMove, false);
   }
 });
-function onMouseMove(e){
-  if(isRightMouseDown){
+
+function onMouseMove(e) {
+  if (isRightMouseDown) {
     yaw -= e.movementX * lookSpeed;
     pitch -= e.movementY * lookSpeed;
-    const maxPitch = Math.PI/2 - 0.01;
+    const maxPitch = Math.PI / 2 - 0.01;
     pitch = Math.max(-maxPitch, Math.min(maxPitch, pitch));
   }
 }
 
 // Teclado
-window.addEventListener('keydown', e => keys[e.code] = true);
-window.addEventListener('keyup', e => keys[e.code] = false);
+window.addEventListener('keydown', e => (keys[e.code] = true));
+window.addEventListener('keyup', e => (keys[e.code] = false));
 
-function updateCamera(delta){
+function updateCamera(delta) {
   camera.rotation.order = 'YXZ';
   camera.rotation.y = yaw;
   camera.rotation.x = pitch;
 
   const forward = new THREE.Vector3();
-  camera.getWorldDirection(forward);
-  forward.normalize();
+  camera.getWorldDirection(forward).normalize();
 
   const right = new THREE.Vector3();
   right.crossVectors(forward, camera.up).normalize();
 
-  const shiftMultiplier = (keys['ShiftLeft'] || keys['ShiftRight']) ? 3 : 1;
+  const shiftMultiplier = keys['ShiftLeft'] || keys['ShiftRight'] ? 3 : 1;
   const speed = moveSpeed * shiftMultiplier;
 
-  if(keys['KeyW']) camera.position.addScaledVector(forward, speed * delta);
-  if(keys['KeyS']) camera.position.addScaledVector(forward, -speed * delta);
-  if(keys['KeyA']) camera.position.addScaledVector(right, -speed * delta);
-  if(keys['KeyD']) camera.position.addScaledVector(right, speed * delta);
-  if(keys['KeyE']) camera.position.y += speed * delta;
-  if(keys['KeyQ']) camera.position.y -= speed * delta;
+  if (keys['KeyW']) camera.position.addScaledVector(forward, speed * delta);
+  if (keys['KeyS']) camera.position.addScaledVector(forward, -speed * delta);
+  if (keys['KeyA']) camera.position.addScaledVector(right, -speed * delta);
+  if (keys['KeyD']) camera.position.addScaledVector(right, speed * delta);
+  if (keys['KeyE']) camera.position.y += speed * delta;
+  if (keys['KeyQ']) camera.position.y -= speed * delta;
 }
 
 // === UI & manipulação ===
@@ -137,19 +148,20 @@ const bgColorInput = document.getElementById('bgColorInput');
 
 bgColorInput.addEventListener('input', () => {
   const val = bgColorInput.value.trim();
-  if(/^#([0-9a-f]{6})$/i.test(val)){
+  if (/^#([0-9a-f]{6})$/i.test(val)) {
     scene.background.set(val);
   }
 });
 
 let selectedCube = mainCube;
 
-function updatePanelForCube(cube){
-  if(!cube){
-    [scaleXInput, scaleYInput, scaleZInput, posXInput, posYInput, posZInput, colorHexInput].forEach(i => { i.value=''; i.disabled = true; });
-    [rotXInput, rotYInput, rotZInput].forEach(i => { i.value=''; i.disabled = true; });
+function updatePanelForCube(cube) {
+  if (!cube) {
+    [scaleXInput, scaleYInput, scaleZInput, posXInput, posYInput, posZInput, colorHexInput].forEach(i => { i.value = ''; i.disabled = true; });
+    [rotXInput, rotYInput, rotZInput].forEach(i => { i.value = ''; i.disabled = true; });
     return;
   }
+
   scaleXInput.disabled = false;
   scaleYInput.disabled = false;
   scaleZInput.disabled = false;
@@ -173,55 +185,18 @@ function updatePanelForCube(cube){
   posYInput.value = cube.position.y.toFixed(2);
   posZInput.value = cube.position.z.toFixed(2);
 
-  if(cube.material && cube.material.color){
+  if (cube.material && cube.material.color) {
     colorHexInput.value = `#${cube.material.color.getHexString()}`;
-  }else{
+  } else {
     colorHexInput.value = '';
   }
 }
 
-[scaleXInput, scaleYInput, scaleZInput].forEach((input,i) => {
-  input.addEventListener('input', () => {
-    if(!selectedCube) return;
-    const val = parseFloat(input.value);
-    if(val > 0){
-      if(i===0) selectedCube.scale.x = val;
-      if(i===1) selectedCube.scale.y = val;
-      if(i===2) selectedCube.scale.z = val;
-    }
-  });
-});
-
-[posXInput, posYInput, posZInput].forEach((input,i) => {
-  input.addEventListener('input', () => {
-    if(!selectedCube) return;
-    const val = parseFloat(input.value);
-    if(!isNaN(val)){
-      if(i===0) selectedCube.position.x = val;
-      if(i===1) selectedCube.position.y = val;
-      if(i===2) selectedCube.position.z = val;
-    }
-  });
-});
-
-[rotXInput, rotYInput, rotZInput].forEach((input,i) => {
-  input.addEventListener('input', () => {
-    if(!selectedCube) return;
-    const val = parseFloat(input.value);
-    if(!isNaN(val)){
-      const rad = THREE.MathUtils.degToRad(val);
-      if(i===0) selectedCube.rotation.x = rad;
-      if(i===1) selectedCube.rotation.y = rad;
-      if(i===2) selectedCube.rotation.z = rad;
-    }
-  });
-});
-
-function updateCubeList(){
+// Atualiza lista de cubos
+function updateCubeList() {
   cubeListDiv.innerHTML = '';
   cubes.forEach(cube => {
     const name = cube.name || 'Unnamed';
-
     const div = document.createElement('div');
     div.className = 'cubeListItem';
     div.style.display = 'flex';
@@ -231,7 +206,6 @@ function updateCubeList(){
     div.style.cursor = 'pointer';
     div.style.gap = '6px';
 
-    // Wrapper do ícone do cubo (para posicionar o ícone de textura)
     const iconWrapper = document.createElement('div');
     iconWrapper.style.position = 'relative';
     iconWrapper.style.width = '20px';
@@ -243,19 +217,17 @@ function updateCubeList(){
     icon.style.width = '100%';
     icon.style.height = '100%';
     icon.style.objectFit = 'contain';
-
     iconWrapper.appendChild(icon);
 
-    // Ícone da textura
-    if(cube.hasTexture){
+    if (cube.hasTexture) {
       const textureIcon = document.createElement('img');
       textureIcon.src = 'resources/images/ui/icons/texture.png';
       textureIcon.alt = 'texture icon';
       textureIcon.style.width = '12px';
       textureIcon.style.height = '12px';
       textureIcon.style.position = 'absolute';
-      textureIcon.style.right = '-4px'; // ajusta para aparecer fora do cubo
-      textureIcon.style.bottom = '-4px'; // ajusta para aparecer abaixo
+      textureIcon.style.right = '-4px';
+      textureIcon.style.bottom = '-4px';
       iconWrapper.appendChild(textureIcon);
     }
 
@@ -265,7 +237,7 @@ function updateCubeList(){
     text.textContent = name;
     div.appendChild(text);
 
-    if(cube === selectedCube){
+    if (cube === selectedCube) {
       div.style.backgroundColor = '#3366ff';
       div.style.color = 'white';
     }
@@ -280,37 +252,77 @@ function updateCubeList(){
   });
 }
 
-// Raycaster para selecionar cubos pelo centro da tela
+// --- Raycaster para selecionar cubos ---
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
-function onClick(){
-  if(document.pointerLockElement !== canvas) return;
-  mouse.x = 0; mouse.y = 0;
+function onClick() {
+  if (document.pointerLockElement !== canvas) return;
+  mouse.x = 0;
+  mouse.y = 0;
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObjects(cubes);
-  if(intersects.length > 0){
+  if (intersects.length > 0) {
     selectedCube = intersects[0].object;
     updatePanelForCube(selectedCube);
     updateCubeList();
   }
 }
+
 window.addEventListener('click', onClick);
 
+// --- UI Inputs ---
 colorHexInput.addEventListener('input', () => {
-  if(!selectedCube || !selectedCube.material) return;
+  if (!selectedCube || !selectedCube.material) return;
   const val = colorHexInput.value.trim();
-  if(/^#([0-9a-f]{6})$/i.test(val)){
+  if (/^#([0-9a-f]{6})$/i.test(val)) {
     selectedCube.material.color.set(val);
   }
 });
 
+[scaleXInput, scaleYInput, scaleZInput].forEach((input, i) => {
+  input.addEventListener('input', () => {
+    if (!selectedCube) return;
+    const val = parseFloat(input.value);
+    if (val > 0) {
+      if (i === 0) selectedCube.scale.x = val;
+      if (i === 1) selectedCube.scale.y = val;
+      if (i === 2) selectedCube.scale.z = val;
+    }
+  });
+});
+
+[posXInput, posYInput, posZInput].forEach((input, i) => {
+  input.addEventListener('input', () => {
+    if (!selectedCube) return;
+    const val = parseFloat(input.value);
+    if (!isNaN(val)) {
+      if (i === 0) selectedCube.position.x = val;
+      if (i === 1) selectedCube.position.y = val;
+      if (i === 2) selectedCube.position.z = val;
+    }
+  });
+});
+
+[rotXInput, rotYInput, rotZInput].forEach((input, i) => {
+  input.addEventListener('input', () => {
+    if (!selectedCube) return;
+    const val = parseFloat(input.value);
+    if (!isNaN(val)) {
+      const rad = THREE.MathUtils.degToRad(val);
+      if (i === 0) selectedCube.rotation.x = rad;
+      if (i === 1) selectedCube.rotation.y = rad;
+      if (i === 2) selectedCube.rotation.z = rad;
+    }
+  });
+});
+
+// --- Deletar cubo com Delete/Backspace ---
 document.addEventListener('keydown', e => {
   const tag = document.activeElement.tagName;
   const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
-
   if ((e.key === 'Delete' || e.key === 'Backspace') && !isTyping && selectedCube) {
-    e.preventDefault(); // Impede o navegador de voltar página
+    e.preventDefault();
     const idx = cubes.indexOf(selectedCube);
     if (idx !== -1) {
       scene.remove(selectedCube);
@@ -322,81 +334,52 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Resize
+// --- Resize window ---
 window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth/window.innerHeight;
+  camera.aspect = window.innerWidth / window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Função que aplica o estado das sombras a um cubo
-function applyShadows(cube, enabled) {
-  cube.castShadow = enabled;
-  cube.receiveShadow = enabled;
-}
-
-// Atualiza todos os cubos existentes ao mudar o checkbox
-shadowsCheckbox.addEventListener('change', () => {
-  const enabled = shadowsCheckbox.checked;
-  cubes.forEach(cube => applyShadows(cube, enabled));
-});
-
-// Garante que novos cubos respeitem o estado atual
-function createCubeWithShadows() {
-  const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-  const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-
-  const newCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-  newCube.position.set(0, 0, 0);
-  newCube.name = `Cube ${cubes.length}`;
-
-  applyShadows(newCube, shadowsCheckbox.checked);
-
-  scene.add(newCube);
-  cubes.push(newCube);
-
-  selectedCube = newCube;
-  updatePanelForCube(newCube);
-  updateCubeList();
-
-  pushToHistory({ type: 'delete', object: newCube });
-  return newCube;
-}
-
-// Substituir o uso de createCube() por createCubeWithShadows()
-addCubeBtn.addEventListener('click', () => {
-  createCubeWithShadows();
-});
-
-document.getElementById("commandLine").addEventListener("keydown", function(e) {
-  if (e.key === "Enter") {
-    const command = this.value.trim();
-    if (command.toLowerCase() === "new.cube") {
-      createCubeWithShadows();
-    }
-    this.value = "";
-  }
-});
-
-// Loop principal
+// --- Loop principal ---
 let lastTime = 0;
-function animate(time=0){
+function animate(time = 0) {
   requestAnimationFrame(animate);
-  const delta = (time - lastTime)/1000;
+  const delta = (time - lastTime) / 1000;
   lastTime = time;
   updateCamera(delta);
   renderer.render(scene, camera);
 }
-animate();
 
-// Inicializa UI
+animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 
+// --- Função para criar cubos ---
+function createCube() {
+  const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+  const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const newCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  newCube.position.set(0, 0, 0);
+  newCube.name = `Cube ${cubes.length}`;
+  newCube.castShadow = true;
+  newCube.receiveShadow = true;
+  scene.add(newCube);
+  cubes.push(newCube);
+  selectedCube = newCube;
+  updatePanelForCube(newCube);
+  updateCubeList();
+}
 
+// --- Botão e comando para criar cubos ---
+addCubeBtn.addEventListener('click', () => createCube());
 
-
-
-
-
-
+document.getElementById('commandLine').addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const command = e.target.value.trim();
+    if (command.toLowerCase() === 'new.cube') {
+      createCube();
+    }
+    e.target.value = '';
+  }
+});
