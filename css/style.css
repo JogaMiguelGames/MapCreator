@@ -401,3 +401,33 @@ body.focusing-script #exitScriptFocusBtn {
   align-self: flex-start;
   cursor: pointer;
 }
+
+/* Linha de comando abaixo do canvas */
+#commandLineWrapper {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 280px; /* deixa espaço para o painel lateral */
+  background: #1a1a1a;
+  border-top: 1px solid #333;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+}
+
+#commandLineWrapper input {
+  width: 80%;
+  padding: 8px 12px;
+  font-family: monospace;
+  font-size: 14px;
+  border: none;
+  border-radius: 6px;
+  background: #111;
+  color: #0f0;
+  outline: none;
+  transition: background 0.2s ease;
+}
+
+#commandLineWrapper input:focus {
+  background: #222;
+}
