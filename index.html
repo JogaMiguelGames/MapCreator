@@ -65,40 +65,55 @@
     <div id="panel-resize-handle" aria-hidden="true"></div>
 
     <section class="control-group" aria-labelledby="scaleLabel">
-      <h2 id="scaleLabel" class="sr-only">Scale Controls</h2>
-      <label for="scaleX">Scale X:
+      <h2 id="scaleLabel" class="sr-only">
+        Scale Controls
+      </h2>
+      <label for="scaleX">
+        Scale X:
         <input type="number" id="scaleX" step="0.1" min="0.1" value="1" disabled />
       </label>
-      <label for="scaleY">Scale Y:
+      <label for="scaleY">
+        Scale Y:
         <input type="number" id="scaleY" step="0.1" min="0.1" value="1" disabled />
       </label>
-      <label for="scaleZ">Scale Z:
+      <label for="scaleZ">
+        Scale Z:
         <input type="number" id="scaleZ" step="0.1" min="0.1" value="1" disabled />
       </label>
     </section>
 
     <section class="control-group" aria-labelledby="positionLabel">
-      <h2 id="positionLabel" class="sr-only">Position Controls</h2>
-      <label for="posX">Position X:
+      <h2 id="positionLabel" class="sr-only">
+        Position Controls
+      </h2>
+      <label for="posX">
+        Position X:
         <input type="number" id="posX" step="0.1" value="0" disabled />
       </label>
-      <label for="posY">Position Y:
+      <label for="posY">
+        Position Y:
         <input type="number" id="posY" step="0.1" value="0.5" disabled />
       </label>
-      <label for="posZ">Position Z:
+      <label for="posZ">
+        Position Z:
         <input type="number" id="posZ" step="0.1" value="0" disabled />
       </label>
     </section>
 
     <section class="control-group" aria-labelledby="rotationLabel">
-      <h2 id="rotationLabel" class="sr-only">Rotation Controls</h2>
-      <label for="rotX">Rotation X:
+      <h2 id="rotationLabel" class="sr-only">
+        Rotation Controls
+      </h2>
+      <label for="rotX">
+        Rotation X:
         <input type="number" id="rotX" step="0.1" />
       </label>
-      <label for="rotY">Rotation Y:
+      <label for="rotY">
+        Rotation Y:
         <input type="number" id="rotY" step="0.1" />
       </label>
-      <label for="rotZ">Rotation Z:
+      <label for="rotZ">
+        Rotation Z:
         <input type="number" id="rotZ" step="0.1" />
       </label>
     </section>
@@ -114,16 +129,21 @@
 
     <section id="scriptingSection" aria-label="Scripting console">
       <button id="exitScriptFocusBtn" style="display:none; margin-top:10px;"> 🔙 Back </button>
-      <h2>Scripting</h2>
-      <textarea id="scriptInput">console.print("Hello, World")</textarea>
-      <button id="runScriptBtn">Run Script</button>
+      <h2>
+        Scripting
+      </h2>
+      <textarea id="scriptInput">
+        console.print("Hello, World")
+      </textarea>
+      <button id="runScriptBtn">
+        Run Script
+      </button>
       <div id="scriptOutput"></div>
     </section>
   </aside>
 
   <main id="sceneContainer" role="main"></main>
 
-  <!-- Linha de comando -->
   <div id="commandLineWrapper">
     <input 
       type="text" 
@@ -132,7 +152,6 @@
     />
   </div>
 
-  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/three@0.152.2/build/three.min.js"></script>
   <script src="OBJLoader.js"></script>
   <script src="main.js"></script>
@@ -196,6 +215,7 @@
   </script>
 </body>
 </html>
+
 
 
 
