@@ -28,10 +28,10 @@
     </nav>
 
     <nav id="rightButtons">
-      <button id="loadButton" aria-label="Load Map" title="Load map"> 📁 Load </button>
+      <button id="loadButton" aria-label="Load Map" title="Load map file"> 📁 Load </button>
       <input type="file" id="loadInput" accept=".map,application/json" hidden />
 
-      <button id="saveButton" aria-label="Save Map" title="Save map"> 💾 Save </button>
+      <button id="saveButton" aria-label="Save Map" title="Save map as map file"> 💾 Save </button>
 
       <button id="wireframeToggleBtn" aria-label="Toggle Wireframe" title="Put in objects wireframe mode">
         <img src="resources/images/ui/buttons/wireframe.png" role="presentation" />
@@ -50,7 +50,7 @@
       </button>
       <input type="file" id="importButton" accept="image/png, image/jpeg" hidden />
 
-      <label for="bgColorInput" id="skyColorLabel" class="colorInputWrapper">
+      <label for="bgColorInput" id="skyColorLabel" class="colorInputWrapper" title="Put a background color with HEX color code">
         Sky Color:
         <input type="text" id="bgColorInput" maxlength="7" value="#00BFFF" placeholder="#00BFFF" autocomplete="off" />
       </label>
@@ -192,6 +192,7 @@
   </script>
 </body>
 </html>
+
 
 
 
