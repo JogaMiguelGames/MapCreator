@@ -18,4 +18,4 @@ const sphere_geometry = new THREE.SphereGeometry(1, 16, 16);
 const cylinder_geometry = new THREE.CylinderGeometry(1, 1, 2, 16);
 const plane_geometry = new THREE.PlaneGeometry(1, 1);
 
-const white_material = new THREE.MeshBasicMaterial({ color: 0xffffff });
+const white_material = new THREE.MeshStandardMaterial({ color: 0xffffff });
