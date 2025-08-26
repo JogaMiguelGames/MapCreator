@@ -1,5 +1,5 @@
 const mainCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-mainCube.position.set(0, 0.5, 0);
+mainCube.position.set(0, 0, 0);
 mainCube.name = 'Cube 1';
 mainCube.castShadow = true;
 mainCube.receiveShadow = true;
@@ -325,6 +325,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
