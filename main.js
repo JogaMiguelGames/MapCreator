@@ -1,5 +1,3 @@
-const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
 const mainCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
 mainCube.position.set(0, 0.5, 0);
 mainCube.name = 'Cube 1';
@@ -327,6 +325,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
