@@ -154,7 +154,7 @@ function updateLightingByTime(hour, baseSkyColor) {
     // Atualiza intensidade da luz solar (1 = meio-dia, 0.2 = noite)
     const minIntensity = 0.2;
     const maxIntensity = 1.0;
-    const intensity = maxIntensity - Math.pow(distance / 12, 1.5) * (maxIntensity - minIntensity);
+    const intensity = maxIntensity - Math.pow(distance / 12, 10) * (maxIntensity - minIntensity);
     sunLight.intensity = intensity;
 }
 
@@ -442,3 +442,4 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
