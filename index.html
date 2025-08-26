@@ -17,10 +17,16 @@
         <img src="resources/images/ui/buttons/stop.png" role="presentation" />
         <span>Stop</span>
       </button>
+
+      <!-- Fullscreen in scripts-->
+      
       <button id="focusScriptBtn" aria-label="Focus Script" title="Put the script in fullscreen">
         <img src="resources/images/ui/buttons/fullScreen.png" />
         <span>Script View</span>
       </button>
+
+      <!-- Add Cube button -->
+      
       <button id="addCubeBtn" aria-label="Add Cube" title="Add cube in map">
         <img src="resources/images/ui/buttons/add_cube.png" role="presentation"/>
         <span>Add Cube</span>
@@ -28,6 +34,9 @@
     </nav>
 
     <nav id="rightButtons">
+
+      <!-- Save and import maps-->
+      
       <button id="loadButton" aria-label="Load Map" title="Load map file"> 
         📁 Load 
       </button>
@@ -37,23 +46,31 @@
         💾 Save 
       </button>
 
+      <!-- Mesh Wireframe -->
+      
       <button id="wireframeToggleBtn" aria-label="Toggle Wireframe" title="Put in objects wireframe mode">
         <img src="resources/images/ui/buttons/wireframe.png" role="presentation" />
         <span>Wireframe</span>
       </button>
 
+      <!-- Import OBJ mesh files-->
+      
       <button id="importOBJBtn" aria-label="Import OBJ Model" title="Import the .obj file model">
         <img src="resources/images/ui/icons/model.png" role="presentation" />
         Import OBJ
       </button>
       <input type="file" id="objFileInput" accept=".obj" hidden />
 
+      <!-- PNG and JPEG/JPG Texture for meshs -->
+      
       <button id="importTextureBtn" aria-label="Import Texture" title="Import image file texture">
         <img src="resources/images/ui/icons/texture.png" role="presentation" />
         Import Texture
       </button>
       <input type="file" id="importButton" accept="image/png, image/jpeg" hidden />
 
+      <!-- Background color parameters -->
+      
       <label for="bgColorInput" id="skyColorLabel" class="colorInputWrapper" title="Put a background color with HEX color code">
         Sky Color:
         <input type="text" id="bgColorInput" maxlength="7" value="#00BFFF" placeholder="#00BFFF" autocomplete="off" />
@@ -64,6 +81,8 @@
   <aside id="panel" aria-label="Map editor controls">
     <div id="panel-resize-handle" aria-hidden="true"></div>
 
+    <!-- Scale parameters -->
+    
     <section class="control-group" aria-labelledby="scaleLabel">
       <h2 id="scaleLabel" class="sr-only">
         Scale Controls
@@ -82,6 +101,8 @@
       </label>
     </section>
 
+    <!-- Position parameters -->
+    
     <section class="control-group" aria-labelledby="positionLabel">
       <h2 id="positionLabel" class="sr-only">
         Position Controls
@@ -100,6 +121,8 @@
       </label>
     </section>
 
+    <!-- Rotation parameters-->
+    
     <section class="control-group" aria-labelledby="rotationLabel">
       <h2 id="rotationLabel" class="sr-only">
         Rotation Controls
@@ -127,6 +150,8 @@
 
     <section id="cubeList" tabindex="0" aria-label="List of cubes"></section>
 
+    <!-- GScripting -->
+    
     <section id="scriptingSection" aria-label="Scripting console">
       <button id="exitScriptFocusBtn" style="display:none; margin-top:10px;"> 🔙 Back </button>
       <h2>
@@ -141,8 +166,10 @@
       <div id="scriptOutput"></div>
     </section>
   </aside>
-
+  
   <main id="sceneContainer" role="main"></main>
+
+  <!-- CMD -->
 
   <div id="commandLineWrapper">
     <input 
@@ -221,6 +248,7 @@
   </script>
 </body>
 </html>
+
 
 
 
