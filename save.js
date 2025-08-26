@@ -1,6 +1,7 @@
 document.getElementById('saveButton').addEventListener('click', () => {
   const mapData = {
     sceneColor: `#${scene.background.getHexString()}`,
+    timeOfDay: parseInt(timeInput.value), // <<< Adicione esta linha
     cubes: cubes.map(cube => {
       let textureData = null;
 
@@ -106,4 +107,64 @@ loadInput.addEventListener('change', () => {
     }
   };
   reader.readAsText(file);
+});
+loadInput.addEventListener('change', () => {
+  const file = loadInput.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const mapData = JSON.parse(e.target.result);
+
+      if (mapData.sceneColor) {
+        scene.background.set(mapData.sceneColor);
+        if (bgColorInput) bgColorInput.value = mapData.sceneColor;
+      }
+
+      // Remove cubos antigos da cena e array
+      cubes.forEach(cube => scene.remove(cube));
+      cubes.length = 0;
+
+      mapData.cubes.forEach(data => {
+        const material = new THREE.MeshBasicMaterial({ color: data.color || '#ffffff' });
+
+        const cube = new THREE.Mesh(
+          new THREE.BoxGeometry(1, 1, 1),
+          material
+        );
+
+        cube.name = data.name || 'Cube';
+        cube.position.set(data.position.x, data.position.y, data.position.z);
+        cube.scale.set(data.scale.x, data.scale.y, data.scale.z);
+        cube.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+
+        if (data.texture) {
+          const img = new Image();
+          img.src = data.texture;
+          img.onload = () => {
+            const tex = new THREE.Texture(img);
+            tex.needsUpdate = true;
+
+            cube.material.map = tex;
+            cube.material.needsUpdate = true;
+          };
+        }
+
+        scene.add(cube);
+        cubes.push(cube);
+      });
+
+      selectedCube = cubes[0] || null;
+      updatePanelForCube(selectedCube);
+      updateCubeList();
+
+      loadInput.value = '';
+    } catch (err) {
+      alert('Erro ao carregar mapa: arquivo inválido ou corrompido.');
+      console.error(err);
+    }
+  };
+  reader.readAsText(file);
+
 });
