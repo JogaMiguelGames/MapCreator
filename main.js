@@ -1,6 +1,6 @@
 const mainCube = new THREE.Mesh(cube_geometry, white_material);
 mainCube.position.set(0, 0, 0); // acima do “chão” que será colocado depois
-mainCube.name = 'Cube';
+mainCube.name = 'Cube 1';
 mainCube.castShadow = true;      // projeta sombra
 mainCube.receiveShadow = true;   // recebe sombra de outros objetos
 scene.add(mainCube);
@@ -144,24 +144,39 @@ function updateSkyColorByTime(hour, baseColor) {
     scene.background.set(darkenHexColor(baseColor, factor));
 }
 
+// Função para atualizar cor do céu e intensidade do sol
+function updateLightingByTime(hour, baseSkyColor) {
+    // Escurece o céu igual antes
+    const distance = Math.min(Math.abs(hour - 12), Math.abs(hour - 12 - 24));
+    const factor = Math.min(0.8, (distance / 12) * 0.8);
+    scene.background.set(darkenHexColor(baseSkyColor, factor));
+
+    // Atualiza intensidade da luz solar (1 = meio-dia, 0.2 = noite)
+    const minIntensity = 0.2;
+    const maxIntensity = 1.0;
+    const intensity = maxIntensity - Math.pow(distance / 12, 1.5) * (maxIntensity - minIntensity);
+    sunLight.intensity = intensity;
+}
+
 // Base do céu
 let baseSkyColor = bgColorInput.value;
 
-// Atualiza quando muda o input de cor
-bgColorInput.addEventListener('input', () => {
-    const val = bgColorInput.value.trim();
-    if(/^#([0-9a-f]{6})$/i.test(val)){
-        baseSkyColor = val;
-        updateSkyColorByTime(parseInt(timeInput.value), baseSkyColor);
-    }
-});
-
-// Atualiza quando muda a hora
+// Atualiza quando muda o input de hora
 timeInput.addEventListener('input', () => {
     let hour = parseInt(timeInput.value);
     if(isNaN(hour) || hour < 0) hour = 0;
     if(hour > 23) hour = 23;
-    updateSkyColorByTime(hour, baseSkyColor);
+
+    updateLightingByTime(hour, baseSkyColor);
+});
+
+// Atualiza quando muda a cor do céu
+bgColorInput.addEventListener('input', () => {
+    const val = bgColorInput.value.trim();
+    if(/^#([0-9a-f]{6})$/i.test(val)){
+        baseSkyColor = val;
+        updateLightingByTime(parseInt(timeInput.value), baseSkyColor);
+    }
 });
 
 // Inicializa cor ao carregar
@@ -427,4 +442,3 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
-
