@@ -1,9 +1,7 @@
-// Botão para abrir a janela de importação
 document.getElementById('pluginBtn').addEventListener('click', () => {
   document.getElementById('pluginFileInput').click();
 });
 
-// Quando o usuário seleciona um arquivo
 document.getElementById('pluginFileInput').addEventListener('change', (event) => {
   const file = event.target.files[0];
   if (!file) return;
@@ -14,18 +12,30 @@ document.getElementById('pluginFileInput').addEventListener('change', (event) =>
     const content = e.target.result;
 
     try {
-      // Criar um objeto vazio plugin e executar o script do arquivo em um escopo seguro
       const plugin = {};
-      const wrappedCode = `(function(plugin){ ${content} })(plugin);`;
 
-      // Avalia o código do plugin
+      const wrappedCode = `(function(plugin){ ${content} })(plugin);`;
       eval(wrappedCode);
 
-      if (plugin.name) {
-        alert(`The plugin ${plugin.name} has been imported!`);
-      } else {
+      // Valida plugin.name
+      if (!plugin.name) {
         alert('The plugin does not have a name property!');
+        return;
       }
+
+      let versionText = '';
+      if (plugin.version !== undefined) {
+        const versionStr = plugin.version.toString();
+        if (/^[0-9.]+$/.test(versionStr)) {
+          versionText = versionStr;
+        } else {
+          alert('Invalid plugin version! Must contain only numbers and dots.');
+          return;
+        }
+      }
+
+      alert(`The plugin ${plugin.name} has been imported!` + (versionText ? ` version: ${versionText}` : ''));
+
     } catch (err) {
       console.error(err);
       alert('Failed to import plugin: ' + err.message);
