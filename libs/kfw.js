@@ -13,7 +13,7 @@ document.body.appendChild(renderer.domElement);
 
 // -- 3D Objects
 
-const cube_geometry = new THREE.SphereGeometry(1, 1, 1);
+const cube_geometry = new THREE.BoxGeometry(1, 1, 1);
 const sphere_geometry = new THREE.SphereGeometry(1, 16, 16);
 const cylinder_geometry = new THREE.CylinderGeometry(1, 1, 2, 16);
 const plane_geometry = new THREE.PlaneGeometry(1, 1);
