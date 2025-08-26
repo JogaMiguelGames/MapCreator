@@ -145,25 +145,30 @@ function updateSkyColorByTime(hour, baseColor) {
 }
 
 function updateLightingByTime(hour, baseSkyColor) {
-    // Escurece o céu igual antes
+    // Escurece o céu conforme antes
     const distance = Math.min(Math.abs(hour - 12), Math.abs(hour - 12 - 24));
     const factor = Math.min(0.8, (distance / 12) * 0.8);
     scene.background.set(darkenHexColor(baseSkyColor, factor));
 
-    // Luz do sol diminui mais rápido e muda de cor
-    const minColor = new THREE.Color(0x000000); // cor da noite
+    // Luz do sol
+    const minColor = new THREE.Color(0x222222); // cor da noite
     const maxColor = new THREE.Color(0xffffff); // cor do dia
-    const minIntensity = 0.1; // intensidade mínima
-    const maxIntensity = 1.0; // intensidade máxima
+    const minIntensity = 0.1; // mínima intensidade
+    const maxIntensity = 1.0; // máxima intensidade
 
-    // Normaliza distância (0 = meio-dia, 1 = meia-noite)
     const normalized = distance / 12;
 
-    // Intensidade cai exponencialmente
-    const intensity = maxIntensity * Math.pow(1 - normalized, 3);
+    // Intensidade exponencial durante o dia
+    let intensity = maxIntensity * Math.pow(1 - normalized, 3);
+
+    // Reduz em 90% se hora for 1 ou 23
+    if(hour === 1 || hour === 23) {
+        intensity *= 0.1; // apenas 10% da intensidade
+    }
+
     sunLight.intensity = Math.max(intensity, minIntensity);
 
-    // Interpola cor do sol entre dia e noite
+    // Cor do sol interpolada entre dia e noite
     sunLight.color = maxColor.clone().lerp(minColor, normalized);
 }
 
@@ -451,7 +456,3 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
-
-
-
-
