@@ -169,6 +169,79 @@ updateSkyColorByTime(parseInt(timeInput.value), baseSkyColor);
 
 let selectedCube = mainCube;
 
+function updatePanelForCube(cube){
+  if(!cube){
+    [scaleXInput, scaleYInput, scaleZInput, posXInput, posYInput, posZInput, colorHexInput].forEach(i => { i.value=''; i.disabled = true; });
+    [rotXInput, rotYInput, rotZInput].forEach(i => { i.value=''; i.disabled = true; });
+    return;
+  }
+  scaleXInput.disabled = false;
+  scaleYInput.disabled = false;
+  scaleZInput.disabled = false;
+  posXInput.disabled = false;
+  posYInput.disabled = false;
+  posZInput.disabled = false;
+  rotXInput.disabled = false;
+  rotYInput.disabled = false;
+  rotZInput.disabled = false;
+  colorHexInput.disabled = false;
+
+  rotXInput.value = THREE.MathUtils.radToDeg(cube.rotation.x).toFixed(2);
+  rotYInput.value = THREE.MathUtils.radToDeg(cube.rotation.y).toFixed(2);
+  rotZInput.value = THREE.MathUtils.radToDeg(cube.rotation.z).toFixed(2);
+
+  scaleXInput.value = cube.scale.x.toFixed(2);
+  scaleYInput.value = cube.scale.y.toFixed(2);
+  scaleZInput.value = cube.scale.z.toFixed(2);
+
+  posXInput.value = cube.position.x.toFixed(2);
+  posYInput.value = cube.position.y.toFixed(2);
+  posZInput.value = cube.position.z.toFixed(2);
+
+  if(cube.material && cube.material.color){
+    colorHexInput.value = `#${cube.material.color.getHexString()}`;
+  }else{
+    colorHexInput.value = '';
+  }
+}
+
+[scaleXInput, scaleYInput, scaleZInput].forEach((input,i) => {
+  input.addEventListener('input', () => {
+    if(!selectedCube) return;
+    const val = parseFloat(input.value);
+    if(val > 0){
+      if(i===0) selectedCube.scale.x = val;
+      if(i===1) selectedCube.scale.y = val;
+      if(i===2) selectedCube.scale.z = val;
+    }
+  });
+});
+
+[posXInput, posYInput, posZInput].forEach((input,i) => {
+  input.addEventListener('input', () => {
+    if(!selectedCube) return;
+    const val = parseFloat(input.value);
+    if(!isNaN(val)){
+      if(i===0) selectedCube.position.x = val;
+      if(i===1) selectedCube.position.y = val;
+      if(i===2) selectedCube.position.z = val;
+    }
+  });
+});
+
+[rotXInput, rotYInput, rotZInput].forEach((input,i) => {
+  input.addEventListener('input', () => {
+    if(!selectedCube) return;
+    const val = parseFloat(input.value);
+    if(!isNaN(val)){
+      const rad = THREE.MathUtils.degToRad(val);
+      if(i===0) selectedCube.rotation.x = rad;
+      if(i===1) selectedCube.rotation.y = rad;
+      if(i===2) selectedCube.rotation.z = rad;
+    }
+  });
+});
+
 function updateCubeList(){
   cubeListDiv.innerHTML = '';
   cubes.forEach(cube => {
@@ -274,106 +347,6 @@ function updateCubeList(){
   });
 }
 
-[scaleXInput, scaleYInput, scaleZInput].forEach((input,i) => {
-  input.addEventListener('input', () => {
-    if(!selectedCube) return;
-    const val = parseFloat(input.value);
-    if(val > 0){
-      if(i===0) selectedCube.scale.x = val;
-      if(i===1) selectedCube.scale.y = val;
-      if(i===2) selectedCube.scale.z = val;
-    }
-  });
-});
-
-[posXInput, posYInput, posZInput].forEach((input,i) => {
-  input.addEventListener('input', () => {
-    if(!selectedCube) return;
-    const val = parseFloat(input.value);
-    if(!isNaN(val)){
-      if(i===0) selectedCube.position.x = val;
-      if(i===1) selectedCube.position.y = val;
-      if(i===2) selectedCube.position.z = val;
-    }
-  });
-});
-
-[rotXInput, rotYInput, rotZInput].forEach((input,i) => {
-  input.addEventListener('input', () => {
-    if(!selectedCube) return;
-    const val = parseFloat(input.value);
-    if(!isNaN(val)){
-      const rad = THREE.MathUtils.degToRad(val);
-      if(i===0) selectedCube.rotation.x = rad;
-      if(i===1) selectedCube.rotation.y = rad;
-      if(i===2) selectedCube.rotation.z = rad;
-    }
-  });
-});
-
-function updateCubeList(){
-  cubeListDiv.innerHTML = '';
-  cubes.forEach(cube => {
-    const name = cube.name || 'Unnamed';
-
-    const div = document.createElement('div');
-    div.className = 'cubeListItem';
-    div.style.display = 'flex';
-    div.style.alignItems = 'center';
-    div.style.padding = '4px 8px';
-    div.style.borderRadius = '3px';
-    div.style.cursor = 'pointer';
-    div.style.gap = '6px';
-
-    // Wrapper do ícone do cubo (para posicionar o ícone de textura)
-    const iconWrapper = document.createElement('div');
-    iconWrapper.style.position = 'relative';
-    iconWrapper.style.width = '20px';
-    iconWrapper.style.height = '20px';
-
-    const icon = document.createElement('img');
-    icon.src = 'resources/images/ui/icons/cube.png';
-    icon.alt = 'cube icon';
-    icon.style.width = '100%';
-    icon.style.height = '100%';
-    icon.style.objectFit = 'contain';
-
-    iconWrapper.appendChild(icon);
-
-    // Ícone da textura
-    if(cube.hasTexture){
-      const textureIcon = document.createElement('img');
-      textureIcon.src = 'resources/images/ui/icons/texture.png';
-      textureIcon.alt = 'texture icon';
-      textureIcon.style.width = '12px';
-      textureIcon.style.height = '12px';
-      textureIcon.style.position = 'absolute';
-      textureIcon.style.right = '-4px'; // ajusta para aparecer fora do cubo
-      textureIcon.style.bottom = '-4px'; // ajusta para aparecer abaixo
-      iconWrapper.appendChild(textureIcon);
-    }
-
-    div.appendChild(iconWrapper);
-
-    const text = document.createElement('span');
-    text.textContent = name;
-    div.appendChild(text);
-
-    if(cube === selectedCube){
-      div.style.backgroundColor = '#3366ff';
-      div.style.color = 'white';
-    }
-
-    div.addEventListener('click', () => {
-      selectedCube = cube;
-      updatePanelForCube(selectedCube);
-      updateCubeList();
-    });
-
-    cubeListDiv.appendChild(div);
-  });
-}
-
 // Raycaster para selecionar cubos pelo centro da tela
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
@@ -437,4 +410,3 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
-
