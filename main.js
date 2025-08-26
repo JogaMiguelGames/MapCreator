@@ -151,7 +151,7 @@ function updateLightingByTime(hour, baseSkyColor) {
     scene.background.set(darkenHexColor(baseSkyColor, factor));
 
     // Luz do sol diminui mais rápido e muda de cor
-    const minColor = new THREE.Color(0x222222); // cor da noite
+    const minColor = new THREE.Color(0x000000); // cor da noite
     const maxColor = new THREE.Color(0xffffff); // cor do dia
     const minIntensity = 0.1; // intensidade mínima
     const maxIntensity = 1.0; // intensidade máxima
@@ -451,6 +451,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
