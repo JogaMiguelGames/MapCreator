@@ -169,40 +169,109 @@ updateSkyColorByTime(parseInt(timeInput.value), baseSkyColor);
 
 let selectedCube = mainCube;
 
-function updatePanelForCube(cube){
-  if(!cube){
-    [scaleXInput, scaleYInput, scaleZInput, posXInput, posYInput, posZInput, colorHexInput].forEach(i => { i.value=''; i.disabled = true; });
-    [rotXInput, rotYInput, rotZInput].forEach(i => { i.value=''; i.disabled = true; });
-    return;
-  }
-  scaleXInput.disabled = false;
-  scaleYInput.disabled = false;
-  scaleZInput.disabled = false;
-  posXInput.disabled = false;
-  posYInput.disabled = false;
-  posZInput.disabled = false;
-  rotXInput.disabled = false;
-  rotYInput.disabled = false;
-  rotZInput.disabled = false;
-  colorHexInput.disabled = false;
+function updateCubeList(){
+  cubeListDiv.innerHTML = '';
+  cubes.forEach(cube => {
+    const name = cube.name || 'Unnamed';
 
-  rotXInput.value = THREE.MathUtils.radToDeg(cube.rotation.x).toFixed(2);
-  rotYInput.value = THREE.MathUtils.radToDeg(cube.rotation.y).toFixed(2);
-  rotZInput.value = THREE.MathUtils.radToDeg(cube.rotation.z).toFixed(2);
+    const div = document.createElement('div');
+    div.className = 'cubeListItem';
+    div.style.display = 'flex';
+    div.style.alignItems = 'center';
+    div.style.padding = '4px 8px';
+    div.style.borderRadius = '3px';
+    div.style.cursor = 'pointer';
+    div.style.gap = '6px';
 
-  scaleXInput.value = cube.scale.x.toFixed(2);
-  scaleYInput.value = cube.scale.y.toFixed(2);
-  scaleZInput.value = cube.scale.z.toFixed(2);
+    // Ícone do cubo
+    const iconWrapper = document.createElement('div');
+    iconWrapper.style.position = 'relative';
+    iconWrapper.style.width = '20px';
+    iconWrapper.style.height = '20px';
 
-  posXInput.value = cube.position.x.toFixed(2);
-  posYInput.value = cube.position.y.toFixed(2);
-  posZInput.value = cube.position.z.toFixed(2);
+    const icon = document.createElement('img');
+    icon.src = 'resources/images/ui/icons/cube.png';
+    icon.alt = 'cube icon';
+    icon.style.width = '100%';
+    icon.style.height = '100%';
+    icon.style.objectFit = 'contain';
+    iconWrapper.appendChild(icon);
 
-  if(cube.material && cube.material.color){
-    colorHexInput.value = `#${cube.material.color.getHexString()}`;
-  }else{
-    colorHexInput.value = '';
-  }
+    // Ícone de textura (se existir)
+    if(cube.hasTexture){
+      const textureIcon = document.createElement('img');
+      textureIcon.src = 'resources/images/ui/icons/texture.png';
+      textureIcon.alt = 'texture icon';
+      textureIcon.style.width = '12px';
+      textureIcon.style.height = '12px';
+      textureIcon.style.position = 'absolute';
+      textureIcon.style.right = '-4px';
+      textureIcon.style.bottom = '-4px';
+      iconWrapper.appendChild(textureIcon);
+    }
+
+    div.appendChild(iconWrapper);
+
+    // Nome do cubo
+    const text = document.createElement('span');
+    text.textContent = name;
+    div.appendChild(text);
+
+    // Destacar cubo selecionado
+    if(cube === selectedCube){
+      div.style.backgroundColor = '#3366ff';
+      div.style.color = 'white';
+    }
+
+    // --- Gerenciamento de clique / duplo clique ---
+    let clickTimer = null;
+
+    // Clique simples → selecionar
+    div.addEventListener('click', () => {
+      if (clickTimer) {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+      }
+
+      clickTimer = setTimeout(() => {
+        selectedCube = cube;
+        updatePanelForCube(selectedCube);
+        updateCubeList();
+        clickTimer = null;
+      }, 250); // tempo para diferenciar clique de duplo clique
+    });
+
+    // Duplo clique → renomear
+    div.addEventListener('dblclick', () => {
+      if (clickTimer) {
+        clearTimeout(clickTimer); // cancela clique simples
+        clickTimer = null;
+      }
+
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = cube.name || 'Cube';
+      input.style.flex = '1';
+      input.style.padding = '2px';
+      input.style.border = '1px solid #ccc';
+      input.style.borderRadius = '3px';
+
+      div.replaceChild(input, text);
+      input.focus();
+
+      function saveName(){
+        cube.name = input.value.trim() || 'Unnamed';
+        updateCubeList();
+      }
+
+      input.addEventListener('blur', saveName);
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') saveName();
+      });
+    });
+
+    cubeListDiv.appendChild(div);
+  });
 }
 
 [scaleXInput, scaleYInput, scaleZInput].forEach((input,i) => {
@@ -368,3 +437,4 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
