@@ -144,20 +144,21 @@ function updateSkyColorByTime(hour, baseColor) {
     scene.background.set(darkenHexColor(baseColor, factor));
 }
 
-// Função para atualizar cor do céu e intensidade do sol
 function updateLightingByTime(hour, baseSkyColor) {
-    // Escurece o céu igual antes
+    // Escurece o céu
     const distance = Math.min(Math.abs(hour - 12), Math.abs(hour - 12 - 24));
     const factor = Math.min(0.8, (distance / 12) * 0.8);
     scene.background.set(darkenHexColor(baseSkyColor, factor));
 
-    // Atualiza intensidade da luz solar (1 = meio-dia, 0.2 = noite)
-    const minIntensity = 0.2;
-    const maxIntensity = 1.0;
-    const intensity = maxIntensity - Math.pow(distance / 12, 10) * (maxIntensity - minIntensity);
-    sunLight.intensity = intensity;
-}
+    // Luz do sol diminui mais rápido
+    const minIntensity = 0.1; // noite quase apagada
+    const maxIntensity = 1.0; // meio-dia
+    const normalized = distance / 12;
 
+    // Exponencial para queda rápida
+    const intensity = maxIntensity * Math.pow(1 - normalized, 3); // potência 3 = queda rápida
+    sunLight.intensity = Math.max(intensity, minIntensity);
+}
 // Base do céu
 let baseSkyColor = bgColorInput.value;
 
@@ -442,4 +443,5 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
