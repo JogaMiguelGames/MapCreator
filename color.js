@@ -1,4 +1,3 @@
-// Pega os elementos de input e os círculos de preview
 const bgColorInput = document.getElementById('bgColorInput');
 const bgColorPreview = document.getElementById('bgColorPreview');
 
@@ -22,4 +21,5 @@ colorHexInput.addEventListener('input', () => updatePreview(colorHexInput, objec
 
 // Opcional: atualiza na inicialização (caso o input já tenha valor)
 updatePreview(bgColorInput, bgColorPreview);
+
 updatePreview(colorHexInput, objectColorPreview);
