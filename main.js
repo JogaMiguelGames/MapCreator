@@ -125,6 +125,48 @@ bgColorInput.addEventListener('input', () => {
   }
 });
 
+const timeInput = document.getElementById('timeOfDayInput');
+
+// Função para escurecer HEX de acordo com porcentagem (0 a 1)
+function darkenHexColor(hex, factor) {
+    const r = Math.round(parseInt(hex.substr(1,2),16) * (1 - factor));
+    const g = Math.round(parseInt(hex.substr(3,2),16) * (1 - factor));
+    const b = Math.round(parseInt(hex.substr(5,2),16) * (1 - factor));
+    return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+}
+
+// Função para atualizar a cor do céu conforme hora
+function updateSkyColorByTime(hour, baseColor) {
+    // Calcula distância de 12h
+    const distance = Math.min(Math.abs(hour - 12), Math.abs(hour - 12 - 24));
+    // Normaliza para fator de escurecimento (0 = 12h, 0.8 = 0h ou 24h)
+    const factor = Math.min(0.8, (distance / 12) * 0.8);
+    scene.background.set(darkenHexColor(baseColor, factor));
+}
+
+// Base do céu
+let baseSkyColor = bgColorInput.value;
+
+// Atualiza quando muda o input de cor
+bgColorInput.addEventListener('input', () => {
+    const val = bgColorInput.value.trim();
+    if(/^#([0-9a-f]{6})$/i.test(val)){
+        baseSkyColor = val;
+        updateSkyColorByTime(parseInt(timeInput.value), baseSkyColor);
+    }
+});
+
+// Atualiza quando muda a hora
+timeInput.addEventListener('input', () => {
+    let hour = parseInt(timeInput.value);
+    if(isNaN(hour) || hour < 0) hour = 0;
+    if(hour > 23) hour = 23;
+    updateSkyColorByTime(hour, baseSkyColor);
+});
+
+// Inicializa cor ao carregar
+updateSkyColorByTime(parseInt(timeInput.value), baseSkyColor);
+
 let selectedCube = mainCube;
 
 function updatePanelForCube(cube){
@@ -326,11 +368,3 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
-
-
-
-
-
-
-
-
