@@ -244,6 +244,7 @@ function updatePanelForCube(cube){
 
 function updateCubeList(){
   cubeListDiv.innerHTML = '';
+  
   cubes.forEach(cube => {
     const name = cube.name || 'Unnamed';
 
@@ -270,7 +271,7 @@ function updateCubeList(){
     icon.style.objectFit = 'contain';
     iconWrapper.appendChild(icon);
 
-    // Ícone de textura (se existir)
+    // Ícone de textura (se houver)
     if(cube.hasTexture){
       const textureIcon = document.createElement('img');
       textureIcon.src = 'resources/images/ui/icons/texture.png';
@@ -285,7 +286,7 @@ function updateCubeList(){
 
     div.appendChild(iconWrapper);
 
-    // Nome do cubo
+    // Texto do cubo
     const text = document.createElement('span');
     text.textContent = name;
     div.appendChild(text);
@@ -296,54 +297,70 @@ function updateCubeList(){
       div.style.color = 'white';
     }
 
-    // --- Gerenciamento de clique / duplo clique ---
+    // --- Clique simples e duplo clique ---
     let clickTimer = null;
 
-    // Clique simples → selecionar
     div.addEventListener('click', () => {
-      if (clickTimer) {
-        clearTimeout(clickTimer);
-        clickTimer = null;
-      }
-
+      if (clickTimer) clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
         selectedCube = cube;
         updatePanelForCube(selectedCube);
         updateCubeList();
         clickTimer = null;
-      }, 250); // tempo para diferenciar clique de duplo clique
+      }, 250);
     });
 
-    // Duplo clique → renomear
     div.addEventListener('dblclick', () => {
       if (clickTimer) {
-        clearTimeout(clickTimer); // cancela clique simples
+        clearTimeout(clickTimer);
         clickTimer = null;
       }
-
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = cube.name || 'Cube';
-      input.style.flex = '1';
-      input.style.padding = '2px';
-      input.style.border = '1px solid #ccc';
-      input.style.borderRadius = '3px';
-
-      div.replaceChild(input, text);
-      input.focus();
-
-      function saveName(){
-        cube.name = input.value.trim() || 'Unnamed';
-        updateCubeList();
-      }
-
-      input.addEventListener('blur', saveName);
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') saveName();
-      });
+      renameCube(div, cube);
     });
 
     cubeListDiv.appendChild(div);
+  });
+
+  // --- F2 para renomear cubo selecionado ---
+  document.addEventListener('keydown', (e) => {
+    const tag = document.activeElement.tagName;
+    const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
+
+    if (e.key === 'F2' && !isTyping && selectedCube) {
+      // Encontrar div correspondente
+      const divs = cubeListDiv.querySelectorAll('.cubeListItem');
+      const div = Array.from(divs).find(d => {
+        const span = d.querySelector('span');
+        return span && span.textContent === selectedCube.name;
+      });
+
+      if (div) renameCube(div, selectedCube);
+    }
+  });
+}
+
+// Função auxiliar para renomear cubo
+function renameCube(div, cube){
+  const text = div.querySelector('span');
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = cube.name || 'Cube';
+  input.style.flex = '1';
+  input.style.padding = '2px';
+  input.style.border = '1px solid #ccc';
+  input.style.borderRadius = '3px';
+
+  div.replaceChild(input, text);
+  input.focus();
+
+  function saveName() {
+    cube.name = input.value.trim() || 'Unnamed';
+    updateCubeList();
+  }
+
+  input.addEventListener('blur', saveName);
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') saveName();
   });
 }
 
