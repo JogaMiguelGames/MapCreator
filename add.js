@@ -1,9 +1,6 @@
 // Função única para criar cubo
 function createCube() {
-  const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-  const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-
-  const newCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+  const newCube = new THREE.Mesh(cube_geometry, white_material);
   newCube.position.set(0, 0, 0);
   newCube.name = `Cube ${cubes.length}`;
   newCube.castShadow = true;
@@ -36,3 +33,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
