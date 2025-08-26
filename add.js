@@ -1,3 +1,5 @@
+const addCube = document.getElementById('addCubeBtn');
+
 // Função única para criar cubo
 function createCube() {
   const newCube = new THREE.Mesh(cube_geometry, white_material);
@@ -17,7 +19,7 @@ function createCube() {
 }
 
 // Botão usa a função
-addCubeBtn.addEventListener('click', () => {
+addCube.addEventListener('click', () => {
   createCube();
 });
 
@@ -33,4 +35,5 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
