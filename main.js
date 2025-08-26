@@ -1,18 +1,19 @@
-const cubeGeometry = new THREE.BoxGeometry(1,1,1);
-const cubeMaterial = new THREE.MeshStandardMaterial({color: 0xffffff});
-const mainCube = new THREE.Mesh(cube_geometry, white_material);
-mainCube.position.set(0, 0, 0);
+const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+const mainCube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+mainCube.position.set(0, 0.5, 0);
 mainCube.name = 'Cube 1';
 mainCube.castShadow = true;
+mainCube.receiveShadow = true;
 scene.add(mainCube);
 
 const cubes = [mainCube];
 
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.3);
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(ambientLight);
 
 const sunLight = new THREE.DirectionalLight(0xffffff, 1);
-sunLight.position.set(10, 10, 10); // luz vinda do “sol”
+sunLight.position.set(10, 10, 10); // luz tipo “sol”
 sunLight.castShadow = true;
 sunLight.shadow.mapSize.width = 2048;
 sunLight.shadow.mapSize.height = 2048;
@@ -22,7 +23,6 @@ sunLight.shadow.camera.top = 20;
 sunLight.shadow.camera.bottom = -20;
 scene.add(sunLight);
 
-// Linhas de eixo
 function addAxisLine(from, to, color){
   const line = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([from, to]),
