@@ -22,7 +22,6 @@ sunLight.shadow.camera.top = 20;
 sunLight.shadow.camera.bottom = -20;
 scene.add(sunLight);
 
-let yaw = 0;
 
 function addAxisLine(from, to, color){
   const line = new THREE.Line(
@@ -35,8 +34,10 @@ addAxisLine(new THREE.Vector3(0,-9999,0), new THREE.Vector3(0,9999,0), 0x00ff00)
 addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000); // X
 addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
 
-camera.position.set(0, 1.6, 5);
+camera.position.set(4, 1.6, 4);
 let pitch = THREE.MathUtils.degToRad(-24);
+let yaw = THREE.MathUtils.degToRad(45);
+let roll  = THREE.MathUtils.degToRad(15);
 
 const moveSpeed = 5;
 const lookSpeed = 0.002;
@@ -86,6 +87,7 @@ function updateCamera(delta){
   camera.rotation.order = 'YXZ';
   camera.rotation.y = yaw;
   camera.rotation.x = pitch;
+  camera.rotation.z = roll;
 
   const forward = new THREE.Vector3();
   camera.getWorldDirection(forward);
@@ -505,6 +507,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
