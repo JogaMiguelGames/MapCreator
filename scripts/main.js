@@ -398,15 +398,19 @@ const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 function onClick(){
-  if(document.pointerLockElement !== canvas) return;
-  mouse.x = 0; mouse.y = 0;
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(cubes);
-  if(intersects.length > 0){
-    selectedCube = intersects[0].object;
-    updatePanelForCube(selectedCube);
-    updateCubeList();
-  }
+    if(document.pointerLockElement !== canvas) return;
+
+    mouse.x = 0;
+    mouse.y = 0;
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(cubes);
+    
+    if(intersects.length > 0){
+        selectedCube = intersects[0].object;
+        updatePanelForCube(selectedCube);
+        updateCubeList();
+        addSpheresToSelectedCube(); // <- adiciona as esferas
+    }
 }
 window.addEventListener('click', onClick);
 
@@ -499,4 +503,5 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
