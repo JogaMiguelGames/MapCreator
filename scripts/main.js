@@ -22,6 +22,8 @@ sunLight.shadow.camera.top = 20;
 sunLight.shadow.camera.bottom = -20;
 scene.add(sunLight);
 
+let yaw = 0, pitch = 0;
+
 function addAxisLine(from, to, color){
   const line = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([from, to]),
@@ -42,7 +44,6 @@ camera.getWorldDirection(forward);
 yaw = Math.atan2(forward.x, forward.z);
 pitch = Math.asin(forward.y);
 
-let yaw = 0, pitch = 0;
 const moveSpeed = 5;
 const lookSpeed = 0.002;
 const keys = {};
@@ -510,6 +511,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
