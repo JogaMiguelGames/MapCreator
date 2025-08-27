@@ -1,50 +1,60 @@
-// --- SAVE ---
+// --- SAVE.JS COMPLETO ---
+// Certifique-se de incluir o OBJExporter.js do Three.js:
+// <script src="https://threejs.org/examples/js/exporters/OBJExporter.js"></script>
+
 document.getElementById('saveButton').addEventListener('click', () => {
+  const exporter = new THREE.OBJExporter();
+
+  // 1️⃣ Salva JSON da cena (.map)
   const mapData = {
     sceneColor: `#${scene.background.getHexString()}`,
     timeOfDay: parseInt(timeInput.value),
-    objects: cubes.map(obj => {
-      // Detecta se é um cubo ou modelo
+    objects: cubes.map((obj, index) => {
       const isCube = obj.geometry && obj.geometry.type === "BoxGeometry";
 
       let textureData = null;
-      if (obj.material?.map?.image?.src) {
-        textureData = obj.material.map.image.src;
+      if (obj.material?.map?.image?.src) textureData = obj.material.map.image.src;
+
+      // Para modelos OBJ, exporta a string OBJ
+      let objString = null;
+      if (!isCube) {
+        objString = exporter.parse(obj);
       }
 
       return {
         type: isCube ? "cube" : "model",
-        name: obj.name || "Object",
-        position: {
-          x: obj.position.x,
-          y: obj.position.y,
-          z: obj.position.z
-        },
-        scale: {
-          x: obj.scale.x,
-          y: obj.scale.y,
-          z: obj.scale.z
-        },
-        rotation: {
-          x: obj.rotation.x,
-          y: obj.rotation.y,
-          z: obj.rotation.z
-        },
+        name: obj.name || `object_${index + 1}`,
+        position: { x: obj.position.x, y: obj.position.y, z: obj.position.z },
+        scale: { x: obj.scale.x, y: obj.scale.y, z: obj.scale.z },
+        rotation: { x: obj.rotation.x, y: obj.rotation.y, z: obj.rotation.z },
         color: obj.material?.color ? `#${obj.material.color.getHexString()}` : "#ffffff",
         texture: textureData,
-        objData: !isCube ? obj.userData.objSource || null : null // Guarda conteúdo OBJ se for modelo
+        objData: objString
       };
     })
   };
 
-  const json = JSON.stringify(mapData, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
+  // Salva o arquivo .map
+  const jsonBlob = new Blob([JSON.stringify(mapData, null, 2)], { type: 'application/json' });
+  const aJson = document.createElement('a');
+  aJson.href = URL.createObjectURL(jsonBlob);
+  aJson.download = 'scene.map';
+  aJson.click();
+  URL.revokeObjectURL(aJson.href);
 
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'map1.map';
-  a.click();
-  URL.revokeObjectURL(a.href);
+  // 2️⃣ Salva cada modelo OBJ separadamente
+  mapData.objects.forEach(obj => {
+    if (obj.type === 'model' && obj.objData) {
+      const objBlob = new Blob([obj.objData], { type: 'text/plain' });
+      const aObj = document.createElement('a');
+      aObj.href = URL.createObjectURL(objBlob);
+      aObj.download = `${obj.name}.obj`;
+      aObj.click();
+      URL.revokeObjectURL(aObj.href);
+    }
+  });
+
+  console.log('Cena salva com sucesso! Arquivo .map e OBJ(s) exportados.');
 });
 
 // --- LOAD ---
@@ -146,3 +156,4 @@ loadInput.addEventListener('change', () => {
   };
   reader.readAsText(file);
 });
+
