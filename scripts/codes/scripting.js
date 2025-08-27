@@ -1,4 +1,4 @@
-const console = {
+const gconsole = {
   print: (text) => {
     const output = document.getElementById('scriptOutput');
     output.textContent += text + '\n';
@@ -101,7 +101,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.print('Error: function not terminated -> ' + funcName);
+        gconsole.print('Error: function not terminated -> ' + funcName);
         return;
       }
       functions[funcName] = funcBody;
@@ -114,7 +114,7 @@ async function runLines(lines) {
       if (functions[funcName]) {
         await runLines(functions[funcName]);
       } else {
-        console.print('Error: function not defined -> ' + funcName);
+        gconsole.print('Error: function not defined -> ' + funcName);
       }
       i++;
       continue;
@@ -129,7 +129,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.print('Error: repeat block not terminated');
+        gconsole.print('Error: repeat block not terminated');
         return;
       }
       for (let r = 0; r < count; r++) {
@@ -147,7 +147,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.print('Error: loop block not terminated');
+        gconsole.print('Error: loop block not terminated');
         return;
       }
       while (true) {
@@ -169,38 +169,38 @@ async function runLines(lines) {
           if (Array.isArray(arr)) {
             variables[name] = arr;
           } else {
-            console.print('Error: invalid array -> ' + valueRaw);
+            gconsole.print('Error: invalid array -> ' + valueRaw);
           }
         } else {
           variables[name] = safeMathEval(valueRaw);
         }
       } catch {
-        console.print('Error: invalid value -> ' + valueRaw);
+        gconsole.print('Error: invalid value -> ' + valueRaw);
       }
       i++;
       continue;
     }
 
-    if (line.startsWith('console.print(') && line.endsWith(')')) {
+    if (line.startsWith('gconsole.print(') && line.endsWith(')')) {
       let param = line.slice(14, -1).trim();
       if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
-        console.print(param.slice(1, -1));
+        gconsole.print(param.slice(1, -1));
       } else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
         const varName = param.split('[')[0];
         const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
         if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
           if (index < 0 || index >= variables[varName].length) {
-            console.print('Error: array index out of bounds -> ' + param);
+            gconsole.print('Error: array index out of bounds -> ' + param);
           } else {
-            console.print(String(variables[varName][index]));
+            gconsole.print(String(variables[varName][index]));
           }
         } else {
-          console.print('Error: list not defined -> ' + varName);
+          gconsole.print('Error: list not defined -> ' + varName);
         }
       } else if (variables.hasOwnProperty(param)) {
-        console.print(String(variables[param]));
+        gconsole.print(String(variables[param]));
       } else {
-        console.print('Error: undefined variable -> ' + param);
+        gconsole.print('Error: undefined variable -> ' + param);
       }
       i++;
       continue;
@@ -227,7 +227,7 @@ async function runLines(lines) {
         i++;
       }
       if (i >= lines.length) {
-        console.print('Error: if block not terminated');
+        gconsole.print('Error: if block not terminated');
         return;
       }
       try {
@@ -238,7 +238,7 @@ async function runLines(lines) {
           await runLines(elseBlock);
         }
       } catch {
-        console.print('Error: invalid if condition');
+        gconsole.print('Error: invalid if condition');
       }
       i++;
       continue;
@@ -248,9 +248,9 @@ async function runLines(lines) {
       const expr = line.slice(5, -1).trim();
       try {
         const result = safeMathEval(expr);
-        console.print(result);
+        gconsole.print(result);
       } catch (e) {
-        console.print('Error: invalid expression');
+        gconsole.print('Error: invalid expression');
       }
       i++;
       continue;
@@ -261,7 +261,7 @@ async function runLines(lines) {
       if (!isNaN(time) && time >= 0) {
         await new Promise(resolve => setTimeout(resolve, time * 1000));
       } else {
-        console.print('Error: invalid wait time');
+        gconsole.print('Error: invalid wait time');
       }
       i++;
       continue;
@@ -272,9 +272,9 @@ async function runLines(lines) {
       let percent = parseFloat(raw.replace('%', ''));
       if (!isNaN(percent) && percent >= 0 && percent <= 100) {
         globalVolume = percent / 100;
-        console.print(`Volume set to ${percent}%`);
+        gconsole.print(`Volume set to ${percent}%`);
       } else {
-        console.print('Error: invalid volume value');
+        gconsole.print('Error: invalid volume value');
       }
       i++;
       continue;
@@ -285,12 +285,12 @@ async function runLines(lines) {
       if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)) {
         try {
           scene.background = new THREE.Color(hex);
-          console.print(`Sky color set to ${hex}`);
+          gconsole.print(`Sky color set to ${hex}`);
         } catch {
-          console.print('Error: invalid color format');
+          gconsole.print('Error: invalid color format');
         }
       } else {
-        console.print('Error: invalid hex color');
+        gconsole.print('Error: invalid hex color');
       }
       i++;
       continue;
@@ -301,7 +301,7 @@ async function runLines(lines) {
       if (args.length === 2 && !isNaN(args[0]) && !isNaN(args[1])) {
         await playTone(args[0], args[1]);
       } else {
-        console.print('Error: invalid play arguments');
+        gconsole.print('Error: invalid play arguments');
       }
       i++;
       continue;
@@ -320,13 +320,13 @@ async function runLines(lines) {
           if (freq) {
             await playTone(freq, duration);
           } else {
-            console.print('Error: unknown note -> ' + noteName);
+            gconsole.print('Error: unknown note -> ' + noteName);
           }
         } else {
-          console.print('Error: invalid note duration');
+          gconsole.print('Error: invalid note duration');
         }
       } else {
-        console.print('Error: invalid note arguments');
+        gconsole.print('Error: invalid note arguments');
       }
       i++;
       continue;
@@ -340,9 +340,9 @@ async function runLines(lines) {
           url = 'https://' + url;
         }
         window.open(url, '_blank');
-        console.print('Opening URL: ' + url);
+        gconsole.print('Opening URL: ' + url);
       } else {
-        console.print('Error: invalid URL string');
+        gconsole.print('Error: invalid URL string');
       }
       i++;
       continue;
@@ -351,23 +351,23 @@ async function runLines(lines) {
     if (line.startsWith('console.print(') && line.endsWith(')')) {
       let param = line.slice(14, -1).trim();
       if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
-        console.print(param.slice(1, -1));
+        gconsole.print(param.slice(1, -1));
       } else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
         const varName = param.split('[')[0];
         const index = parseInt(param.match(/\[(\d+)\]/)[1]) - 1;
         if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
           if (index < 0 || index >= variables[varName].length) {
-            console.print('Error: array index out of bounds -> ' + param);
+            gconsole.print('Error: array index out of bounds -> ' + param);
           } else {
-            console.print(String(variables[varName][index]));
+            gconsole.print(String(variables[varName][index]));
           }
         } else {
-          console.print('Error: list not defined -> ' + varName);
+          gconsole.print('Error: list not defined -> ' + varName);
         }
       } else if (variables.hasOwnProperty(param)) {
-        console.print(String(variables[param]));
+        gconsole.print(String(variables[param]));
       } else {
-        console.print('Error: undefined variable -> ' + param);
+        gconsole.print('Error: undefined variable -> ' + param);
       }
       i++;
       continue;
@@ -375,14 +375,14 @@ async function runLines(lines) {
 
     if (line === 'wireframe.on') {
       setWireframeForAllObjects(true);
-      console.print("Wireframe enabled.");
+      gconsole.print("Wireframe enabled.");
       i++;
       continue;
     }
 
     if (line === 'wireframe.off') {
       setWireframeForAllObjects(false);
-      console.print("Wireframe disabled.");
+      gconsole.print("Wireframe disabled.");
       i++;
       continue;
     }
@@ -392,7 +392,7 @@ async function runLines(lines) {
       continue;
     }
 
-    console.print('Error: invalid command -> ' + line);
+    gconsole.print('Error: invalid command -> ' + line);
     i++;
   }
 }
