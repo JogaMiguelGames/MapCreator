@@ -28,10 +28,9 @@ document.getElementById("objFileInput").addEventListener("change", (event) => {
       cubes.push(object);    // Adiciona o grupo ao array de cubos manipuláveis
 
       updateCubeList();      // Atualiza UI
-      console.log("OBJ importado com sucesso!");
     } catch (err) {
-      console.error("Erro ao carregar OBJ:", err);
     }
   };
   reader.readAsText(file);
 });
+
