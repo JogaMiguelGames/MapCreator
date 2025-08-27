@@ -4,35 +4,23 @@ document.getElementById('saveButton').addEventListener('click', () => {
     sceneColor: `#${scene.background.getHexString()}`,
     timeOfDay: parseInt(timeInput.value),
     objects: cubes.map(obj => {
-      // Detecta se é um cubo ou modelo
       const isCube = obj.geometry && obj.geometry.type === "BoxGeometry";
 
       let textureData = null;
-      if (obj.material?.map?.image?.src) {
-        textureData = obj.material.map.image.src;
-      }
+      if (obj.material?.map?.image?.src) textureData = obj.material.map.image.src;
 
       return {
         type: isCube ? "cube" : "model",
         name: obj.name || "Object",
-        position: {
-          x: obj.position.x,
-          y: obj.position.y,
-          z: obj.position.z
-        },
-        scale: {
-          x: obj.scale.x,
-          y: obj.scale.y,
-          z: obj.scale.z
-        },
-        rotation: {
-          x: obj.rotation.x,
-          y: obj.rotation.y,
-          z: obj.rotation.z
-        },
+        position: { x: obj.position.x, y: obj.position.y, z: obj.position.z },
+        scale: { x: obj.scale.x, y: obj.scale.y, z: obj.scale.z },
+        rotation: { x: obj.rotation.x, y: obj.rotation.y, z: obj.rotation.z },
         color: obj.material?.color ? `#${obj.material.color.getHexString()}` : "#ffffff",
         texture: textureData,
-        objData: !isCube ? obj.userData.objSource || null : null // Guarda conteúdo OBJ se for modelo
+        // Salva o OBJ em Base64 para JSON seguro
+        objData: !isCube && obj.userData.objSource
+          ? btoa(unescape(encodeURIComponent(obj.userData.objSource)))
+          : null
       };
     })
   };
@@ -51,9 +39,7 @@ document.getElementById('saveButton').addEventListener('click', () => {
 const loadButton = document.getElementById('loadButton');
 const loadInput = document.getElementById('loadInput');
 
-loadButton.addEventListener('click', () => {
-  loadInput.click();
-});
+loadButton.addEventListener('click', () => loadInput.click());
 
 loadInput.addEventListener('change', () => {
   const file = loadInput.files[0];
@@ -70,11 +56,11 @@ loadInput.addEventListener('change', () => {
         if (bgColorInput) bgColorInput.value = mapData.sceneColor;
       }
 
-      // Remove objetos antigos da cena e do array
+      // Remove objetos antigos
       cubes.forEach(obj => scene.remove(obj));
       cubes.length = 0;
 
-      // Carrega objetos do mapa
+      // Carrega objetos
       mapData.objects.forEach(data => {
         if (data.type === "cube") {
           // --- Cubo ---
@@ -103,9 +89,10 @@ loadInput.addEventListener('change', () => {
         } else if (data.type === "model" && data.objData) {
           // --- Modelo OBJ ---
           const loader = new THREE.OBJLoader();
-          const object = loader.parse(data.objData);
-          object.name = data.name || "Model";
+          const objText = decodeURIComponent(escape(atob(data.objData)));
+          const object = loader.parse(objText);
 
+          object.name = data.name || "Model";
           object.position.set(data.position.x, data.position.y, data.position.z);
           object.scale.set(data.scale.x, data.scale.y, data.scale.z);
           object.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
@@ -126,9 +113,7 @@ loadInput.addEventListener('change', () => {
             }
           });
 
-          // Armazena a string OBJ para possível re-save
-          object.userData.objSource = data.objData;
-
+          object.userData.objSource = objText;
           scene.add(object);
           cubes.push(object);
         }
