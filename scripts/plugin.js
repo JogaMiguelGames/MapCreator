@@ -59,7 +59,6 @@ document.getElementById('pluginFileInput').addEventListener('change', (event) =>
       // Agora você pode chamar: plugin.execute('plugin.js') dentro do .plugin
 
     } catch (err) {
-      console.error(err);
       alert('Failed to import plugin: ' + err.message);
     }
   };
