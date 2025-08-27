@@ -1,67 +1,59 @@
-// --- Botão para importar plugin ---
 document.getElementById('pluginBtn').addEventListener('click', () => {
-  document.getElementById('pluginFileInput').click();
+  document.getElementById('pluginFolderInput').click();
 });
 
-// --- Input para selecionar arquivo ---
-document.getElementById('pluginFileInput').addEventListener('change', (event) => {
-  const file = event.target.files[0];
-  if (!file) return;
+document.getElementById('pluginFolderInput').addEventListener('change', (event) => {
+  const files = Array.from(event.target.files);
+  if (!files.length) return;
+
+  // Procura pelo plugin.js dentro da pasta
+  const pluginFile = files.find(f => f.name.toLowerCase() === "plugin.js");
+  if (!pluginFile) {
+    alert("plugin.js não encontrado na pasta!");
+    return;
+  }
 
   const reader = new FileReader();
-
   reader.onload = (e) => {
     const content = e.target.result;
 
     try {
       const plugin = {};
 
-      // Criamos a função execute para o plugin
+      // Função execute para ler outros arquivos JS dentro da mesma pasta
       plugin.execute = (filename) => {
-        fetch(filename)
-          .then(resp => {
-            if (!resp.ok) throw new Error('File not found: ' + filename);
-            return resp.text();
-          })
-          .then(code => {
-            try {
-              eval(code); // Executa o JS do arquivo
-            } catch (err) {
-              console.error('Error executing plugin file:', err);
-            }
-          })
-          .catch(err => console.error(err));
+        const fileToExecute = files.find(f => f.name === filename);
+        if (!fileToExecute) {
+          console.error("Arquivo não encontrado na pasta:", filename);
+          return;
+        }
+
+        const fr = new FileReader();
+        fr.onload = (ev) => {
+          try {
+            eval(ev.target.result); // executa o código JS
+          } catch(err) {
+            console.error("Erro ao executar arquivo:", err);
+          }
+        };
+        fr.readAsText(fileToExecute);
       };
 
-      // Executa o código do próprio arquivo .plugin
+      // Executa o plugin.js lido
       const wrappedCode = `(function(plugin){ ${content} })(plugin);`;
       eval(wrappedCode);
 
-      // Valida plugin.name
       if (!plugin.name) {
-        alert('The plugin does not have a name property!');
+        alert("O plugin não possui a propriedade 'name'!");
         return;
       }
 
-      let versionText = '';
-      if (plugin.version !== undefined) {
-        const versionStr = plugin.version.toString();
-        if (/^[0-9.]+$/.test(versionStr)) {
-          versionText = versionStr;
-        } else {
-          alert('Invalid plugin version! Must contain only numbers and dots.');
-          return;
-        }
-      }
-
-      alert(`The plugin ${plugin.name} has been imported!` + (versionText ? ` version: ${versionText}` : ''));
-
-      // Agora você pode chamar: plugin.execute('plugin.js') dentro do .plugin
-
+      alert(`Plugin "${plugin.name}" importado com sucesso!`);
     } catch (err) {
-      alert('Failed to import plugin: ' + err.message);
+      console.error(err);
+      alert("Falha ao importar plugin: " + err.message);
     }
   };
 
-  reader.readAsText(file);
+  reader.readAsText(pluginFile);
 });
