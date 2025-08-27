@@ -22,6 +22,65 @@ sunLight.shadow.camera.top = 20;
 sunLight.shadow.camera.bottom = -20;
 scene.add(sunLight);
 
+// Grupo para as esferas de seleção
+let selectionSpheres = [];
+
+// Criar material e geometria padrão para as esferas
+const sphereGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 }); // amarelo
+
+function showSelectionSpheres(cube){
+  // Remove esferas antigas
+  selectionSpheres.forEach(s => scene.remove(s));
+  selectionSpheres = [];
+
+  if(!cube) return;
+
+  const halfX = (cube.geometry.parameters.width || 1) * cube.scale.x / 2;
+  const halfY = (cube.geometry.parameters.height || 1) * cube.scale.y / 2;
+  const halfZ = (cube.geometry.parameters.depth || 1) * cube.scale.z / 2;
+
+  const offsets = [
+    new THREE.Vector3( halfX, 0, 0), // direita
+    new THREE.Vector3(-halfX, 0, 0), // esquerda
+    new THREE.Vector3(0,  halfY, 0), // cima
+    new THREE.Vector3(0, -halfY, 0), // baixo
+    new THREE.Vector3(0, 0,  halfZ), // frente
+    new THREE.Vector3(0, 0, -halfZ)  // trás
+  ];
+
+  offsets.forEach(offset => {
+    const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+    // Calcula posição no espaço do cubo (leva em conta rotação)
+    const pos = offset.clone().applyEuler(cube.rotation).add(cube.position);
+    sphere.position.copy(pos);
+    selectionSpheres.push(sphere);
+    scene.add(sphere);
+  });
+}
+
+// Atualizar esferas sempre que mudar cubo selecionado
+function selectCube(cube){
+  selectedCube = cube;
+  updatePanelForCube(selectedCube);
+  updateCubeList();
+  showSelectionSpheres(selectedCube);
+}
+
+// Substituir onde você muda `selectedCube = cube` por:
+selectCube(cube);
+
+// Exemplo: no raycaster
+function onClick(){
+  if(document.pointerLockElement !== canvas) return;
+  mouse.x = 0; mouse.y = 0;
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(cubes);
+  if(intersects.length > 0){
+    selectCube(intersects[0].object);
+  }
+}
+
 function addAxisLine(from, to, color){
   const line = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([from, to]),
@@ -456,3 +515,4 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
