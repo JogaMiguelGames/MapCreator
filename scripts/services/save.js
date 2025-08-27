@@ -59,6 +59,7 @@ document.getElementById('loadButton').addEventListener('click', () => {
   const input = document.createElement('input');
   input.type = 'file';
   input.accept = '.map';
+
   input.onchange = (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -68,53 +69,62 @@ document.getElementById('loadButton').addEventListener('click', () => {
       try {
         const mapData = JSON.parse(e.target.result);
 
-        // Reset scene
-        while (scene.children.length > 0) {
-          scene.remove(scene.children[0]);
-        }
+        // Load scene color
+        scene.background = new THREE.Color(mapData.sceneColor || "#000000");
 
-        // Restore background and time
-        scene.background = new THREE.Color(mapData.sceneColor || "#87ceeb");
-        if (mapData.timeOfDay !== undefined) {
+        // Load time of day
+        if (typeof mapData.timeOfDay === "number") {
           updateLightingByTime(mapData.timeOfDay);
         }
 
+        // Clear old objects
+        objects.forEach(obj => scene.remove(obj));
+        objects.length = 0;
+
         // Load objects
-        mapData.objects.forEach(obj => {
-          if (obj.type === "model") {
-            // Rebuild OBJ string from line1, line2, line3...
-            let objContent = "";
-            let lineIndex = 1;
-            while (obj[`line${lineIndex}`] !== undefined) {
-              objContent += obj[`line${lineIndex}`] + "\n";
-              lineIndex++;
-            }
-
-            const loader = new THREE.OBJLoader();
-            const model = loader.parse(objContent);
-
-            model.position.set(obj.position.x, obj.position.y, obj.position.z);
-            model.scale.set(obj.scale.x, obj.scale.y, obj.scale.z);
-            model.rotation.set(obj.rotation.x, obj.rotation.y, obj.rotation.z);
-
-            if (obj.color) {
-              model.traverse(child => {
-                if (child.isMesh) {
-                  child.material = new THREE.MeshStandardMaterial({ color: obj.color });
-                }
+        mapData.objects.forEach(objData => {
+          if (objData.type === "model") {
+            // Rebuild OBJ text from line1, line2, ...
+            let objText = "";
+            Object.keys(objData)
+              .filter(key => key.startsWith("line"))
+              .sort((a, b) => parseInt(a.replace("line", "")) - parseInt(b.replace("line", "")))
+              .forEach(lineKey => {
+                objText += objData[lineKey] + "\n";
               });
-            }
 
-            scene.add(model);
+            // Parse OBJ
+            const loader = new THREE.OBJLoader();
+            const object = loader.parse(objText);
+
+            object.position.set(objData.position.x, objData.position.y, objData.position.z);
+            object.scale.set(objData.scale.x, objData.scale.y, objData.scale.z);
+            object.rotation.set(objData.rotation.x, objData.rotation.y, objData.rotation.z);
+
+            // Apply color if exists
+            object.traverse(child => {
+              if (child.isMesh) {
+                child.material = new THREE.MeshStandardMaterial({
+                  color: objData.color || "#ffffff"
+                });
+                child.castShadow = true;
+                child.receiveShadow = true;
+              }
+            });
+
+            scene.add(object);
+            objects.push(object);
           }
         });
 
       } catch (err) {
-        console.error("Error loading map:", err);
+        alert("Error loading map: " + err.message);
+        console.error(err);
       }
     };
 
     reader.readAsText(file);
   };
+
   input.click();
 });
