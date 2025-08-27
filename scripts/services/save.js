@@ -55,98 +55,66 @@ document.getElementById('saveButton').addEventListener('click', () => {
   URL.revokeObjectURL(a.href);
 });
 
-// --- LOAD ---
-loadInput.addEventListener('change', () => {
-  const file = loadInput.files[0];
-  if (!file) return;
+document.getElementById('loadButton').addEventListener('click', () => {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.map';
+  input.onchange = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    try {
-      const mapData = JSON.parse(e.target.result);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const mapData = JSON.parse(e.target.result);
 
-      if (mapData.sceneColor) {
-        scene.background.set(mapData.sceneColor);
-        if (bgColorInput) bgColorInput.value = mapData.sceneColor;
-      }
-
-      cubes.forEach(obj => scene.remove(obj));
-      cubes.length = 0;
-
-      mapData.objects.forEach(data => {
-        if (data.type === "cube") {
-          // Cubo normal
-          const material = new THREE.MeshBasicMaterial({ color: data.color || '#ffffff' });
-          const cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
-
-          cube.name = data.name || "Cube";
-          cube.position.set(data.position.x, data.position.y, data.position.z);
-          cube.scale.set(data.scale.x, data.scale.y, data.scale.z);
-          cube.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
-
-          if (data.texture) {
-            const img = new Image();
-            img.src = data.texture;
-            img.onload = () => {
-              const tex = new THREE.Texture(img);
-              tex.needsUpdate = true;
-              cube.material.map = tex;
-              cube.material.needsUpdate = true;
-            };
-          }
-
-          scene.add(cube);
-          cubes.push(cube);
-
-        } else if (data.type === "model") {
-          // Reconstrói as linhas do OBJ
-          const objLines = Object.keys(data)
-            .filter(k => k.startsWith("line"))
-            .sort((a, b) => parseInt(a.replace("line", "")) - parseInt(b.replace("line", "")))
-            .map(k => data[k]);
-
-          const objSource = objLines.join("\n");
-          const loader = new THREE.OBJLoader();
-          const object = loader.parse(objSource);
-
-          object.name = data.name || "Model";
-          object.position.set(data.position.x, data.position.y, data.position.z);
-          object.scale.set(data.scale.x, data.scale.y, data.scale.z);
-          object.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
-
-          object.traverse(child => {
-            if (child.isMesh) {
-              child.material = new THREE.MeshBasicMaterial({ color: data.color || 0xffffff });
-              if (data.texture) {
-                const img = new Image();
-                img.src = data.texture;
-                img.onload = () => {
-                  const tex = new THREE.Texture(img);
-                  tex.needsUpdate = true;
-                  child.material.map = tex;
-                  child.material.needsUpdate = true;
-                };
-              }
-            }
-          });
-
-          // mantém as linhas no userData
-          object.userData.objLines = objLines;
-
-          scene.add(object);
-          cubes.push(object);
+        // Reset scene
+        while (scene.children.length > 0) {
+          scene.remove(scene.children[0]);
         }
-      });
 
-      selectedCube = cubes[0] || null;
-      updatePanelForCube(selectedCube);
-      updateCubeList();
-      loadInput.value = '';
+        // Restore background and time
+        scene.background = new THREE.Color(mapData.sceneColor || "#87ceeb");
+        if (mapData.timeOfDay !== undefined) {
+          updateLightingByTime(mapData.timeOfDay);
+        }
 
-    } catch (err) {
-      alert('Erro ao carregar mapa: arquivo inválido ou corrompido.');
-      console.error(err);
-    }
+        // Load objects
+        mapData.objects.forEach(obj => {
+          if (obj.type === "model") {
+            // Rebuild OBJ string from line1, line2, line3...
+            let objContent = "";
+            let lineIndex = 1;
+            while (obj[`line${lineIndex}`] !== undefined) {
+              objContent += obj[`line${lineIndex}`] + "\n";
+              lineIndex++;
+            }
+
+            const loader = new THREE.OBJLoader();
+            const model = loader.parse(objContent);
+
+            model.position.set(obj.position.x, obj.position.y, obj.position.z);
+            model.scale.set(obj.scale.x, obj.scale.y, obj.scale.z);
+            model.rotation.set(obj.rotation.x, obj.rotation.y, obj.rotation.z);
+
+            if (obj.color) {
+              model.traverse(child => {
+                if (child.isMesh) {
+                  child.material = new THREE.MeshStandardMaterial({ color: obj.color });
+                }
+              });
+            }
+
+            scene.add(model);
+          }
+        });
+
+      } catch (err) {
+        console.error("Error loading map:", err);
+      }
+    };
+
+    reader.readAsText(file);
   };
-  reader.readAsText(file);
+  input.click();
 });
