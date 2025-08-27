@@ -34,7 +34,8 @@ addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000)
 addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
 
 // --- Controle de câmera ---
-camera.position.set(0, 1.6, 5);
+camera.position.set(4, 2, 4);
+camera.rotation.set(0, 45, 30)
 let yaw = 0, pitch = 0;
 const moveSpeed = 5;
 const lookSpeed = 0.002;
@@ -503,6 +504,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
