@@ -24,7 +24,7 @@ document.getElementById("objFileInput").addEventListener("change", (event) => {
 
       object.position.set(0, 0, 0);
 
-      // --- SALVA A STRING OBJ PARA FUTURO SAVE ---
+      // 🔥 Salva o conteúdo OBJ dentro do objeto
       object.userData.objSource = contents;
 
       scene.add(object);     // Adiciona o objeto completo à cena
