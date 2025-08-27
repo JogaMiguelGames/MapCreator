@@ -72,10 +72,10 @@ document.getElementById('loadButton').addEventListener('click', () => {
         // Load scene color
         scene.background = new THREE.Color(mapData.sceneColor || "#000000");
 
-        // Load time of day
         if (typeof mapData.timeOfDay === "number") {
-          updateLightingByTime(mapData.timeOfDay);
+            updateLightingByTime(mapData.timeOfDay, mapData.sceneColor || "#000000");
         }
+
 
         // Clear old objects
         objects.forEach(obj => scene.remove(obj));
@@ -128,3 +128,4 @@ document.getElementById('loadButton').addEventListener('click', () => {
 
   input.click();
 });
+
