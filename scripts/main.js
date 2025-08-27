@@ -435,6 +435,49 @@ document.addEventListener('keydown', e => {
   }
 });
 
+function addSpheresToSelectedCube() {
+    if (!selectedCube) return;
+
+    // Remover esferas anteriores (se quiser evitar duplicação)
+    if (selectedCube.spheres) {
+        selectedCube.spheres.forEach(s => scene.remove(s));
+    }
+
+    const sphereGeometry = new THREE.SphereGeometry(0.1, 16, 16);
+    const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
+
+    const directions = [
+        new THREE.Vector3(1, 0, 0),   // direita (+X)
+        new THREE.Vector3(-1, 0, 0),  // esquerda (-X)
+        new THREE.Vector3(0, 1, 0),   // cima (+Y)
+        new THREE.Vector3(0, -1, 0),  // baixo (-Y)
+        new THREE.Vector3(0, 0, 1),   // frente (+Z)
+        new THREE.Vector3(0, 0, -1)   // trás (-Z)
+    ];
+
+    const distance = 1.1; // distância da face do cubo
+    const spheres = [];
+
+    for (let i = 0; i < 6; i++) {
+        const material = new THREE.MeshStandardMaterial({ color: colors[i] });
+        const sphere = new THREE.Mesh(sphereGeometry, material);
+        
+        // Posição relativa ao cubo
+        const dir = directions[i].clone().multiplyScalar(distance);
+        const worldPos = new THREE.Vector3().copy(selectedCube.position).add(dir);
+        sphere.position.copy(worldPos);
+
+        sphere.castShadow = true;
+        sphere.receiveShadow = true;
+
+        scene.add(sphere);
+        spheres.push(sphere);
+    }
+
+    // Armazena referência no cubo
+    selectedCube.spheres = spheres;
+}
+
 // Resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth/window.innerHeight;
@@ -456,3 +499,4 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
