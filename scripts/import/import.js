@@ -24,13 +24,17 @@ document.getElementById("objFileInput").addEventListener("change", (event) => {
 
       object.position.set(0, 0, 0);
 
+      // --- SALVA A STRING OBJ PARA FUTURO SAVE ---
+      object.userData.objSource = contents;
+
       scene.add(object);     // Adiciona o objeto completo à cena
-      cubes.push(object);    // Adiciona o grupo ao array de cubos manipuláveis
+      cubes.push(object);    // Adiciona ao array manipulável
 
       updateCubeList();      // Atualiza UI
+      console.log("OBJ importado com sucesso!");
     } catch (err) {
+      console.error("Erro ao carregar OBJ:", err);
     }
   };
   reader.readAsText(file);
 });
-
