@@ -390,9 +390,7 @@ function updateCubeList(){
     div.addEventListener('click', () => {
       if (clickTimer) clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
-        selectedCube = cube;
-        updatePanelForCube(selectedCube);
-        updateCubeList();
+        selectCube(cube); // <--- aqui também
         clickTimer = null;
       }, 250);
     });
@@ -514,4 +512,5 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
