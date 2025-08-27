@@ -70,14 +70,13 @@ function selectCube(cube){
 // Substituir onde você muda `selectedCube = cube` por:
 selectCube(cube);
 
-// Exemplo: no raycaster
 function onClick(){
   if(document.pointerLockElement !== canvas) return;
   mouse.x = 0; mouse.y = 0;
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObjects(cubes);
   if(intersects.length > 0){
-    selectCube(intersects[0].object);
+    selectCube(intersects[0].object); // <--- usa selectCube, não apenas selectedCube=
   }
 }
 
