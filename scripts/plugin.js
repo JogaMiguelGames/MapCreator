@@ -1,15 +1,17 @@
+// Open folder selection when clicking the button
 document.getElementById('pluginBtn').addEventListener('click', () => {
   document.getElementById('pluginFolderInput').click();
 });
 
+// Load plugin.js from the selected folder
 document.getElementById('pluginFolderInput').addEventListener('change', (event) => {
   const files = Array.from(event.target.files);
   if (!files.length) return;
 
-  // Procura pelo plugin.js dentro da pasta
+  // Find plugin.js in the folder
   const pluginFile = files.find(f => f.name.toLowerCase() === "plugin.js");
   if (!pluginFile) {
-    alert("plugin.js não encontrado na pasta!");
+    alert("plugin.js not found in the folder!");
     return;
   }
 
@@ -20,38 +22,39 @@ document.getElementById('pluginFolderInput').addEventListener('change', (event) 
     try {
       const plugin = {};
 
-      // Função execute para ler outros arquivos JS dentro da mesma pasta
+      // Add execute function to run other JS files in the same folder
       plugin.execute = (filename) => {
         const fileToExecute = files.find(f => f.name === filename);
         if (!fileToExecute) {
-          console.error("Arquivo não encontrado na pasta:", filename);
+          console.error("File not found in folder:", filename);
           return;
         }
 
-        const fr = new FileReader();
-        fr.onload = (ev) => {
+        const fileReader = new FileReader();
+        fileReader.onload = (ev) => {
           try {
-            eval(ev.target.result); // executa o código JS
+            eval(ev.target.result); // execute the JS code
           } catch(err) {
-            console.error("Erro ao executar arquivo:", err);
+            console.error("Error executing file:", err);
           }
         };
-        fr.readAsText(fileToExecute);
+        fileReader.readAsText(fileToExecute);
       };
 
-      // Executa o plugin.js lido
+      // Execute plugin.js
       const wrappedCode = `(function(plugin){ ${content} })(plugin);`;
       eval(wrappedCode);
 
       if (!plugin.name) {
-        alert("O plugin não possui a propriedade 'name'!");
+        alert("The plugin does not have a 'name' property!");
         return;
       }
 
-      alert(`Plugin "${plugin.name}" importado com sucesso!`);
+      alert(`Plugin "${plugin.name}" imported successfully!`);
+
     } catch (err) {
       console.error(err);
-      alert("Falha ao importar plugin: " + err.message);
+      alert("Failed to import plugin: " + err.message);
     }
   };
 
