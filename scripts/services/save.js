@@ -1,70 +1,61 @@
-// --- SAVE.JS COMPLETO ---
-// Certifique-se de incluir o OBJExporter.js do Three.js:
-// <script src="https://threejs.org/examples/js/exporters/OBJExporter.js"></script>
-
+// --- SAVE ---
 document.getElementById('saveButton').addEventListener('click', () => {
-  const exporter = new THREE.OBJExporter();
-
-  // 1️⃣ Salva JSON da cena (.map)
   const mapData = {
     sceneColor: `#${scene.background.getHexString()}`,
     timeOfDay: parseInt(timeInput.value),
-    objects: cubes.map((obj, index) => {
+    objects: cubes.map(obj => {
       const isCube = obj.geometry && obj.geometry.type === "BoxGeometry";
 
       let textureData = null;
-      if (obj.material?.map?.image?.src) textureData = obj.material.map.image.src;
+      if (obj.material?.map?.image?.src) {
+        textureData = obj.material.map.image.src;
+      }
 
-      // Para modelos OBJ, exporta a string OBJ
-      let objString = null;
-      if (!isCube) {
-        objString = exporter.parse(obj);
+      // Se for modelo, salva as linhas do OBJ
+      let objLines = null;
+      if (!isCube && obj.userData.objLines) {
+        objLines = {};
+        obj.userData.objLines.forEach((line, index) => {
+          objLines[`line${index + 1}`] = line;
+        });
       }
 
       return {
         type: isCube ? "cube" : "model",
-        name: obj.name || `object_${index + 1}`,
-        position: { x: obj.position.x, y: obj.position.y, z: obj.position.z },
-        scale: { x: obj.scale.x, y: obj.scale.y, z: obj.scale.z },
-        rotation: { x: obj.rotation.x, y: obj.rotation.y, z: obj.rotation.z },
+        name: obj.name || "Object",
+        position: {
+          x: obj.position.x,
+          y: obj.position.y,
+          z: obj.position.z
+        },
+        scale: {
+          x: obj.scale.x,
+          y: obj.scale.y,
+          z: obj.scale.z
+        },
+        rotation: {
+          x: obj.rotation.x,
+          y: obj.rotation.y,
+          z: obj.rotation.z
+        },
         color: obj.material?.color ? `#${obj.material.color.getHexString()}` : "#ffffff",
         texture: textureData,
-        objData: objString
+        ...objLines // espalha line1, line2, line3 no JSON
       };
     })
   };
 
-  // Salva o arquivo .map
-  const jsonBlob = new Blob([JSON.stringify(mapData, null, 2)], { type: 'application/json' });
-  const aJson = document.createElement('a');
-  aJson.href = URL.createObjectURL(jsonBlob);
-  aJson.download = 'scene.map';
-  aJson.click();
-  URL.revokeObjectURL(aJson.href);
+  const json = JSON.stringify(mapData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
 
-  // 2️⃣ Salva cada modelo OBJ separadamente
-  mapData.objects.forEach(obj => {
-    if (obj.type === 'model' && obj.objData) {
-      const objBlob = new Blob([obj.objData], { type: 'text/plain' });
-      const aObj = document.createElement('a');
-      aObj.href = URL.createObjectURL(objBlob);
-      aObj.download = `${obj.name}.obj`;
-      aObj.click();
-      URL.revokeObjectURL(aObj.href);
-    }
-  });
-
-  console.log('Cena salva com sucesso! Arquivo .map e OBJ(s) exportados.');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'map1.map';
+  a.click();
+  URL.revokeObjectURL(a.href);
 });
 
 // --- LOAD ---
-const loadButton = document.getElementById('loadButton');
-const loadInput = document.getElementById('loadInput');
-
-loadButton.addEventListener('click', () => {
-  loadInput.click();
-});
-
 loadInput.addEventListener('change', () => {
   const file = loadInput.files[0];
   if (!file) return;
@@ -74,20 +65,17 @@ loadInput.addEventListener('change', () => {
     try {
       const mapData = JSON.parse(e.target.result);
 
-      // Atualiza cor de fundo
       if (mapData.sceneColor) {
         scene.background.set(mapData.sceneColor);
         if (bgColorInput) bgColorInput.value = mapData.sceneColor;
       }
 
-      // Remove objetos antigos da cena e do array
       cubes.forEach(obj => scene.remove(obj));
       cubes.length = 0;
 
-      // Carrega objetos do mapa
       mapData.objects.forEach(data => {
         if (data.type === "cube") {
-          // --- Cubo ---
+          // Cubo normal
           const material = new THREE.MeshBasicMaterial({ color: data.color || '#ffffff' });
           const cube = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), material);
 
@@ -110,12 +98,18 @@ loadInput.addEventListener('change', () => {
           scene.add(cube);
           cubes.push(cube);
 
-        } else if (data.type === "model" && data.objData) {
-          // --- Modelo OBJ ---
-          const loader = new THREE.OBJLoader();
-          const object = loader.parse(data.objData);
-          object.name = data.name || "Model";
+        } else if (data.type === "model") {
+          // Reconstrói as linhas do OBJ
+          const objLines = Object.keys(data)
+            .filter(k => k.startsWith("line"))
+            .sort((a, b) => parseInt(a.replace("line", "")) - parseInt(b.replace("line", "")))
+            .map(k => data[k]);
 
+          const objSource = objLines.join("\n");
+          const loader = new THREE.OBJLoader();
+          const object = loader.parse(objSource);
+
+          object.name = data.name || "Model";
           object.position.set(data.position.x, data.position.y, data.position.z);
           object.scale.set(data.scale.x, data.scale.y, data.scale.z);
           object.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
@@ -136,8 +130,8 @@ loadInput.addEventListener('change', () => {
             }
           });
 
-          // Armazena a string OBJ para possível re-save
-          object.userData.objSource = data.objData;
+          // mantém as linhas no userData
+          object.userData.objLines = objLines;
 
           scene.add(object);
           cubes.push(object);
@@ -156,4 +150,3 @@ loadInput.addEventListener('change', () => {
   };
   reader.readAsText(file);
 });
-
