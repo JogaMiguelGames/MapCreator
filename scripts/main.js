@@ -22,7 +22,6 @@ sunLight.shadow.camera.top = 20;
 sunLight.shadow.camera.bottom = -20;
 scene.add(sunLight);
 
-let yaw = 0;
 let pitch = 0;
 let roll = 0;
 
@@ -508,6 +507,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
