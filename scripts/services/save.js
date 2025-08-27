@@ -1,33 +1,37 @@
 document.getElementById('saveButton').addEventListener('click', () => {
   const mapData = {
     sceneColor: `#${scene.background.getHexString()}`,
-    timeOfDay: parseInt(timeInput.value), // <<< Adicione esta linha
-    cubes: cubes.map(cube => {
-      let textureData = null;
+    timeOfDay: parseInt(timeInput.value),
+    objects: cubes.map(obj => {
+      // Detecta se é um cubo ou modelo (assumindo que OBJs não são BoxGeometry)
+      const isCube = obj.geometry && obj.geometry.type === "BoxGeometry";
 
-      if (cube.material?.map?.image?.src) {
-        textureData = cube.material.map.image.src; // Base64 da textura
+      let textureData = null;
+      if (obj.material?.map?.image?.src) {
+        textureData = obj.material.map.image.src;
       }
 
       return {
-        name: cube.name || 'Cube',
+        type: isCube ? "cube" : "model",
+        name: obj.name || "Object",
         position: {
-          x: cube.position.x,
-          y: cube.position.y,
-          z: cube.position.z
+          x: obj.position.x,
+          y: obj.position.y,
+          z: obj.position.z
         },
         scale: {
-          x: cube.scale.x,
-          y: cube.scale.y,
-          z: cube.scale.z
+          x: obj.scale.x,
+          y: obj.scale.y,
+          z: obj.scale.z
         },
         rotation: {
-          x: cube.rotation.x,
-          y: cube.rotation.y,
-          z: cube.rotation.z
+          x: obj.rotation.x,
+          y: obj.rotation.y,
+          z: obj.rotation.z
         },
-        color: `#${cube.material?.color?.getHexString() || 'ffffff'}`,
-        texture: textureData
+        color: obj.material?.color ? `#${obj.material.color.getHexString()}` : "#ffffff",
+        texture: textureData,
+        objData: !isCube ? obj.userData.objSource || null : null  // Guarda conteúdo OBJ se for modelo
       };
     })
   };
@@ -168,3 +172,4 @@ loadInput.addEventListener('change', () => {
   reader.readAsText(file);
 
 });
+
