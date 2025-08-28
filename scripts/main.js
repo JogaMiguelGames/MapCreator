@@ -369,13 +369,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-document.addEventListener('keydown', (e) => {
-  if(e.ctrlKey && e.shiftKey && e.code === 'KeyK'){
-    linesVisible = !linesVisible;
-    axisLines.forEach(line => line.visible = linesVisible);
-  }
-});
-
 // Resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth/window.innerHeight;
@@ -397,3 +390,4 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
