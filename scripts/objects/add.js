@@ -1,6 +1,3 @@
-let selectedCube = null;
-
-// Função para selecionar um cubo
 function selectCube(cube) {
   selectedCube = cube;
   updatePanelForCube(cube);
@@ -66,4 +63,5 @@ if (commandLine) {
     }
   });
 }
+
 
