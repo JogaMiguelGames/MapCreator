@@ -1,6 +1,5 @@
 {
   "sceneColor": "#00bfff",
-  "timeOfDay": 12,
   "objects": [
     {
       "type": "cube",
