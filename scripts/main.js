@@ -7,6 +7,9 @@ scene.add(mainCube);
 
 const cubes = [mainCube];
 
+const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
+
 // -- Luzes
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // luz ambiente suave
 scene.add(ambientLight);
@@ -327,22 +330,22 @@ function renameCube(div, cube){
   });
 }
 
-// Raycaster para selecionar cubos pelo centro da tela
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
+function onClick(event){
+  // Converte coordenadas do clique do mouse para NDC (-1 a 1)
+  const rect = canvas.getBoundingClientRect();
+  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-function onClick(){
-  if(document.pointerLockElement !== canvas) return;
-  mouse.x = 0; mouse.y = 0;
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObjects(cubes);
+
   if(intersects.length > 0){
     selectedCube = intersects[0].object;
     updatePanelForCube(selectedCube);
     updateCubeList();
   }
 }
-window.addEventListener('click', onClick);
+canvas.addEventListener('click', onClick);
 
 colorHexInput.addEventListener('input', () => {
   if(!selectedCube || !selectedCube.material) return;
@@ -390,4 +393,5 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
