@@ -53,51 +53,8 @@ loadInput.addEventListener('change', () => {
   reader.onload = (e) => {
     try {
       const mapData = JSON.parse(e.target.result);
-
-      // Suporta 'cubes' ou 'objects'
-      const cubesData = mapData.cubes || mapData.objects || [];
-
-      if (mapData.sceneColor) {
-        scene.background.set(mapData.sceneColor);
-        if (bgColorInput) bgColorInput.value = mapData.sceneColor;
-      }
-
-      // Limpa cubos antigos
-      cubes.forEach(c => scene.remove(c));
-      cubes.length = 0;
-
-      cubesData.forEach(data => {
-        if (!data.position || !data.scale || !data.rotation) return; // ignorar inválidos
-
-        const material = new THREE.MeshBasicMaterial({ color: data.color || '#ffffff' });
-        const cube = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), material);
-
-        cube.name = data.name || 'Cube';
-        cube.position.set(data.position.x, data.position.y, data.position.z);
-        cube.scale.set(data.scale.x, data.scale.y, data.scale.z);
-        cube.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
-
-        if (data.texture) {
-          const img = new Image();
-          img.src = data.texture;
-          img.onload = () => {
-            const tex = new THREE.Texture(img);
-            tex.needsUpdate = true;
-            cube.material.map = tex;
-            cube.material.needsUpdate = true;
-          };
-        }
-
-        scene.add(cube);
-        cubes.push(cube);
-      });
-
-      selectedCube = cubes[0] || null;
-      updatePanelForCube(selectedCube);
-      updateCubeList();
-
+      loadMapData(mapData);
       loadInput.value = '';
-
     } catch (err) {
       alert('Erro ao carregar mapa: arquivo inválido ou corrompido.');
       console.error(err);
@@ -105,3 +62,67 @@ loadInput.addEventListener('change', () => {
   };
   reader.readAsText(file);
 });
+
+// --- FUNÇÃO PRINCIPAL DE CARREGAR MAPA ---
+function loadMapData(mapData) {
+  const cubesData = mapData.cubes || mapData.objects || [];
+
+  if (mapData.sceneColor) {
+    scene.background.set(mapData.sceneColor);
+    if (bgColorInput) bgColorInput.value = mapData.sceneColor;
+  }
+
+  // Limpa cubos antigos
+  cubes.forEach(c => scene.remove(c));
+  cubes.length = 0;
+
+  cubesData.forEach(data => {
+    if (!data.position || !data.scale || !data.rotation) return;
+
+    const material = new THREE.MeshBasicMaterial({ color: data.color || '#ffffff' });
+    const cube = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), material);
+
+    cube.name = data.name || 'Cube';
+    cube.position.set(data.position.x, data.position.y, data.position.z);
+    cube.scale.set(data.scale.x, data.scale.y, data.scale.z);
+    cube.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+
+    if (data.texture) {
+      const img = new Image();
+      img.src = data.texture;
+      img.onload = () => {
+        const tex = new THREE.Texture(img);
+        tex.needsUpdate = true;
+        cube.material.map = tex;
+        cube.material.needsUpdate = true;
+      };
+    }
+
+    scene.add(cube);
+    cubes.push(cube);
+  });
+
+  selectedCube = cubes[0] || null;
+  updatePanelForCube(selectedCube);
+  updateCubeList();
+}
+
+// --- LOAD AUTOMÁTICO VIA URL (?map=NomeDoMapa) ---
+(function () {
+  const params = new URLSearchParams(window.location.search);
+  const mapName = params.get("map");
+
+  if (mapName) {
+    const filePath = `resources/maps/${mapName}.map`;
+    fetch(filePath)
+      .then(res => {
+        if (!res.ok) throw new Error("Erro ao carregar mapa: " + filePath);
+        return res.json();
+      })
+      .then(mapData => loadMapData(mapData))
+      .catch(err => {
+        alert("Erro ao carregar mapa via URL.");
+        console.error(err);
+      });
+  }
+})();
