@@ -1,4 +1,5 @@
 const addCube = document.getElementById('addCubeBtn');
+const addSphere = document.getElementById('addSphereBtn');
 
 function createCube() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
@@ -40,6 +41,10 @@ function createSphere() {
 
 addCube.addEventListener('click', () => {
   createCube();
+});
+
+addShere.addEventListener('click', () => {
+  createSphere();
 });
 
 document.getElementById("commandLine").addEventListener("keydown", function(e) {
