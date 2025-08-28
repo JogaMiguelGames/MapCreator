@@ -1,0 +1,385 @@
+{
+  "sceneColor": "#00bfff",
+  "cubes": [
+    {
+      "name": "Baseplate1",
+      "position": {
+        "x": 7.5,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 10,
+        "y": 1,
+        "z": 20
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#009900",
+      "texture": null
+    },
+    {
+      "name": "Wall1",
+      "position": {
+        "x": 2,
+        "y": 2,
+        "z": 3
+      },
+      "scale": {
+        "x": 1.5,
+        "y": 3,
+        "z": 1
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#999900",
+      "texture": null
+    },
+    {
+      "name": "Wall2",
+      "position": {
+        "x": 0,
+        "y": 2,
+        "z": -3
+      },
+      "scale": {
+        "x": 5,
+        "y": 3,
+        "z": 1
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#999900",
+      "texture": null
+    },
+    {
+      "name": "Wall3",
+      "position": {
+        "x": 3,
+        "y": 2,
+        "z": 2.5
+      },
+      "scale": {
+        "x": 1,
+        "y": 3,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#999900",
+      "texture": null
+    },
+    {
+      "name": "Wall4",
+      "position": {
+        "x": -3,
+        "y": 2,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 3,
+        "z": 7
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#999900",
+      "texture": null
+    },
+    {
+      "name": "Wall5",
+      "position": {
+        "x": -2,
+        "y": 2,
+        "z": 3
+      },
+      "scale": {
+        "x": 1.5,
+        "y": 3,
+        "z": 1
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#999900",
+      "texture": null
+    },
+    {
+      "name": "Wall6",
+      "position": {
+        "x": 0,
+        "y": 3.25,
+        "z": 3
+      },
+      "scale": {
+        "x": 2.5,
+        "y": 0.5,
+        "z": 1
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#999900",
+      "texture": null
+    },
+    {
+      "name": "Roof1",
+      "position": {
+        "x": 0,
+        "y": 3.75,
+        "z": 0
+      },
+      "scale": {
+        "x": 7,
+        "y": 0.5,
+        "z": 7
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#990000",
+      "texture": null
+    },
+    {
+      "name": "Roof2",
+      "position": {
+        "x": 0,
+        "y": 4.25,
+        "z": 0
+      },
+      "scale": {
+        "x": 6,
+        "y": 0.5,
+        "z": 7
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#990000",
+      "texture": null
+    },
+    {
+      "name": "Roof3",
+      "position": {
+        "x": 0,
+        "y": 4.75,
+        "z": 0
+      },
+      "scale": {
+        "x": 5,
+        "y": 0.5,
+        "z": 7
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#990000",
+      "texture": null
+    },
+    {
+      "name": "Wall7",
+      "position": {
+        "x": 3,
+        "y": 2,
+        "z": -2.5
+      },
+      "scale": {
+        "x": 1,
+        "y": 3,
+        "z": 2
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#999900",
+      "texture": null
+    },
+    {
+      "name": "Wall8",
+      "position": {
+        "x": 3,
+        "y": 1,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 3
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#999900",
+      "texture": null
+    },
+    {
+      "name": "Baseplate2",
+      "position": {
+        "x": -7.5,
+        "y": 0,
+        "z": 0
+      },
+      "scale": {
+        "x": 10,
+        "y": 1,
+        "z": 20
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#009900",
+      "texture": null
+    },
+    {
+      "name": "Floor",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 6.75
+      },
+      "scale": {
+        "x": 2.5,
+        "y": 1,
+        "z": 6.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#555555",
+      "texture": null
+    },
+    {
+      "name": "Baseplate3",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": -6.2
+      },
+      "scale": {
+        "x": 5,
+        "y": 1,
+        "z": 7.6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#009900",
+      "texture": null
+    },
+    {
+      "name": "Floor2",
+      "position": {
+        "x": 1.88,
+        "y": 0,
+        "z": 6.75
+      },
+      "scale": {
+        "x": 1.25,
+        "y": 1,
+        "z": 6.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#888888",
+      "texture": null
+    },
+    {
+      "name": "Floor3",
+      "position": {
+        "x": -1.88,
+        "y": 0,
+        "z": 6.75
+      },
+      "scale": {
+        "x": 1.25,
+        "y": 1,
+        "z": 6.5
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#888888",
+      "texture": null
+    },
+    {
+      "name": "WoodFloor",
+      "position": {
+        "x": 0,
+        "y": 0,
+        "z": 0.5
+      },
+      "scale": {
+        "x": 5,
+        "y": 1,
+        "z": 6
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#443300",
+      "texture": null
+    },
+    {
+      "name": "Wall9",
+      "position": {
+        "x": 3,
+        "y": 3,
+        "z": 0
+      },
+      "scale": {
+        "x": 1,
+        "y": 1,
+        "z": 3
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#999900",
+      "texture": null
+    }
+  ]
+}
