@@ -36,25 +36,13 @@ const icosahedron_geometry = new THREE.IcosahedronGeometry(1, 0);
 const lathe_geometry = new THREE.LatheGeometry([new THREE.Vector2(0,0), new THREE.Vector2(1,2)], 12);
 const octahedron_geometry = new THREE.OctahedronGeometry(1, 0);
 const plane_geometry = new THREE.PlaneGeometry(1, 1);
-const polyhedron_geometry = new THREE.PolyhedronGeometry(
-  [1, -1, 1, -1, 1, -1, 1, -1], // vertices
-  [2, 1, 0, 0, 3, 2, 1, 3, 0, 2, 3, 1], // indices
-  1, // radius
-  0  // detail
-);
+
 const ring_geometry = new THREE.RingGeometry(0.5, 1, 32);
 const shape_geometry = new THREE.ShapeGeometry([]); // precisa de Shape
 const sphere_geometry = new THREE.SphereGeometry(1, 32, 16);
 const tetrahedron_geometry = new THREE.TetrahedronGeometry(1, 0);
 const torus_geometry = new THREE.TorusGeometry(1, 0.3, 16, 100);
 const torus_knot_geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
-const tube_geometry = new THREE.TubeGeometry(
-  new THREE.CurvePath(), // precisa de curva
-  20,
-  0.5,
-  8,
-  false
-);
 
 // --- Geometry Helpers ---
 const wireframe_geometry = new THREE.WireframeGeometry(box_geometry);
