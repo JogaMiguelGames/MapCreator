@@ -1,4 +1,4 @@
-const mainCube = new THREE.Mesh(cube_geometry, white_material);
+const mainCube = new THREE.Mesh(box_geometry, white_material);
 mainCube.position.set(0, 0, 0); // acima do “chão” que será colocado depois
 mainCube.name = 'Cube 1';
 mainCube.castShadow = true;      // projeta sombra
@@ -390,6 +390,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
