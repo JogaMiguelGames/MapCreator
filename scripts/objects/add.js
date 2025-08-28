@@ -1,6 +1,3 @@
-// --- Seleção e Raycaster ---
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
 let selectedCube = null;
 
 // Função para selecionar um cubo
@@ -69,3 +66,4 @@ if (commandLine) {
     }
   });
 }
+
