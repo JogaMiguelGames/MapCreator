@@ -22,13 +22,18 @@ sunLight.shadow.camera.top = 20;
 sunLight.shadow.camera.bottom = -20;
 scene.add(sunLight);
 
+const axisLines = [];
+let linesVisible = true;
+
 function addAxisLine(from, to, color){
   const line = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([from, to]),
     new THREE.LineBasicMaterial({color})
   );
   scene.add(line);
+  axisLines.push(line); // guarda a linha no array
 }
+
 addAxisLine(new THREE.Vector3(0,-9999,0), new THREE.Vector3(0,9999,0), 0x00ff00); // Y
 addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000); // X
 addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
@@ -361,6 +366,13 @@ document.addEventListener('keydown', e => {
       updatePanelForCube(selectedCube);
       updateCubeList();
     }
+  }
+});
+
+document.addEventListener('keydown', (e) => {
+  if(e.ctrlKey && e.shiftKey && e.code === 'KeyK'){
+    linesVisible = !linesVisible;
+    axisLines.forEach(line => line.visible = linesVisible);
   }
 });
 
