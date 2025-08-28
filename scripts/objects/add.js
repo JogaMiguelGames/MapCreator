@@ -43,7 +43,7 @@ addCube.addEventListener('click', () => {
   createCube();
 });
 
-addShere.addEventListener('click', () => {
+addSphere.addEventListener('click', () => {
   createSphere();
 });
 
@@ -61,3 +61,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
