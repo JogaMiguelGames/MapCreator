@@ -1,0 +1,27 @@
+{
+  "sceneColor": "#00bfff",
+  "timeOfDay": 12,
+  "objects": [
+    {
+      "type": "cube",
+      "name": "Cube1",
+      "position": {
+        "x": 0,
+        "y": -0.5,
+        "z": 0
+      },
+      "scale": {
+        "x": 1000,
+        "y": 1,
+        "z": 1000
+      },
+      "rotation": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "color": "#009900",
+      "texture": null
+    }
+  ]
+}
