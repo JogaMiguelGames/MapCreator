@@ -78,12 +78,14 @@
   <div id="mapSelectionScreen">
     <h1>Select a Map</h1>
     <div class="mapOptions">
+      <!-- Grass -->
       <div class="mapCard">
         <img src="resources/images/maps/GrassBaseplate.png" alt="Grass Baseplate" />
         <h2>Grass Baseplate</h2>
-        <button onclick="selectMap('grass')">Play</button>
+        <button onclick="selectMap('GrassBaseplate')">Play</button>
       </div>
 
+      <!-- Night Grass -->
       <div class="mapCard">
         <img src="resources/images/maps/NightGrassBaseplate.png" alt="Night Grass Baseplate" />
         <h2>Night Grass Baseplate</h2>
@@ -94,9 +96,9 @@
 
   <script>
     function selectMap(mapName) {
-      window.location.href = "editor.html?map=" + mapName;
+      // Redireciona para o index.html passando o mapa como query string
+      window.location.href = "index.html?map=" + mapName;
     }
   </script>
 </body>
 </html>
-
