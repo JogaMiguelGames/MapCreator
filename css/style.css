@@ -435,4 +435,23 @@ body.focusing-script #exitScriptFocusBtn {
   background: #222;
 }
 
+.icon-wrapper {
+  position: relative;
+  width: 24px;   /* mesmo tamanho do seu ícone base */
+  height: 24px;
+}
 
+.base-icon {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.overlay-icon {
+  position: absolute;
+  bottom: -4px;   /* ajusta conforme preferir */
+  right: -4px;
+  width: 14px;
+  height: 14px;
+  pointer-events: none; /* não atrapalha o clique */
+}
