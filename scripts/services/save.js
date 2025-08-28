@@ -63,7 +63,7 @@ loadInput.addEventListener('change', () => {
   reader.readAsText(file);
 });
 
-// --- FUNÇÃO PRINCIPAL DE CARREGAR MAPA ---
+// --- FUNÇÃO PRINCIPAL DE CARREGAR MAPA COM SOMBRA/LUZ ---
 function loadMapData(mapData) {
   const cubesData = mapData.cubes || mapData.objects || [];
 
@@ -79,14 +79,19 @@ function loadMapData(mapData) {
   cubesData.forEach(data => {
     if (!data.position || !data.scale || !data.rotation) return;
 
-    const material = new THREE.MeshBasicMaterial({ color: data.color || '#ffffff' });
-    const cube = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), material);
+    const material = new THREE.MeshStandardMaterial({ color: data.color || '#ffffff' });
+    const cube = new THREE.Mesh(cube_geometry, material);
 
     cube.name = data.name || 'Cube';
     cube.position.set(data.position.x, data.position.y, data.position.z);
     cube.scale.set(data.scale.x, data.scale.y, data.scale.z);
     cube.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
 
+    // Ativa sombras
+    cube.castShadow = true;
+    cube.receiveShadow = true;
+
+    // Carrega textura se houver
     if (data.texture) {
       const img = new Image();
       img.src = data.texture;
