@@ -1,10 +1,3 @@
-function selectCube(cube) {
-  selectedCube = cube;
-  updatePanelForCube(cube);
-  updateCubeList();
-}
-
-// Clique do mouse para selecionar cubos
 function onClick(event) {
   const rect = canvas.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -63,5 +56,6 @@ if (commandLine) {
     }
   });
 }
+
 
 
