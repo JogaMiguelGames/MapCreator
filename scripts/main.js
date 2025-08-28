@@ -1,6 +1,6 @@
 const mainCube = new THREE.Mesh(cube_geometry, white_material);
 mainCube.position.set(0, 0, 0); // acima do “chão” que será colocado depois
-mainCube.name = 'Cube1';
+mainCube.name = 'Cube 1';
 mainCube.castShadow = true;      // projeta sombra
 mainCube.receiveShadow = true;   // recebe sombra de outros objetos
 scene.add(mainCube);
@@ -22,9 +22,6 @@ sunLight.shadow.camera.top = 20;
 sunLight.shadow.camera.bottom = -20;
 scene.add(sunLight);
 
-let pitch = 0;
-let roll = 0;
-
 function addAxisLine(from, to, color){
   const line = new THREE.Line(
     new THREE.BufferGeometry().setFromPoints([from, to]),
@@ -36,9 +33,9 @@ addAxisLine(new THREE.Vector3(0,-9999,0), new THREE.Vector3(0,9999,0), 0x00ff00)
 addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000); // X
 addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
 
-camera.position.set(2, 0, 2);
-let yaw = THREE.MathUtils.degToRad(45);
-
+// --- Controle de câmera ---
+camera.position.set(0, 1.6, 5);
+let yaw = 0, pitch = 0;
 const moveSpeed = 5;
 const lookSpeed = 0.002;
 const keys = {};
@@ -87,7 +84,6 @@ function updateCamera(delta){
   camera.rotation.order = 'YXZ';
   camera.rotation.y = yaw;
   camera.rotation.x = pitch;
-  camera.rotation.z = roll;
 
   const forward = new THREE.Vector3();
   camera.getWorldDirection(forward);
@@ -128,77 +124,6 @@ bgColorInput.addEventListener('input', () => {
     scene.background.set(val);
   }
 });
-
-const timeInput = document.getElementById('timeOfDayInput');
-
-// Função para escurecer HEX de acordo com porcentagem (0 a 1)
-function darkenHexColor(hex, factor) {
-    const r = Math.round(parseInt(hex.substr(1,2),16) * (1 - factor));
-    const g = Math.round(parseInt(hex.substr(3,2),16) * (1 - factor));
-    const b = Math.round(parseInt(hex.substr(5,2),16) * (1 - factor));
-    return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
-}
-
-// Função para atualizar a cor do céu conforme hora
-function updateSkyColorByTime(hour, baseColor) {
-    // Calcula distância de 12h
-    const distance = Math.min(Math.abs(hour - 12), Math.abs(hour - 12 - 24));
-    // Normaliza para fator de escurecimento (0 = 12h, 0.8 = 0h ou 24h)
-    const factor = Math.min(0.8, (distance / 12) * 0.8);
-    scene.background.set(darkenHexColor(baseColor, factor));
-}
-
-function updateLightingByTime(hour, baseSkyColor) {
-    // Escurece o céu conforme antes
-    const distance = Math.min(Math.abs(hour - 12), Math.abs(hour - 12 - 24));
-    const factor = Math.min(0.8, (distance / 12) * 0.8);
-    scene.background.set(darkenHexColor(baseSkyColor, factor));
-
-    // Luz do sol
-    const minColor = new THREE.Color(0x222222); // cor da noite
-    const maxColor = new THREE.Color(0xffffff); // cor do dia
-    const minIntensity = 0.1; // mínima intensidade
-    const maxIntensity = 1.0; // máxima intensidade
-
-    const normalized = distance / 12;
-
-    // Intensidade exponencial durante o dia
-    let intensity = maxIntensity * Math.pow(1 - normalized, 3);
-
-    // Reduz em 90% se hora for 1 ou 23
-    if(hour === 1 || hour === 23) {
-        intensity *= 0.1; // apenas 10% da intensidade
-    }
-
-    sunLight.intensity = Math.max(intensity, minIntensity);
-
-    // Cor do sol interpolada entre dia e noite
-    sunLight.color = maxColor.clone().lerp(minColor, normalized);
-}
-
-// Base do céu
-let baseSkyColor = bgColorInput.value;
-
-// Atualiza quando muda o input de hora
-timeInput.addEventListener('input', () => {
-    let hour = parseInt(timeInput.value);
-    if(isNaN(hour) || hour < 0) hour = 0;
-    if(hour > 23) hour = 23;
-
-    updateLightingByTime(hour, baseSkyColor);
-});
-
-// Atualiza quando muda a cor do céu
-bgColorInput.addEventListener('input', () => {
-    const val = bgColorInput.value.trim();
-    if(/^#([0-9a-f]{6})$/i.test(val)){
-        baseSkyColor = val;
-        updateLightingByTime(parseInt(timeInput.value), baseSkyColor);
-    }
-});
-
-// Inicializa cor ao carregar
-updateSkyColorByTime(parseInt(timeInput.value), baseSkyColor);
 
 let selectedCube = mainCube;
 
@@ -402,19 +327,15 @@ const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 function onClick(){
-    if(document.pointerLockElement !== canvas) return;
-
-    mouse.x = 0;
-    mouse.y = 0;
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(cubes);
-    
-    if(intersects.length > 0){
-        selectedCube = intersects[0].object;
-        updatePanelForCube(selectedCube);
-        updateCubeList();
-        addSpheresToSelectedCube(); // <- adiciona as esferas
-    }
+  if(document.pointerLockElement !== canvas) return;
+  mouse.x = 0; mouse.y = 0;
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(cubes);
+  if(intersects.length > 0){
+    selectedCube = intersects[0].object;
+    updatePanelForCube(selectedCube);
+    updateCubeList();
+  }
 }
 window.addEventListener('click', onClick);
 
@@ -443,49 +364,6 @@ document.addEventListener('keydown', e => {
   }
 });
 
-function addSpheresToSelectedCube() {
-    if (!selectedCube) return;
-
-    // Remover esferas anteriores (se quiser evitar duplicação)
-    if (selectedCube.spheres) {
-        selectedCube.spheres.forEach(s => scene.remove(s));
-    }
-
-    const sphereGeometry = new THREE.SphereGeometry(0.1, 16, 16);
-    const colors = [0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0xff00ff, 0x00ffff];
-
-    const directions = [
-        new THREE.Vector3(1, 0, 0),   // direita (+X)
-        new THREE.Vector3(-1, 0, 0),  // esquerda (-X)
-        new THREE.Vector3(0, 1, 0),   // cima (+Y)
-        new THREE.Vector3(0, -1, 0),  // baixo (-Y)
-        new THREE.Vector3(0, 0, 1),   // frente (+Z)
-        new THREE.Vector3(0, 0, -1)   // trás (-Z)
-    ];
-
-    const distance = 1.1; // distância da face do cubo
-    const spheres = [];
-
-    for (let i = 0; i < 6; i++) {
-        const material = new THREE.MeshStandardMaterial({ color: colors[i] });
-        const sphere = new THREE.Mesh(sphereGeometry, material);
-        
-        // Posição relativa ao cubo
-        const dir = directions[i].clone().multiplyScalar(distance);
-        const worldPos = new THREE.Vector3().copy(selectedCube.position).add(dir);
-        sphere.position.copy(worldPos);
-
-        sphere.castShadow = true;
-        sphere.receiveShadow = true;
-
-        scene.add(sphere);
-        spheres.push(sphere);
-    }
-
-    // Armazena referência no cubo
-    selectedCube.spheres = spheres;
-}
-
 // Resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth/window.innerHeight;
@@ -507,27 +385,3 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
