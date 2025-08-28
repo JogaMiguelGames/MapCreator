@@ -1,21 +1,30 @@
 // --- SAVE ---
 document.getElementById('saveButton').addEventListener('click', () => {
   const mapData = {
-    sceneColor: `#${scene.background.getHexString()}`, // Sky color
-    timeOfDay: parseInt(timeInput.value),             // Hora do dia
-    objects: cubes.map(obj => {
+    sceneColor: `#${scene.background.getHexString()}`,
+    cubes: cubes.map(cube => {
       let textureData = null;
-      if (obj.material?.map?.image?.src) {
-        textureData = obj.material.map.image.src;
+      if (cube.material?.map?.image?.src) {
+        textureData = cube.material.map.image.src;
       }
-
       return {
-        type: "cube",
-        name: obj.name || "Cube",
-        position: { x: obj.position.x, y: obj.position.y, z: obj.position.z },
-        scale: { x: obj.scale.x, y: obj.scale.y, z: obj.scale.z },
-        rotation: { x: obj.rotation.x, y: obj.rotation.y, z: obj.rotation.z },
-        color: obj.material?.color ? `#${obj.material.color.getHexString()}` : "#ffffff",
+        name: cube.name || 'Cube',
+        position: {
+          x: cube.position?.x || 0,
+          y: cube.position?.y || 0,
+          z: cube.position?.z || 0
+        },
+        scale: {
+          x: cube.scale?.x || 1,
+          y: cube.scale?.y || 1,
+          z: cube.scale?.z || 1
+        },
+        rotation: {
+          x: cube.rotation?.x || 0,
+          y: cube.rotation?.y || 0,
+          z: cube.rotation?.z || 0
+        },
+        color: `#${cube.material?.color?.getHexString() || 'ffffff'}`,
         texture: textureData
       };
     })
@@ -30,66 +39,69 @@ document.getElementById('saveButton').addEventListener('click', () => {
   URL.revokeObjectURL(a.href);
 });
 
-
 // --- LOAD ---
-document.getElementById('loadButton').addEventListener('click', () => {
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.map';
-  input.onchange = (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+const loadButton = document.getElementById('loadButton');
+const loadInput = document.getElementById('loadInput');
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      try {
-        const mapData = JSON.parse(e.target.result);
+loadButton.addEventListener('click', () => loadInput.click());
 
-        // Sky color
-        scene.background = new THREE.Color(mapData.sceneColor || "#000000");
+loadInput.addEventListener('change', () => {
+  const file = loadInput.files[0];
+  if (!file) return;
 
-        // Hora
-        if (typeof mapData.timeOfDay === "number") {
-          updateLightingByTime(mapData.timeOfDay);
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const mapData = JSON.parse(e.target.result);
+
+      // Suporta 'cubes' ou 'objects'
+      const cubesData = mapData.cubes || mapData.objects || [];
+
+      if (mapData.sceneColor) {
+        scene.background.set(mapData.sceneColor);
+        if (bgColorInput) bgColorInput.value = mapData.sceneColor;
+      }
+
+      // Limpa cubos antigos
+      cubes.forEach(c => scene.remove(c));
+      cubes.length = 0;
+
+      cubesData.forEach(data => {
+        if (!data.position || !data.scale || !data.rotation) return; // ignorar inválidos
+
+        const material = new THREE.MeshBasicMaterial({ color: data.color || '#ffffff' });
+        const cube = new THREE.Mesh(new THREE.BoxGeometry(1,1,1), material);
+
+        cube.name = data.name || 'Cube';
+        cube.position.set(data.position.x, data.position.y, data.position.z);
+        cube.scale.set(data.scale.x, data.scale.y, data.scale.z);
+        cube.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+
+        if (data.texture) {
+          const img = new Image();
+          img.src = data.texture;
+          img.onload = () => {
+            const tex = new THREE.Texture(img);
+            tex.needsUpdate = true;
+            cube.material.map = tex;
+            cube.material.needsUpdate = true;
+          };
         }
 
-        // Limpa cubos antigos
-        cubes.forEach(c => scene.remove(c));
-        cubes.length = 0;
+        scene.add(cube);
+        cubes.push(cube);
+      });
 
-        // Carrega cubos
-        mapData.objects.forEach(objData => {
-          if (objData.type === "cube") {
-            const geometry = new THREE.BoxGeometry();
-            let material;
+      selectedCube = cubes[0] || null;
+      updatePanelForCube(selectedCube);
+      updateCubeList();
 
-            if (objData.texture) {
-              const textureLoader = new THREE.TextureLoader();
-              const tex = textureLoader.load(objData.texture);
-              material = new THREE.MeshStandardMaterial({ map: tex });
-            } else {
-              material = new THREE.MeshStandardMaterial({ color: objData.color || "#ffffff" });
-            }
+      loadInput.value = '';
 
-            const cube = new THREE.Mesh(geometry, material);
-            cube.position.set(objData.position.x, objData.position.y, objData.position.z);
-            cube.scale.set(objData.scale.x, objData.scale.y, objData.scale.z);
-            cube.rotation.set(objData.rotation.x, objData.rotation.y, objData.rotation.z);
-
-            cube.castShadow = true;
-            cube.receiveShadow = true;
-
-            scene.add(cube);
-            cubes.push(cube);
-          }
-        });
-
-      } catch (err) {
-        alert("Error loading map: " + err.message);
-        gconsole.print("Error loading map: " + err.message);
-      }
-    };
-    reader.readAsText(file);
+    } catch (err) {
+      alert('Erro ao carregar mapa: arquivo inválido ou corrompido.');
+      console.error(err);
+    }
   };
-  input.click();
+  reader.readAsText(file);
 });
