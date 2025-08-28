@@ -7,9 +7,6 @@ scene.add(mainCube);
 
 const cubes = [mainCube];
 
-const raycaster = new THREE.Raycaster();
-const mouse = new THREE.Vector2();
-
 // -- Luzes
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // luz ambiente suave
 scene.add(ambientLight);
@@ -393,5 +390,6 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
