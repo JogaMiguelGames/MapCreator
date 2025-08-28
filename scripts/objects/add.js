@@ -1,7 +1,7 @@
 const addCube = document.getElementById('addCubeBtn');
 
 function createCube() {
-  const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff }); // material exclusivo
+  const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const newCube = new THREE.Mesh(cube_geometry, newMaterial);
   
   newCube.position.set(0, 0, 0);
@@ -19,12 +19,29 @@ function createCube() {
   pushToHistory({ type: 'delete', object: newCube });
 }
 
-// Botão usa a função
+function createSphere() {
+  const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const newSphere = new THREE.Mesh(sphere_geometry, newMaterial);
+  
+  newSphere.position.set(0, 0, 0);
+  newSphere.name = `Sphere ${cubes.length}`;
+  newSphere.castShadow = true;
+  newSphere.receiveShadow = true;
+
+  scene.add(newSphere);
+  cubes.push(newSphere);
+
+  selectedCube = newSphere;
+  updatePanelForCube(newSphere);
+  updateCubeList();
+
+  pushToHistory({ type: 'delete', object: newSphere });
+}
+
 addCube.addEventListener('click', () => {
   createCube();
 });
 
-// Prompt também usa a mesma função
 document.getElementById("commandLine").addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
     const command = this.value.trim();
@@ -32,7 +49,10 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     if (command.toLowerCase() === "new.cube") {
       createCube();
     }
-
+    else if (command.toLowerCase() === "new.sphere") {
+      createSphere();
+    }
+    
     this.value = "";
   }
 });
