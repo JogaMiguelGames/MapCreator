@@ -127,7 +127,7 @@ function loadMapData(mapData) {
       .then(mapData => loadMapData(mapData))
       .catch(err => {
         alert("Erro ao carregar mapa via URL.");
-        console.error(err);
       });
   }
 })();
+
