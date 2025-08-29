@@ -112,14 +112,17 @@ function loadMapData(mapData) {
   updateCubeList();
 }
 
-// --- LOAD AUTOMÁTICO VIA URL (?map=NomeDoMapa) ---
 (function () {
   const params = new URLSearchParams(window.location.search);
   const mapName = params.get("map");
 
   if (mapName) {
-    const filePath = `resources/maps/${mapName}.map`;
-    console.log(filePath);
+    // monta caminho absoluto correto para qualquer repositório/pasta
+    const base = window.location.pathname.replace(/\/[^/]*$/, "");
+    const filePath = `${base}/resources/maps/${mapName}.map?nocache=${Date.now()}`;
+
+    console.log("Carregando mapa:", filePath);
+
     fetch(filePath)
       .then(res => {
         if (!res.ok) throw new Error("Erro ao carregar mapa: " + filePath);
@@ -128,8 +131,7 @@ function loadMapData(mapData) {
       .then(mapData => loadMapData(mapData))
       .catch(err => {
         alert("Erro ao carregar mapa via URL.");
+        console.error(err);
       });
   }
 })();
-
-
