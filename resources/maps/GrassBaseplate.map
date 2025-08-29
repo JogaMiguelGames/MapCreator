@@ -1,6 +1,6 @@
 {
   "sceneColor": "#00bfff",
-  "objects": [
+  "cubes": [
     {
       "name": "Baseplate",
       "position": {
