@@ -91,6 +91,12 @@
         <h2>Night Grass Baseplate</h2>
         <button onclick="selectMap('NightGrassBaseplate')">Play</button>
       </div>
+
+      <div class="mapCard">
+        <img src="resources/images/maps/Blank.png" alt="Blank" />
+        <h2>Blank</h2>
+        <button onclick="selectMap('Blank')">Play</button>
+      </div>
       
       <div class="mapCard">
         <img src="resources/images/maps/House.png" alt="House" />
@@ -102,12 +108,12 @@
 
   <script>
     function selectMap(mapName) {
-      // Redireciona para o index.html passando o mapa como query string
       window.location.href = "editor.html?map=" + mapName;
     }
   </script>
 </body>
 </html>
+
 
 
 
