@@ -3,7 +3,7 @@ const addSphere = document.getElementById('addSphereBtn');
 
 function createCube() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-  const newCube = new THREE.Mesh(cube_geometry, newMaterial);
+  const newCube = new THREE.Mesh(box_geometry, newMaterial);
   
   newCube.position.set(0, 0, 0);
   newCube.name = `Cube ${cubes.length}`;
@@ -61,4 +61,5 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
