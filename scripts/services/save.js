@@ -119,6 +119,7 @@ function loadMapData(mapData) {
 
   if (mapName) {
     const filePath = `resources/maps/${mapName}.map`;
+    console.log(filePath);
     fetch(filePath)
       .then(res => {
         if (!res.ok) throw new Error("Erro ao carregar mapa: " + filePath);
@@ -130,4 +131,5 @@ function loadMapData(mapData) {
       });
   }
 })();
+
 
