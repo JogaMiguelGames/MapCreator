@@ -19,6 +19,7 @@ document.body.appendChild(renderer.domElement);
 
 // --- Core Tools ---
 const raycaster = new THREE.Raycaster();
+const mouse = new THREE.Vector2();
 const clock = new THREE.Clock();
 const group = new THREE.Group();
 
