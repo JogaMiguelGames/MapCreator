@@ -47,7 +47,7 @@ function createCamera() {
   const loader = new THREE.OBJLoader();
   
   loader.load(
-    "resources/models/editor/camera.obj",
+    "resources/models/editor/camera/camera.obj",
     (object) => {
       // Aplica material em todos os meshes do objeto
       object.traverse((child) => {
@@ -105,6 +105,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
