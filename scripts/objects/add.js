@@ -1,5 +1,9 @@
+// -- Add.js -- Map Creator
+
 const addCube = document.getElementById('addCubeBtn');
 const addSphere = document.getElementById('addSphereBtn');
+
+const addCamera = document.getElementById('addCameraBtn');
 
 function createCube() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
@@ -39,12 +43,52 @@ function createSphere() {
   pushToHistory({ type: 'delete', object: newSphere });
 }
 
+function createCamera() {
+  const loader = new THREE.OBJLoader();
+  
+  loader.load(
+    "resources/models/editor/camera.obj",
+    (object) => {
+      // Aplica material em todos os meshes do objeto
+      object.traverse((child) => {
+        if (child.isMesh) {
+          child.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      object.position.set(0, 0, 0);
+      object.name = `Camera ${cubes.length}`;
+
+      scene.add(object);
+      cubes.push(object);
+
+      selectedCube = object;
+      updatePanelForCube(object);
+      updateCubeList();
+
+      pushToHistory({ type: "delete", object: object });
+    },
+    (xhr) => {
+      console.log(`Carregando modelo: ${(xhr.loaded / xhr.total) * 100}% concluído`);
+    },
+    (error) => {
+      console.error("Erro ao carregar modelo OBJ:", error);
+    }
+  );
+}
+
 addCube.addEventListener('click', () => {
   createCube();
 });
 
 addSphere.addEventListener('click', () => {
   createSphere();
+});
+
+addCamera.addEventListener('click', () => {
+  createCamera();
 });
 
 document.getElementById("commandLine").addEventListener("keydown", function(e) {
@@ -61,5 +105,6 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
