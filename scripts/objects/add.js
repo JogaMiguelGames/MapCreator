@@ -44,15 +44,22 @@ function createSphere() {
 }
 
 function createCamera() {
-  const loader = new THREE.OBJLoader();
-  
-  loader.load(
+  const objLoader = new THREE.OBJLoader();
+  const textureLoader = new THREE.TextureLoader();
+
+  // Carrega a textura
+  const texture = textureLoader.load("resources/models/editor/camera/texture.png");
+
+  objLoader.load(
     "resources/models/editor/camera/camera.obj",
     (object) => {
-      // Aplica material em todos os meshes do objeto
+      // Aplica material com a textura em todos os meshes
       object.traverse((child) => {
         if (child.isMesh) {
-          child.material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+          child.material = new THREE.MeshStandardMaterial({
+            map: texture,           // aplica a textura
+            color: 0xffffff,        // cor base (multiplicada pela textura)
+          });
           child.castShadow = true;
           child.receiveShadow = true;
         }
@@ -78,7 +85,6 @@ function createCamera() {
     }
   );
 }
-
 addCube.addEventListener('click', () => {
   createCube();
 });
@@ -105,6 +111,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
