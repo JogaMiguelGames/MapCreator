@@ -80,7 +80,7 @@ function loadMapData(mapData) {
     if (!data.position || !data.scale || !data.rotation) return;
 
     const material = new THREE.MeshStandardMaterial({ color: data.color || '#ffffff' });
-    const cube = new THREE.Mesh(cube_geometry, material);
+    const cube = new THREE.Mesh(box_geometry, material);
 
     cube.name = data.name || 'Cube';
     cube.position.set(data.position.x, data.position.y, data.position.z);
@@ -135,3 +135,4 @@ function loadMapData(mapData) {
       });
   }
 })();
+
