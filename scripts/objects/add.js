@@ -66,7 +66,7 @@ function createCamera() {
       });
 
       object.position.set(0, 0, 0);
-      object.name = `Camera ${cubes.length}`;
+      object.name = `Camera`;
 
       scene.add(object);
       cubes.push(object);
@@ -111,6 +111,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
