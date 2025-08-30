@@ -44,21 +44,28 @@ function createSphere() {
 }
 
 function createCamera() {
+  // Check if a camera already exists in the scene
+  const existingCamera = scene.getObjectByName("Camera");
+  if (existingCamera) {
+    console.warn("A camera already exists in the scene!");
+    return;
+  }
+
   const objLoader = new THREE.OBJLoader();
   const textureLoader = new THREE.TextureLoader();
 
-  // Carrega a textura
+  // Load the texture
   const texture = textureLoader.load("resources/models/editor/camera/texture.png");
 
   objLoader.load(
     "resources/models/editor/camera/camera.obj",
     (object) => {
-      // Aplica material com a textura em todos os meshes
+      // Apply textured material to all meshes
       object.traverse((child) => {
         if (child.isMesh) {
           child.material = new THREE.MeshStandardMaterial({
-            map: texture,           // aplica a textura
-            color: 0xffffff,        // cor base (multiplicada pela textura)
+            map: texture,   // apply texture
+            color: 0xffffff,
           });
           child.castShadow = true;
           child.receiveShadow = true;
@@ -66,7 +73,7 @@ function createCamera() {
       });
 
       object.position.set(0, 0, 0);
-      object.name = `Camera`;
+      object.name = "Camera";
 
       scene.add(object);
       cubes.push(object);
@@ -78,13 +85,14 @@ function createCamera() {
       pushToHistory({ type: "delete", object: object });
     },
     (xhr) => {
-      console.log(`Carregando modelo: ${(xhr.loaded / xhr.total) * 100}% concluído`);
+      console.log(`Loading model: ${(xhr.loaded / xhr.total) * 100}% complete`);
     },
     (error) => {
-      console.error("Erro ao carregar modelo OBJ:", error);
+      console.error("Error loading OBJ model:", error);
     }
   );
 }
+
 addCube.addEventListener('click', () => {
   createCube();
 });
@@ -111,6 +119,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
