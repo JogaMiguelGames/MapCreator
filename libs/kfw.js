@@ -40,7 +40,7 @@ const plane_geometry = new THREE.PlaneGeometry(1, 1);
 
 const ring_geometry = new THREE.RingGeometry(0.5, 1, 32);
 const shape_geometry = new THREE.ShapeGeometry([]); // precisa de Shape
-const sphere_geometry = new THREE.SphereGeometry(1, 16, 8);
+const sphere_geometry = new THREE.SphereGeometry(0.5, 16, 8);
 const tetrahedron_geometry = new THREE.TetrahedronGeometry(1, 0);
 const torus_geometry = new THREE.TorusGeometry(1, 0.3, 16, 100);
 const torus_knot_geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
