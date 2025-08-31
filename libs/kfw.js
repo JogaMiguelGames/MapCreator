@@ -2,7 +2,7 @@
 
 // --- Base Scene Setup ---
 const scene = new THREE.Scene();
-scene.background = new THREE.Color('#00BFFF');
+scene.background = new THREE.Color('#00AFFF');
 
 const camera = new THREE.PerspectiveCamera(
   75,
