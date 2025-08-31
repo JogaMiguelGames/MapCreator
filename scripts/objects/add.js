@@ -73,6 +73,7 @@ function createCamera() {
       });
 
       object.position.set(0, 0, 0);
+      object.scale.set(0.1, 0.1, 0.1);
       object.name = "Camera";
 
       scene.add(object);
@@ -119,6 +120,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
