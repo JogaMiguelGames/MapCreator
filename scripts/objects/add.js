@@ -47,8 +47,10 @@ function createSphere() {
 function createPlane() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const newPlane = new THREE.Mesh(plane_geometry, newMaterial);
-  
+
   newPlane.position.set(0, 0, 0);
+  newPlane.rotation.x = -Math.PI / 2; // deixa o plano virado para o chão
+  
   newPlane.name = `Plane ${cubes.length}`;
   newPlane.castShadow = true;
   newPlane.receiveShadow = true;
@@ -147,6 +149,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
