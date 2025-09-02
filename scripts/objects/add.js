@@ -2,6 +2,7 @@
 
 const addCube = document.getElementById('addCubeBtn');
 const addSphere = document.getElementById('addSphereBtn');
+const addPlane = document.getElementById('addPlaneBtn');
 
 const addCamera = document.getElementById('addCameraBtn');
 
@@ -121,6 +122,10 @@ addSphere.addEventListener('click', () => {
   createSphere();
 });
 
+addPlane.addEventListener('click', () => {
+  createPlane();
+});
+
 addCamera.addEventListener('click', () => {
   createCamera();
 });
@@ -142,6 +147,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
