@@ -43,6 +43,25 @@ function createSphere() {
   pushToHistory({ type: 'delete', object: newSphere });
 }
 
+function createPlane() {
+  const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const newPlane = new THREE.Mesh(plane_geometry, newMaterial);
+  
+  newPlane.position.set(0, 0, 0);
+  newPlane.name = `Plane ${cubes.length}`;
+  newPlane.castShadow = true;
+  newPlane.receiveShadow = true;
+
+  scene.add(newPlane);
+  cubes.push(newPlane);
+
+  selectedCube = newPlane;
+  updatePanelForCube(newPlane);
+  updateCubeList();
+
+  pushToHistory({ type: 'delete', object: newPlane });
+}
+
 function createCamera() {
   // Check if a camera already exists in the scene
   const existingCamera = scene.getObjectByName("Camera");
@@ -116,10 +135,14 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     else if (command.toLowerCase() === "new.sphere") {
       createSphere();
     }
+    else if (command.toLowerCase() === "new.plane") {
+      createPlane();
+    }
     
     this.value = "";
   }
 });
+
 
 
 
