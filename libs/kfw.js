@@ -37,6 +37,7 @@ const icosahedron_geometry = new THREE.IcosahedronGeometry(1, 0);
 const lathe_geometry = new THREE.LatheGeometry([new THREE.Vector2(0,0), new THREE.Vector2(1,2)], 12);
 const octahedron_geometry = new THREE.OctahedronGeometry(1, 0);
 const plane_geometry = new THREE.PlaneGeometry(1, 1);
+plane_geometry.rotateX(-Math.PI / 2);
 
 const ring_geometry = new THREE.RingGeometry(0.5, 1, 32);
 const shape_geometry = new THREE.ShapeGeometry([]); // precisa de Shape
