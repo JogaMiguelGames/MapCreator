@@ -1,4 +1,4 @@
-╔═══ Garry's Map Creator ═══╗
+╔══════ Map Creator ══════╗
 
 • Create Maps And Export To .map Files
 
