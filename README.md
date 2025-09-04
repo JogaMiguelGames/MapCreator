@@ -1,6 +1,5 @@
 ╔═══ Garry's Map Creator ═══╗
-
-╚═══ README.md ════════╝
+        README.md
 
 • Create Maps And Export To .map Files
 
