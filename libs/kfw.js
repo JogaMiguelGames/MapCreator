@@ -15,7 +15,11 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-document.body.appendChild(renderer.domElement);
+
+// garante que o canvas fique dentro do container da cena
+const sceneContainer = document.getElementById('sceneContainer') || document.body;
+sceneContainer.style.position = "relative";
+sceneContainer.appendChild(renderer.domElement);
 
 // --- Core Tools ---
 const raycaster = new THREE.Raycaster();
@@ -32,14 +36,14 @@ const circle_geometry = new THREE.CircleGeometry(1, 32);
 const cone_geometry = new THREE.ConeGeometry(1, 2, 32);
 const cylinder_geometry = new THREE.CylinderGeometry(1, 1, 2, 32);
 const dodecahedron_geometry = new THREE.DodecahedronGeometry(1, 0);
-const extrude_geometry = new THREE.ExtrudeGeometry([], { depth: 1, bevelEnabled: false }); // precisa de Shape
+const extrude_geometry = new THREE.ExtrudeGeometry([], { depth: 1, bevelEnabled: false });
 const icosahedron_geometry = new THREE.IcosahedronGeometry(1, 0);
 const lathe_geometry = new THREE.LatheGeometry([new THREE.Vector2(0,0), new THREE.Vector2(1,2)], 12);
 const octahedron_geometry = new THREE.OctahedronGeometry(1, 0);
 const plane_geometry = new THREE.PlaneGeometry(1, 1);
 
 const ring_geometry = new THREE.RingGeometry(0.5, 1, 32);
-const shape_geometry = new THREE.ShapeGeometry([]); // precisa de Shape
+const shape_geometry = new THREE.ShapeGeometry([]);
 const sphere_geometry = new THREE.SphereGeometry(0.5, 16, 8);
 const tetrahedron_geometry = new THREE.TetrahedronGeometry(1, 0);
 const torus_geometry = new THREE.TorusGeometry(1, 0.3, 16, 100);
@@ -48,12 +52,6 @@ const torus_knot_geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
 // --- Geometry Helpers ---
 const wireframe_geometry = new THREE.WireframeGeometry(box_geometry);
 const edges_geometry = new THREE.EdgesGeometry(box_geometry);
-
-// --- Geometries from examples/jsm (não fazem parte do core) ---
-// import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
-// import { TeapotGeometry } from 'three/examples/jsm/geometries/TeapotGeometry.js';
-// import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry.js';
-// import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry.js';
 
 // --- Materials ---
 const white_material = new THREE.MeshStandardMaterial({ color: 0xffffff });
@@ -87,32 +85,33 @@ const mat4 = new THREE.Matrix4();
 const box3 = new THREE.Box3();
 const color = new THREE.Color('#ffffff');
 
-// --- UI Debug Info ---
-const debugText = document.createElement("div");
-debugText.innerText = "=== Kernelium Framework kfw.js ===";
-debugText.style.position = "absolute";   // dentro do container
-debugText.style.top = "10px";
-debugText.style.right = "10px";
-debugText.style.padding = "5px 10px";
-debugText.style.background = "rgba(0, 0, 0, 0.7)";
-debugText.style.color = "#0f0";
-debugText.style.fontFamily = "monospace";
-debugText.style.fontSize = "14px";
-debugText.style.borderRadius = "6px";
-debugText.style.opacity = "0"; // começa invisível
-debugText.style.transition = "opacity 0.3s ease";
-debugText.style.pointerEvents = "none";
-debugText.style.zIndex = "9999";
+// --- Debug Overlay ---
+(function setupDebugOverlay(){
+  const debugText = document.createElement("div");
+  debugText.textContent = "// -- Kernelium Framework -- kfw.js";
+  Object.assign(debugText.style, {
+    position: "absolute",
+    top: "10px",
+    right: "10px",
+    padding: "6px 10px",
+    background: "rgba(0,0,0,.7)",
+    color: "#0f0",
+    fontFamily: "monospace",
+    fontSize: "14px",
+    borderRadius: "6px",
+    pointerEvents: "none",
+    zIndex: "2147483647",
+    opacity: "0",
+    transition: "opacity .25s ease"
+  });
+  sceneContainer.appendChild(debugText);
 
-// adiciona dentro do container da cena
-document.getElementById("sceneContainer").appendChild(debugText);
-
-// --- Key Listener ---
-let visible = false;
-window.addEventListener("keydown", (e) => {
-  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
-    e.preventDefault();
-    visible = !visible;
-    debugText.style.opacity = visible ? "1" : "0";
-  }
-});
+  let visible = false;
+  window.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.shiftKey && (e.code === "KeyI" || e.key?.toLowerCase?.() === "i")) {
+      // Observação: o DevTools pode abrir junto, isso não dá pra impedir totalmente
+      visible = !visible;
+      debugText.style.opacity = visible ? "1" : "0";
+    }
+  }, { capture: true });
+})();
