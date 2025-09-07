@@ -2,33 +2,49 @@
 document.getElementById('saveButton').addEventListener('click', () => {
   const mapData = {
     sceneColor: `#${scene.background.getHexString()}`,
-    cubes: cubes.map(cube => {
+    cubes: cubes.map(obj => {
       let textureData = null;
-      if (cube.material?.map?.image?.src) {
-        textureData = cube.material.map.image.src;
+      if (obj.material?.map?.image?.src) {
+        textureData = obj.material.map.image.src;
       }
+
+      // Detecta o tipo de geometria
+      let type = 'cube';
+      if (obj.geometry === sphere_geometry) type = 'sphere';
+      else if (obj.geometry === plane_geometry) type = 'plane';
+
       return {
-        name: cube.name || 'Cube',
+        type, // novo campo
+        name: obj.name || 'Cube',
         position: {
-          x: cube.position?.x || 0,
-          y: cube.position?.y || 0,
-          z: cube.position?.z || 0
+          x: obj.position?.x || 0,
+          y: obj.position?.y || 0,
+          z: obj.position?.z || 0
         },
         scale: {
-          x: cube.scale?.x || 1,
-          y: cube.scale?.y || 1,
-          z: cube.scale?.z || 1
+          x: obj.scale?.x || 1,
+          y: obj.scale?.y || 1,
+          z: obj.scale?.z || 1
         },
         rotation: {
-          x: cube.rotation?.x || 0,
-          y: cube.rotation?.y || 0,
-          z: cube.rotation?.z || 0
+          x: obj.rotation?.x || 0,
+          y: obj.rotation?.y || 0,
+          z: obj.rotation?.z || 0
         },
-        color: `#${cube.material?.color?.getHexString() || 'ffffff'}`,
+        color: `#${obj.material?.color?.getHexString() || 'ffffff'}`,
         texture: textureData
       };
     })
   };
+
+  const json = JSON.stringify(mapData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'map1.map';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
 
   const json = JSON.stringify(mapData, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
@@ -135,4 +151,5 @@ function loadMapData(mapData) {
       });
   }
 })();
+
 
