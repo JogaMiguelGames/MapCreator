@@ -136,19 +136,23 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
     const command = this.value.trim();
 
-    if (command.toLowerCase() === "new.cube") {
+    if (command.toLowerCase() === "create.new.cube") {
       createCube();
     }
-    else if (command.toLowerCase() === "new.sphere") {
+    else if (command.toLowerCase() === "create.new.sphere") {
       createSphere();
     }
-    else if (command.toLowerCase() === "new.plane") {
+    else if (command.toLowerCase() === "create.new.plane") {
       createPlane();
+    }
+    else if (command.toLowerCase() === "create.new.camera") {
+      createCamera();
     }
     
     this.value = "";
   }
 });
+
 
 
 
