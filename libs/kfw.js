@@ -1,4 +1,4 @@
-faça que se o usuario pressionar ctrl shift i aparece um texto no canto superior direito da tela: // -- Kernelium Framework -- kfw.js
+// -- Kernelium Framework -- kfw.js
 
 // --- Base Scene Setup ---
 const scene = new THREE.Scene();
