@@ -46,15 +46,6 @@ document.getElementById('saveButton').addEventListener('click', () => {
   URL.revokeObjectURL(a.href);
 });
 
-  const json = JSON.stringify(mapData, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'map1.map';
-  a.click();
-  URL.revokeObjectURL(a.href);
-});
-
 // --- LOAD ---
 const loadButton = document.getElementById('loadButton');
 const loadInput = document.getElementById('loadInput');
@@ -79,7 +70,7 @@ loadInput.addEventListener('change', () => {
   reader.readAsText(file);
 });
 
-// --- FUNÇÃO PRINCIPAL DE CARREGAR MAPA COM SOMBRA/LUZ ---
+// --- FUNÇÃO PRINCIPAL DE CARREGAR MAPA ---
 function loadMapData(mapData) {
   const cubesData = mapData.cubes || mapData.objects || [];
 
@@ -88,24 +79,37 @@ function loadMapData(mapData) {
     if (bgColorInput) bgColorInput.value = mapData.sceneColor;
   }
 
-  // Limpa cubos antigos
+  // Limpa objetos antigos
   cubes.forEach(c => scene.remove(c));
   cubes.length = 0;
 
   cubesData.forEach(data => {
     if (!data.position || !data.scale || !data.rotation) return;
 
-    const material = new THREE.MeshStandardMaterial({ color: data.color || '#ffffff' });
-    const cube = new THREE.Mesh(box_geometry, material);
+    // Seleciona geometria correta
+    let geometry;
+    switch(data.type){
+      case 'sphere':
+        geometry = sphere_geometry;
+        break;
+      case 'plane':
+        geometry = plane_geometry;
+        break;
+      default:
+        geometry = box_geometry;
+    }
 
-    cube.name = data.name || 'Cube';
-    cube.position.set(data.position.x, data.position.y, data.position.z);
-    cube.scale.set(data.scale.x, data.scale.y, data.scale.z);
-    cube.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+    const material = new THREE.MeshStandardMaterial({ color: data.color || '#ffffff' });
+    const obj = new THREE.Mesh(geometry, material);
+
+    obj.name = data.name || 'Cube';
+    obj.position.set(data.position.x, data.position.y, data.position.z);
+    obj.scale.set(data.scale.x, data.scale.y, data.scale.z);
+    obj.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
 
     // Ativa sombras
-    cube.castShadow = true;
-    cube.receiveShadow = true;
+    obj.castShadow = true;
+    obj.receiveShadow = true;
 
     // Carrega textura se houver
     if (data.texture) {
@@ -114,13 +118,13 @@ function loadMapData(mapData) {
       img.onload = () => {
         const tex = new THREE.Texture(img);
         tex.needsUpdate = true;
-        cube.material.map = tex;
-        cube.material.needsUpdate = true;
+        obj.material.map = tex;
+        obj.material.needsUpdate = true;
       };
     }
 
-    scene.add(cube);
-    cubes.push(cube);
+    scene.add(obj);
+    cubes.push(obj);
   });
 
   selectedCube = cubes[0] || null;
@@ -128,12 +132,12 @@ function loadMapData(mapData) {
   updateCubeList();
 }
 
+// --- Carregar mapa via URL se houver ---
 (function () {
   const params = new URLSearchParams(window.location.search);
   const mapName = params.get("map");
 
   if (mapName) {
-    // monta caminho absoluto correto para qualquer repositório/pasta
     const base = window.location.pathname.replace(/\/[^/]*$/, "");
     const filePath = `${base}/resources/maps/${mapName}.map?nocache=${Date.now()}`;
 
@@ -151,5 +155,3 @@ function loadMapData(mapData) {
       });
   }
 })();
-
-
