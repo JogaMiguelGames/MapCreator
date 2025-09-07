@@ -84,34 +84,3 @@ const quat = new THREE.Quaternion();
 const mat4 = new THREE.Matrix4();
 const box3 = new THREE.Box3();
 const color = new THREE.Color('#ffffff');
-
-// --- Debug Overlay ---
-(function setupDebugOverlay(){
-  const debugText = document.createElement("div");
-  debugText.textContent = "// -- Kernelium Framework -- kfw.js";
-  Object.assign(debugText.style, {
-    position: "absolute",
-    top: "10px",
-    right: "10px",
-    padding: "6px 10px",
-    background: "rgba(0,0,0,.7)",
-    color: "#0f0",
-    fontFamily: "monospace",
-    fontSize: "14px",
-    borderRadius: "6px",
-    pointerEvents: "none",
-    zIndex: "2147483647",
-    opacity: "0",
-    transition: "opacity .25s ease"
-  });
-  sceneContainer.appendChild(debugText);
-
-  let visible = false;
-  window.addEventListener("keydown", (e) => {
-    if (e.ctrlKey && e.shiftKey && (e.code === "KeyI" || e.key?.toLowerCase?.() === "i")) {
-      // Observação: o DevTools pode abrir junto, isso não dá pra impedir totalmente
-      visible = !visible;
-      debugText.style.opacity = visible ? "1" : "0";
-    }
-  }, { capture: true });
-})();
