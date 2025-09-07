@@ -16,41 +16,6 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-// garante que o canvas fique dentro do container da cena
-const sceneContainer = document.getElementById('sceneContainer') || document.body;
-sceneContainer.style.position = "relative";
-sceneContainer.appendChild(renderer.domElement);
-
-// --- Texto no canto superior direito ---
-(function() {
-    if (!sceneContainer) return;
-
-    const cornerText = document.createElement('div');
-    cornerText.textContent = 'Map Creator 3D';
-    cornerText.id = 'cornerText';
-
-    Object.assign(cornerText.style, {
-        position: 'absolute',
-        top: '10px',
-        right: '10px',
-        color: 'white',
-        fontSize: '16px',
-        fontFamily: 'sans-serif',
-        background: 'rgba(0, 0, 0, 0.5)',
-        padding: '5px 10px',
-        borderRadius: '6px',
-        zIndex: '10',
-        pointerEvents: 'none',
-    });
-
-    sceneContainer.appendChild(cornerText);
-
-    window.addEventListener('resize', () => {
-        cornerText.style.top = '10px';
-        cornerText.style.right = '10px';
-    });
-})();
-
 // --- Core Tools ---
 const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
