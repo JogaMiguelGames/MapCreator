@@ -119,19 +119,3 @@ const quat = new THREE.Quaternion();
 const mat4 = new THREE.Matrix4();
 const box3 = new THREE.Box3();
 const color = new THREE.Color('#ffffff');
-
-// --- Animation Loop (exemplo) ---
-function animate() {
-    requestAnimationFrame(animate);
-
-    // Atualiza objetos aqui, se necessário
-    renderer.render(scene, camera);
-}
-animate();
-
-// --- Window Resize ---
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
