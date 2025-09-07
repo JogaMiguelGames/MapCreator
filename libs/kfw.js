@@ -90,7 +90,7 @@ const color = new THREE.Color('#ffffff');
 // --- UI Debug Info ---
 const debugText = document.createElement("div");
 debugText.innerText = "=== Kernelium Framework kfw.js ===";
-debugText.style.position = "fixed";
+debugText.style.position = "absolute";   // dentro do container
 debugText.style.top = "10px";
 debugText.style.right = "10px";
 debugText.style.padding = "5px 10px";
@@ -99,16 +99,18 @@ debugText.style.color = "#0f0";
 debugText.style.fontFamily = "monospace";
 debugText.style.fontSize = "14px";
 debugText.style.borderRadius = "6px";
-debugText.style.opacity = "0";              // começa invisível
-debugText.style.transition = "opacity 0.3s ease"; // animação suave
-debugText.style.pointerEvents = "none";     // evita clique
+debugText.style.opacity = "0"; // começa invisível
+debugText.style.transition = "opacity 0.3s ease";
+debugText.style.pointerEvents = "none";
 debugText.style.zIndex = "9999";
-document.body.appendChild(debugText);
+
+// adiciona dentro do container da cena
+document.getElementById("sceneContainer").appendChild(debugText);
 
 // --- Key Listener ---
 let visible = false;
 window.addEventListener("keydown", (e) => {
-  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "m") {
+  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
     e.preventDefault();
     visible = !visible;
     debugText.style.opacity = visible ? "1" : "0";
