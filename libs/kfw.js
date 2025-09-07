@@ -84,3 +84,28 @@ const quat = new THREE.Quaternion();
 const mat4 = new THREE.Matrix4();
 const box3 = new THREE.Box3();
 const color = new THREE.Color('#ffffff');
+
+// Pega o container da cena
+const sceneContainer = document.getElementById('sceneContainer');
+
+// Cria o elemento de texto
+const cornerText = document.createElement('div');
+cornerText.id = 'cornerText';
+cornerText.textContent = 'Map Creator 3D';
+
+// Aplica o estilo diretamente via JS
+Object.assign(cornerText.style, {
+  position: 'absolute',
+  top: '10px',
+  right: '10px',
+  color: 'white',
+  fontSize: '16px',
+  fontFamily: 'sans-serif',
+  background: 'rgba(0, 0, 0, 0.5)',
+  padding: '5px 10px',
+  borderRadius: '6px',
+  zIndex: '10', // garante que fique acima do canvas
+});
+
+// Adiciona o texto ao container
+sceneContainer.appendChild(cornerText);
