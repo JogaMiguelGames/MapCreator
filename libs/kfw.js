@@ -108,7 +108,7 @@ document.body.appendChild(debugText);
 // --- Key Listener ---
 let visible = false;
 window.addEventListener("keydown", (e) => {
-  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
+  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "m") {
     e.preventDefault();
     visible = !visible;
     debugText.style.opacity = visible ? "1" : "0";
