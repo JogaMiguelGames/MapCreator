@@ -99,15 +99,18 @@ debugText.style.color = "#0f0";
 debugText.style.fontFamily = "monospace";
 debugText.style.fontSize = "14px";
 debugText.style.borderRadius = "6px";
-debugText.style.display = "none";
+debugText.style.opacity = "0";              // começa invisível
+debugText.style.transition = "opacity 0.3s ease"; // animação suave
+debugText.style.pointerEvents = "none";     // evita clique
 debugText.style.zIndex = "9999";
 document.body.appendChild(debugText);
 
 // --- Key Listener ---
+let visible = false;
 window.addEventListener("keydown", (e) => {
   if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
     e.preventDefault();
-    debugText.style.display =
-      debugText.style.display === "none" ? "block" : "none";
+    visible = !visible;
+    debugText.style.opacity = visible ? "1" : "0";
   }
 });
