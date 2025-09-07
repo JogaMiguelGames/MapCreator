@@ -39,31 +39,38 @@ function loadMapData(mapData) {
     if (!data.position || !data.scale || !data.rotation) return;
 
     if (data.type === 'camera') {
-      // Carregar modelo externo
-      const loader = new THREE.OBJLoader();
-      loader.load('resources/models/editor/camera/camera.obj', (obj) => {
-        obj.traverse(child => {
-          if (child.isMesh) {
-            child.material = new THREE.MeshStandardMaterial({ color: data.color || '#ffffff' });
-            child.castShadow = true;
-            child.receiveShadow = true;
-          }
+      const mtlLoader = new THREE.MTLLoader();
+      mtlLoader.setPath('resources/models/editor/camera/');
+      mtlLoader.load('camera.mtl', (materials) => {
+        materials.preload();
+    
+        const loader = new THREE.OBJLoader();
+        loader.setMaterials(materials);
+        loader.setPath('resources/models/editor/camera/');
+        loader.load('camera.obj', (obj) => {
+          obj.name = data.name || 'Camera';
+          obj.position.set(data.position.x, data.position.y, data.position.z);
+          obj.scale.set(data.scale.x, data.scale.y, data.scale.z);
+          obj.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+    
+          obj.userData.isCameraModel = true;
+    
+          // garante que as sombras estejam ativas
+          obj.traverse(child => {
+            if (child.isMesh) {
+              child.castShadow = true;
+              child.receiveShadow = true;
+            }
+          });
+    
+          scene.add(obj);
+          cubes.push(obj);
+          updatePanelForCube(obj);
+          updateCubeList();
         });
-
-        obj.name = data.name || 'Camera';
-        obj.position.set(data.position.x, data.position.y, data.position.z);
-        obj.scale.set(data.scale.x, data.scale.y, data.scale.z);
-        obj.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
-
-        obj.userData.isCameraModel = true;
-
-        scene.add(obj);
-        cubes.push(obj);
-        updatePanelForCube(obj);
-        updateCubeList();
       });
-
-      return; // <- já tratou a camera
+    
+      return; // já tratou a câmera
     }
 
     // Seleciona geometria correta
