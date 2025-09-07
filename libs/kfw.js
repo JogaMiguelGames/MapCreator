@@ -86,3 +86,28 @@ const quat = new THREE.Quaternion();
 const mat4 = new THREE.Matrix4();
 const box3 = new THREE.Box3();
 const color = new THREE.Color('#ffffff');
+
+// --- UI Debug Info ---
+const debugText = document.createElement("div");
+debugText.innerText = "=== Kernelium Framework kfw.js ===";
+debugText.style.position = "fixed";
+debugText.style.top = "10px";
+debugText.style.right = "10px";
+debugText.style.padding = "5px 10px";
+debugText.style.background = "rgba(0, 0, 0, 0.7)";
+debugText.style.color = "#0f0";
+debugText.style.fontFamily = "monospace";
+debugText.style.fontSize = "14px";
+debugText.style.borderRadius = "6px";
+debugText.style.display = "none";
+debugText.style.zIndex = "9999";
+document.body.appendChild(debugText);
+
+// --- Key Listener ---
+window.addEventListener("keydown", (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "i") {
+    e.preventDefault();
+    debugText.style.display =
+      debugText.style.display === "none" ? "block" : "none";
+  }
+});
