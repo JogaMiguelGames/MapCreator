@@ -1,3 +1,40 @@
+// --- SAVE ---
+document.getElementById('saveButton').addEventListener('click', () => {
+  const mapData = {
+    sceneColor: `#${scene.background.getHexString()}`,
+    cubes: cubes.map(obj => {
+      let textureData = null;
+      if (obj.material?.map?.image?.src) {
+        textureData = obj.material.map.image.src;
+      }
+
+      // Detecta o tipo de geometria ou modelo
+      let type = 'cube';
+      if (obj.geometry === sphere_geometry) type = 'sphere';
+      else if (obj.geometry === plane_geometry) type = 'plane';
+      else if (obj.userData?.isCameraModel) type = 'camera'; // <- marca o modelo
+
+      return {
+        type,
+        name: obj.name || 'Object',
+        position: { x: obj.position?.x || 0, y: obj.position?.y || 0, z: obj.position?.z || 0 },
+        scale: { x: obj.scale?.x || 1, y: obj.scale?.y || 1, z: obj.scale?.z || 1 },
+        rotation: { x: obj.rotation?.x || 0, y: obj.rotation?.y || 0, z: obj.rotation?.z || 0 },
+        color: `#${obj.material?.color?.getHexString() || 'ffffff'}`,
+        texture: textureData
+      };
+    })
+  };
+
+  const json = JSON.stringify(mapData, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'map1.map';
+  a.click();
+  URL.revokeObjectURL(a.href);
+});
+
 // --- LOAD ---
 const loadButton = document.getElementById('loadButton');
 const loadInput = document.getElementById('loadInput');
@@ -38,9 +75,37 @@ function loadMapData(mapData) {
   cubesData.forEach(data => {
     if (!data.position || !data.scale || !data.rotation) return;
 
+    if (data.type === 'camera') {
+      // Carregar modelo externo
+      const loader = new THREE.OBJLoader();
+      loader.load('resources/models/editor/camera/camera.obj', (obj) => {
+        obj.traverse(child => {
+          if (child.isMesh) {
+            child.material = new THREE.MeshStandardMaterial({ color: data.color || '#ffffff' });
+            child.castShadow = true;
+            child.receiveShadow = true;
+          }
+        });
+
+        obj.name = data.name || 'Camera';
+        obj.position.set(data.position.x, data.position.y, data.position.z);
+        obj.scale.set(data.scale.x, data.scale.y, data.scale.z);
+        obj.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+
+        obj.userData.isCameraModel = true;
+
+        scene.add(obj);
+        cubes.push(obj);
+        updatePanelForCube(obj);
+        updateCubeList();
+      });
+
+      return; // <- já tratou a camera
+    }
+
     // Seleciona geometria correta
     let geometry;
-    switch(data.type){
+    switch (data.type) {
       case 'sphere':
         geometry = sphere_geometry;
         break;
@@ -59,11 +124,9 @@ function loadMapData(mapData) {
     obj.scale.set(data.scale.x, data.scale.y, data.scale.z);
     obj.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
 
-    // Ativa sombras
     obj.castShadow = true;
     obj.receiveShadow = true;
 
-    // Carrega textura se houver
     if (data.texture) {
       const img = new Image();
       img.src = data.texture;
@@ -83,27 +146,3 @@ function loadMapData(mapData) {
   updatePanelForCube(selectedCube);
   updateCubeList();
 }
-
-// --- Carregar mapa via URL se houver ---
-(function () {
-  const params = new URLSearchParams(window.location.search);
-  const mapName = params.get("map");
-
-  if (mapName) {
-    const base = window.location.pathname.replace(/\/[^/]*$/, "");
-    const filePath = `${base}/resources/maps/${mapName}.map?nocache=${Date.now()}`;
-
-    console.log("Carregando mapa:", filePath);
-
-    fetch(filePath)
-      .then(res => {
-        if (!res.ok) throw new Error("Erro ao carregar mapa: " + filePath);
-        return res.json();
-      })
-      .then(mapData => loadMapData(mapData))
-      .catch(err => {
-        alert("Erro ao carregar mapa via URL.");
-        console.error(err);
-      });
-  }
-})();
