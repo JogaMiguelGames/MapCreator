@@ -1,10 +1,20 @@
-    const createSound = new Audio("resources/sounds/buttons/create.wav");
+const createSound = new Audio("resources/sounds/buttons/create.wav");
 
-    // Captura o botão
-    const button = document.getElementById("addCubeBtn");
+const createCubeButton = document.getElementById("addCubeBtn");
+const createSphereButton = document.getElementById("addSphereBtn");
+const createPlaneButton = document.getElementById("addSphereBtn");
 
-    // Toca o som quando o botão é clicado
-    button.addEventListener("click", () => {
-      createSound.currentTime = 0; // Reinicia o som se já estiver tocando
-      createSound.play();
-    });
+createCubeButton.addEventListener("click", () => {
+    createSound.currentTime = 0;
+    createSound.play();
+});
+
+createSphereButton.addEventListener("click", () => {
+    createSound.currentTime = 0;
+    createSound.play();
+});
+
+createPlaneButton.addEventListener("click", () => {
+    createSound.currentTime = 0;
+    createSound.play();
+});
