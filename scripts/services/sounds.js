@@ -6,5 +6,5 @@
     // Toca o som quando o botão é clicado
     button.addEventListener("click", () => {
       createSound.currentTime = 0; // Reinicia o som se já estiver tocando
-      CreateSound.play();
+      createSound.play();
     });
