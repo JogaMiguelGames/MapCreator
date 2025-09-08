@@ -2,7 +2,7 @@ const createSound = new Audio("resources/sounds/buttons/create.wav");
 
 const createCubeButton = document.getElementById("addCubeBtn");
 const createSphereButton = document.getElementById("addSphereBtn");
-const createPlaneButton = document.getElementById("addSphereBtn");
+const createPlaneButton = document.getElementById("addPlaneBtn");
 
 createCubeButton.addEventListener("click", () => {
     createSound.currentTime = 0;
