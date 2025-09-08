@@ -20,7 +20,3 @@ document.addEventListener("DOMContentLoaded", () => {
         createSound.play();
     });
 });
-
-document.getElementById("addPlaneBtn").addEventListener("click", () => {
-    console.log("Plane clicado!");
-});
