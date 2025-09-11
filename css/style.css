@@ -88,21 +88,45 @@ canvas {
 
 #leftButtons button,
 #rightButtons button {
-  width: 60px;
+  width: 60px;              /* tamanho fixo compacto */
   height: 60px;
   background: #333;
   border: none;
   border-radius: 6px;
   color: white;
-  font-size: 13px;
+  font-size: 12px;
   cursor: pointer;
   display: flex;
-  flex-direction: column;
+  flex-direction: column;   /* ícone em cima, texto embaixo */
   align-items: center;
   justify-content: center;
   gap: 6px;
   transition: background-color 0.2s ease;
+  text-align: center;
+  white-space: normal;      /* deixa o texto quebrar se precisar */
+  line-height: 1.2;
 }
+
+/* Ícones ligeiramente maiores */
+#leftButtons img,
+#rightButtons img {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* texto agora centralizado abaixo */
+#leftButtons button span,
+#rightButtons button span {
+  display: block;
+  max-width: 100%;
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
 
 #leftButtons button:hover,
 #rightButtons button:hover,
@@ -110,14 +134,6 @@ canvas {
 #rightButtons button:focus {
   background: #444;
   outline: none;
-}
-
-#leftButtons img,
-#rightButtons img {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-  pointer-events: none;
 }
 
 /* Campo de texto para cor do céu */
@@ -552,33 +568,6 @@ body.focusing-script #exitScriptFocusBtn {
   flex-shrink: 0;
 }
 
-/* botões com layout horizontal (cabem mais na barra) */
-#leftButtons button,
-#rightButtons button {
-  min-width: 72px;
-  height: 40px;
-  padding: 6px 10px;
-  background: #333;
-  border: none;
-  border-radius: 6px;
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  cursor: pointer;
-  color: white;
-  font-size: 13px;
-  white-space: nowrap;
-}
-
-/* ícones menores pra caber melhor */
-#leftButtons img,
-#rightButtons img {
-  width: 20px;
-  height: 20px;
-  object-fit: contain;
-  pointer-events: none;
-}
-
 /* adapta seu icon-wrapper para o novo tamanho */
 .icon-wrapper {
   width: 20px;
@@ -589,18 +578,10 @@ body.focusing-script #exitScriptFocusBtn {
   height: 100%;
 }
 
-/* textos longos ficam truncados */
-#leftButtons button span,
-#rightButtons button span {
-  display: inline-block;
-  max-width: 120px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 /* não permitir que topMenu quebre linhas */
 #topMenu { flex-wrap: nowrap; }
 
 /* estilinho scrollbar para o leftButtons */
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
