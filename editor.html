@@ -8,6 +8,7 @@
 </head>
 <body>
   <header id="topMenu" role="navigation" aria-label="Main menu">
+  <div id="menuBar">
     <div class="menu-strip">
       <button class="menu-btn">File ▾</button>
       <div class="dropdown">
@@ -15,7 +16,10 @@
         <button id="fileLoad">📁 Load</button>
       </div>
     </div>
+  </div>
 
+  <!-- Barra de botões principais -->
+  <header id="topMenu" role="navigation" aria-label="Main menu">
     <nav id="leftButtons">
       <button id="runButton" aria-label="Run">
         <img src="resources/images/ui/buttons/run.png" role="presentation" />
@@ -26,49 +30,45 @@
         <span>Stop</span>
       </button>
 
-      <!-- Fullscreen in scripts-->
-      
       <button id="focusScriptBtn" aria-label="Focus Script" title="Put the script in fullscreen">
         <img src="resources/images/ui/buttons/fullScreen.png" />
         <span>Script View</span>
       </button>
 
-      <!-- Import plugins file -->
-      
       <button id="pluginBtn" aria-label="Plugin" title="Import plugins for customization">
         <img src="resources/images/ui/icons/plugin.png" />
         <span>Import Plugin</span>
       </button>
       <input type="file" id="pluginFolderInput" webkitdirectory directory multiple hidden />
 
-      <!-- Add Cube button -->
-      
       <button id="addCubeBtn" aria-label="Add Cube" title="Add cube in map">
         <div class="icon-wrapper">
-          <img src="resources/images/ui/icons/cube.png" alt="" class="base-icon"/>
-          <img src="resources/images/ui/icons/add.png" alt="" class="overlay-icon"/>
+          <img src="resources/images/ui/icons/cube.png" class="base-icon"/>
+          <img src="resources/images/ui/icons/add.png" class="overlay-icon"/>
         </div>
         <span>Add Cube</span>
       </button>
 
       <button id="addSphereBtn" aria-label="Add Sphere" title="Add sphere in map">
         <div class="icon-wrapper">
-          <img src="resources/images/ui/icons/sphere.png" alt="" class="base-icon"/>
-          <img src="resources/images/ui/icons/add.png" alt="" class="overlay-icon"/>
+          <img src="resources/images/ui/icons/sphere.png" class="base-icon"/>
+          <img src="resources/images/ui/icons/add.png" class="overlay-icon"/>
         </div>
         <span>Add Sphere</span>
       </button>
+
       <button id="addPlaneBtn" aria-label="Add Plane" title="Add plane in map">
         <div class="icon-wrapper">
-          <img src="resources/images/ui/icons/plane.png" alt="" class="base-icon"/>
-          <img src="resources/images/ui/icons/add.png" alt="" class="overlay-icon"/>
+          <img src="resources/images/ui/icons/plane.png" class="base-icon"/>
+          <img src="resources/images/ui/icons/add.png" class="overlay-icon"/>
         </div>
         <span>Add Plane</span>
       </button>
+
       <button id="addCameraBtn" aria-label="Add Camera" title="Add camera in map">
         <div class="icon-wrapper">
-          <img src="resources/images/ui/icons/camera.png" alt="" class="base-icon"/>
-          <img src="resources/images/ui/icons/add.png" alt="" class="overlay-icon"/>
+          <img src="resources/images/ui/icons/camera.png" class="base-icon"/>
+          <img src="resources/images/ui/icons/add.png" class="overlay-icon"/>
         </div>
         <span>Add Camera</span>
       </button>
