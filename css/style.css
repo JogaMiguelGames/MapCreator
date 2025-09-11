@@ -456,44 +456,151 @@ body.focusing-script #exitScriptFocusBtn {
   pointer-events: none; /* não atrapalha o clique */
 }
 
-/* Itens principais da barra de menu */
+/* ===== Menu fixo + top menu alinhado respeitando o painel à direita ===== */
+#menuBar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 280px;            /* reserva espaço pro painel lateral */
+  height: 30px;
+  background: #222;
+  display: flex;
+  align-items: center;
+  padding: 0 8px;
+  gap: 8px;
+  z-index: 1200;
+  user-select: none;
+  box-sizing: border-box;
+}
+
+/* item do menu */
 .menuItem {
   position: relative;
-  margin-right: 20px;
-  color: white;
-  font-size: 14px;
-  cursor: pointer;
-  user-select: none;
-}
-
-/* Dropdown escondido por padrão */
-.menuItem .dropdown {
-  display: none;
-  position: absolute;
-  top: 30px;
-  left: 0;
-  background: #333;
-  border: 1px solid #444;
-  border-radius: 4px;
-  list-style: none;
-  padding: 4px 0;
-  margin: 0;
-  min-width: 120px;
-  z-index: 3000;
-}
-
-.menuItem .dropdown li {
-  padding: 6px 12px;
-  color: white;
+  padding: 6px 8px;
+  color: #fff;
   font-size: 13px;
   cursor: pointer;
 }
 
-.menuItem .dropdown li:hover {
-  background: #444;
+/* dropdown escondido por padrão; aberto apenas quando .open */
+.menuItem .dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 6px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 6px;
+  min-width: 140px;
+  max-width: calc(100vw - 360px); /* evita invadir o painel */
+  list-style: none;
+  padding: 6px 0;
+  z-index: 1250;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
 }
 
-/* Mostrar dropdown no hover */
-.menuItem:hover .dropdown {
+.menuItem .dropdown li {
+  padding: 8px 12px;
+  color: #ddd;
+  cursor: pointer;
+  font-size: 13px;
+}
+.menuItem .dropdown li:hover {
+  background: #333;
+  color: #fff;
+}
+
+.menuItem.open .dropdown {
   display: block;
 }
+
+/* topMenu agora fixo e respeitando o painel (substitui regras conflitantes) */
+#topMenu {
+  position: fixed;
+  top: 30px;
+  left: 0;
+  right: 280px;           /* aqui também reserva o espaço do painel */
+  height: 50px;
+  background: #333;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 10px;
+  z-index: 1100;
+  box-sizing: border-box;
+  gap: 8px;
+  overflow: visible;
+}
+
+/* left / right buttons: tornam-se flexíveis e roláveis se necessário */
+#leftButtons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+  flex: 1 1 auto;
+  min-width: 0; /* permite que o container encolha e mostre scroll */
+}
+
+#rightButtons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+/* botões com layout horizontal (cabem mais na barra) */
+#leftButtons button,
+#rightButtons button {
+  min-width: 72px;
+  height: 40px;
+  padding: 6px 10px;
+  background: #333;
+  border: none;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: white;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+/* ícones menores pra caber melhor */
+#leftButtons img,
+#rightButtons img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* adapta seu icon-wrapper para o novo tamanho */
+.icon-wrapper {
+  width: 20px;
+  height: 20px;
+}
+.base-icon, .overlay-icon {
+  width: 100%;
+  height: 100%;
+}
+
+/* textos longos ficam truncados */
+#leftButtons button span,
+#rightButtons button span {
+  display: inline-block;
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* não permitir que topMenu quebre linhas */
+#topMenu { flex-wrap: nowrap; }
+
+/* estilinho scrollbar para o leftButtons */
+#leftButtons::-webkit-scrollbar { height: 6px; }
+#leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
