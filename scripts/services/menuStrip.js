@@ -36,14 +36,24 @@
     fileBtn.classList.remove('open');
   });
 
-  document.getElementById('menuNew')?.addEventListener('click', () => {
-    // se tiver função "new" implementada, chame aqui. Exemplo genérico:
-    console.log('New -> implementar ação');
+  document.getElementById('menuCube')?.addEventListener('click', () => {
+    document.getElementById('createCube')?.click();
     fileBtn.classList.remove('open');
   });
 
-  document.getElementById('menuExit')?.addEventListener('click', () => {
-    // só exemplo: fechar menus; você pode chamar sua rotina de sair
+  document.getElementById('menuSphere')?.addEventListener('click', () => {
+    document.getElementById('createSphere')?.click();
     fileBtn.classList.remove('open');
   });
+
+  document.getElementById('menuPlane')?.addEventListener('click', () => {
+    document.getElementById('createPlane')?.click();
+    fileBtn.classList.remove('open');
+  });
+
+  document.getElementById('menuCamera')?.addEventListener('click', () => {
+    document.getElementById('createCamera')?.click();
+    fileBtn.classList.remove('open');
+  });
+  
 })();
