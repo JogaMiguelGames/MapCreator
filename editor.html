@@ -7,15 +7,14 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <div id="menuBar">
-  <div id="menuBar">
-    <div class="menuItem">
-      File
-      <ul class="dropdown">
-        <li id="newFile">New</li>
-        <li id="openFile">Open...</li>
-        <li id="saveFile">Save</li>
-        <li id="exitApp">Exit</li>
+  <div id="menuBar" role="menubar" aria-label="Application menu">
+    <div class="menuItem" id="fileMenuBtn" role="menuitem" tabindex="0" aria-haspopup="true" aria-expanded="false">
+      <span>File</span>
+      <ul class="dropdown" role="menu" aria-label="File menu">
+        <li id="menuNew" role="menuitem" tabindex="-1">New</li>
+        <li id="menuOpen" role="menuitem" tabindex="-1">Open...</li>
+        <li id="menuSave" role="menuitem" tabindex="-1">Save</li>
+        <li id="menuExit" role="menuitem" tabindex="-1">Exit</li>
       </ul>
     </div>
   </div>
