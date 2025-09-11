@@ -455,3 +455,51 @@ body.focusing-script #exitScriptFocusBtn {
   height: 14px;
   pointer-events: none; /* não atrapalha o clique */
 }
+
+/* --- MENU STRIP --- */
+.menu-strip {
+  position: relative;
+  display: inline-block;
+}
+
+.menu-btn {
+  width: 70px;
+  height: 40px;
+  background: #333;
+  border: none;
+  border-radius: 4px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.menu-btn:hover {
+  background: #444;
+}
+
+.menu-strip .dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #222;
+  border: 1px solid #444;
+  border-radius: 4px;
+  min-width: 120px;
+  z-index: 2000;
+  flex-direction: column;
+}
+
+.menu-strip .dropdown button {
+  width: 100%;
+  padding: 8px 12px;
+  background: transparent;
+  border: none;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+}
+
+.menu-strip .dropdown button:hover {
+  background: #444;
+}
