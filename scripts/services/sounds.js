@@ -5,7 +5,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const createCubeButton = document.getElementById("addCubeBtn");
     const createCubeButton = document.getElementById("addCubeBtn");
     const createSphereButton = document.getElementById("addSphereBtn");
-    const fileMenuButton = document.getElementById("fileBtn");
+    const fileMenuButton = document.getElementById("fileMenuBtn");
+    const addMenuButton = document.getElementById("addMenuBtn");
 
     createCubeButton?.addEventListener("click", () => {
         createSound.currentTime = 0;
@@ -23,6 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     fileMenuButton?.addEventListener("click", () => {
+        menuOpenSound.currentTime = 0;
+        menuOpenSound.play();
+    });
+
+    addMenuButton?.addEventListener("click", () => {
         menuOpenSound.currentTime = 0;
         menuOpenSound.play();
     });
