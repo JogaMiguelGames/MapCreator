@@ -5,32 +5,27 @@
   const addBtn = document.getElementById('addMenuBtn');
   if (!addBtn) return;
 
+  // abrir/fechar no clique
   addBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     const opened = addBtn.classList.toggle('open');
     addBtn.setAttribute('aria-expanded', opened ? 'true' : 'false');
   });
 
-  addBtn.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      addBtn.click();
-    }
-  });
-  
-  // abrir/fechar no clique
   fileBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     const opened = fileBtn.classList.toggle('open');
     fileBtn.setAttribute('aria-expanded', opened ? 'true' : 'false');
   });
 
-  // teclado (Enter / Space)
-  fileBtn.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      fileBtn.click();
-    }
+  // teclado Enter / Space
+  [fileBtn, addBtn].forEach(btn => {
+    btn.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        btn.click();
+      }
+    });
   });
 
   // fechar ao clicar fora
@@ -39,37 +34,42 @@
       fileBtn.classList.remove('open');
       fileBtn.setAttribute('aria-expanded','false');
     }
+    if (!addBtn.contains(e.target)) {
+      addBtn.classList.remove('open');
+      addBtn.setAttribute('aria-expanded','false');
+    }
   });
 
-  // ligar itens do menu aos botões que você já tem
+  // -- FILE MENU: chama funções diretamente --
   document.getElementById('menuOpen')?.addEventListener('click', () => {
-    document.getElementById('loadButton')?.click();
+    loadButton.click(); // ou chamar diretamente a função de load se quiser
     fileBtn.classList.remove('open');
   });
 
   document.getElementById('menuSave')?.addEventListener('click', () => {
-    document.getElementById('saveButton')?.click();
+    document.getElementById('saveButton').click(); // ou criar função saveMap() e chamar direto
     fileBtn.classList.remove('open');
   });
 
+  // -- ADD MENU: cria objetos direto --
   document.getElementById('menuCube')?.addEventListener('click', () => {
-    document.getElementById('createCube')?.click();
-    fileBtn.classList.remove('open');
+    createCube();
+    addBtn.classList.remove('open');
   });
 
   document.getElementById('menuSphere')?.addEventListener('click', () => {
-    document.getElementById('createSphere')?.click();
-    fileBtn.classList.remove('open');
+    createSphere();
+    addBtn.classList.remove('open');
   });
 
   document.getElementById('menuPlane')?.addEventListener('click', () => {
-    document.getElementById('createPlane')?.click();
-    fileBtn.classList.remove('open');
+    createPlane();
+    addBtn.classList.remove('open');
   });
 
   document.getElementById('menuCamera')?.addEventListener('click', () => {
-    document.getElementById('createCamera')?.click();
-    fileBtn.classList.remove('open');
+    createCamera();
+    addBtn.classList.remove('open');
   });
-  
+
 })();
