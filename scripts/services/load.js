@@ -6,8 +6,13 @@ const loadInput = document.getElementById('loadInput');
 
 // Função que abre o seletor de arquivos
 function openMap() {
+  if (!loadInput) {
+    console.error("openMap: #loadInput não encontrado no DOM.");
+    return;
+  }
   loadInput.click();
 }
+window.openMap = openMap; // expõe para o menuStrip.js
 
 // Clique no botão "Load"
 loadButton?.addEventListener('click', openMap);
