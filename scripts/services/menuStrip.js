@@ -102,6 +102,11 @@
     addBtn.classList.remove('open');
   });
 
+  document.getElementById('menuPyramid')?.addEventListener('click', () => {
+    createPyramid();
+    addBtn.classList.remove('open');
+  });
+  
   document.getElementById('menuCamera')?.addEventListener('click', () => {
     createCamera();
     addBtn.classList.remove('open');
