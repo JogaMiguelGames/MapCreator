@@ -42,8 +42,9 @@ function createPyramid() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const pyramid = new THREE.Mesh(pyramid_geometry, newMaterial);
 
-  pyramid.position.set(0, 0, 0);
   pyramid.scale.set(0.71, 0.71, 1);
+  pyramid.position.set(0, 0, 0);
+  pyramid.rotation.x = -Math.PI / 2;
   
   pyramid.name = `Pyramid ${cubes.length}`;
   pyramid.castShadow = true;
@@ -154,6 +155,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
