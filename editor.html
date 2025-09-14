@@ -7,17 +7,18 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+  <!-- ================= MENU BAR ================= -->
   <div id="menuBar" role="menubar" aria-label="Application menu">
     <div class="menuItem" id="fileMenuBtn" role="menuitem" tabindex="0" aria-haspopup="true" aria-expanded="false">
       <span>File</span>
       <ul class="dropdown" role="menu" aria-label="File menu">
         <li id="menuSave" role="menuitem" tabindex="-1">Save</li>
-        <li id="menuOpen" role="menuitem" tabindex="-1">Open</li>
+        <li id="menuLoad" role="menuitem" tabindex="-1">Open</li>
       </ul>
     </div>
     <div class="menuItem" id="addMenuBtn" role="menuitem" tabindex="0" aria-haspopup="true" aria-expanded="false">
       <span>Add</span>
-      <ul class="dropdown" role="menu" aria-label="File menu">
+      <ul class="dropdown" role="menu" aria-label="Add menu">
         <li id="menuCube" role="menuitem" tabindex="-1">Create Cube</li>
         <li id="menuSphere" role="menuitem" tabindex="-1">Create Sphere</li>
         <li id="menuPlane" role="menuitem" tabindex="-1">Create Plane</li>
@@ -26,7 +27,7 @@
     </div>
   </div>
 
-  
+  <!-- ================= TOP BUTTONS ================= -->
   <header id="topMenu" role="navigation" aria-label="Main menu">
     <nav id="leftButtons">
       <button id="runButton" aria-label="Run">
@@ -38,23 +39,17 @@
         <span>Stop</span>
       </button>
 
-      <!-- Fullscreen in scripts-->
-      
       <button id="focusScriptBtn" aria-label="Focus Script" title="Put the script in fullscreen">
         <img src="resources/images/ui/buttons/fullScreen.png" />
         <span>Script View</span>
       </button>
 
-      <!-- Import plugins file -->
-      
       <button id="pluginBtn" aria-label="Plugin" title="Import plugins for customization">
         <img src="resources/images/ui/icons/plugin.png" />
         <span>Import Plugin</span>
       </button>
       <input type="file" id="pluginFolderInput" webkitdirectory directory multiple hidden />
 
-      <!-- Add Cube button -->
-      
       <button id="addCubeBtn" aria-label="Add Cube" title="Add cube in map">
         <div class="icon-wrapper">
           <img src="resources/images/ui/icons/cube.png" alt="" class="base-icon"/>
@@ -62,7 +57,6 @@
         </div>
         <span>Add Cube</span>
       </button>
-
       <button id="addSphereBtn" aria-label="Add Sphere" title="Add sphere in map">
         <div class="icon-wrapper">
           <img src="resources/images/ui/icons/sphere.png" alt="" class="base-icon"/>
@@ -87,24 +81,17 @@
     </nav>
 
     <nav id="rightButtons">
-
-      <!-- Mesh Wireframe -->
-      
       <button id="wireframeToggleBtn" aria-label="Toggle Wireframe" title="Put in objects wireframe mode">
         <img src="resources/images/ui/buttons/wireframe.png" role="presentation" />
         <span>Wireframe</span>
       </button>
 
-      <!-- PNG and JPEG/JPG Texture for meshs -->
-      
       <button id="importTextureBtn" aria-label="Import Texture" title="Import image file texture">
         <img src="resources/images/ui/icons/texture.png" role="presentation" />
         Import Texture
       </button>
       <input type="file" id="importButton" accept="image/png, image/jpeg" hidden />
 
-      <!-- Background color parameters -->
-      
       <label for="bgColorInput" id="skyColorLabel" class="colorInputWrapper" title="Put a background color with HEX color code">
         Sky Color:
         <input type="text" id="bgColorInput" maxlength="7" value="#00AFFF" placeholder="#00AFFF" autocomplete="off" />
@@ -112,194 +99,120 @@
     </nav>
   </header>
 
+  <!-- ================= PANEL LATERAL ================= -->
   <aside id="panel" aria-label="Map editor controls">
     <div id="panel-resize-handle" aria-hidden="true"></div>
 
-    <!-- Scale parameters -->
-    
+    <!-- Scale -->
     <section class="control-group" aria-labelledby="scaleLabel">
-      <h2 id="scaleLabel" class="sr-only">
-        Scale Controls
-      </h2>
-      <label for="scaleX">
-        Scale X:
-        <input type="number" id="scaleX" step="0.1" min="0.1" value="1" disabled />
-      </label>
-      <label for="scaleY">
-        Scale Y:
-        <input type="number" id="scaleY" step="0.1" min="0.1" value="1" disabled />
-      </label>
-      <label for="scaleZ">
-        Scale Z:
-        <input type="number" id="scaleZ" step="0.1" min="0.1" value="1" disabled />
-      </label>
+      <h2 id="scaleLabel" class="sr-only">Scale Controls</h2>
+      <label for="scaleX">Scale X: <input type="number" id="scaleX" step="0.1" min="0.1" value="1" disabled /></label>
+      <label for="scaleY">Scale Y: <input type="number" id="scaleY" step="0.1" min="0.1" value="1" disabled /></label>
+      <label for="scaleZ">Scale Z: <input type="number" id="scaleZ" step="0.1" min="0.1" value="1" disabled /></label>
     </section>
 
-    <!-- Position parameters -->
-    
+    <!-- Position -->
     <section class="control-group" aria-labelledby="positionLabel">
-      <h2 id="positionLabel" class="sr-only">
-        Position Controls
-      </h2>
-      <label for="posX">
-        Position X:
-        <input type="number" id="posX" step="0.1" value="0" disabled />
-      </label>
-      <label for="posY">
-        Position Y:
-        <input type="number" id="posY" step="0.1" value="0.5" disabled />
-      </label>
-      <label for="posZ">
-        Position Z:
-        <input type="number" id="posZ" step="0.1" value="0" disabled />
-      </label>
+      <h2 id="positionLabel" class="sr-only">Position Controls</h2>
+      <label for="posX">Position X: <input type="number" id="posX" step="0.1" value="0" disabled /></label>
+      <label for="posY">Position Y: <input type="number" id="posY" step="0.1" value="0.5" disabled /></label>
+      <label for="posZ">Position Z: <input type="number" id="posZ" step="0.1" value="0" disabled /></label>
     </section>
 
-    <!-- Rotation parameters-->
-    
+    <!-- Rotation -->
     <section class="control-group" aria-labelledby="rotationLabel">
-      <h2 id="rotationLabel" class="sr-only">
-        Rotation Controls
-      </h2>
-      <label for="rotX">
-        Rotation X:
-        <input type="number" id="rotX" step="0.1" />
-      </label>
-      <label for="rotY">
-        Rotation Y:
-        <input type="number" id="rotY" step="0.1" />
-      </label>
-      <label for="rotZ">
-        Rotation Z:
-        <input type="number" id="rotZ" step="0.1" />
-      </label>
+      <h2 id="rotationLabel" class="sr-only">Rotation Controls</h2>
+      <label for="rotX">Rotation X: <input type="number" id="rotX" step="0.1" /></label>
+      <label for="rotY">Rotation Y: <input type="number" id="rotY" step="0.1" /></label>
+      <label for="rotZ">Rotation Z: <input type="number" id="rotZ" step="0.1" /></label>
     </section>
 
+    <!-- Color -->
     <section class="control-group color-center" aria-labelledby="colorLabel">
       <label for="colorHex" class="colorInputWrapper">
-        Color HEX:
-        <input type="text" id="colorHex" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#ffffff" disabled />
+        Color HEX: <input type="text" id="colorHex" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#ffffff" disabled />
       </label>
     </section>
 
+    <!-- Lista de objetos -->
     <section id="cubeList" tabindex="0" aria-label="List of cubes"></section>
 
-    <!-- GScripting -->
-    
+    <!-- Scripting -->
     <section id="scriptingSection" aria-label="Scripting console">
-      <button id="exitScriptFocusBtn" style="display:none; margin-top:10px;"> Back </button>
-      <h2>
-        Scripting
-      </h2>
+      <button id="exitScriptFocusBtn" style="display:none; margin-top:10px;">Back</button>
+      <h2>Scripting</h2>
       <textarea id="scriptInput">console.print("Hello, World")</textarea>
-      <button id="runScriptBtn">
-        Run Script
-      </button>
+      <button id="runScriptBtn">Run Script</button>
       <div id="scriptOutput"></div>
     </section>
   </aside>
-  
+
   <main id="sceneContainer" role="main"></main>
 
-  <!-- CMD -->
-
+  <!-- Command Line -->
   <div id="commandLineWrapper">
-    <input 
-      type="text" 
-      id="commandLine" 
-      placeholder="Type a command..."
-    />
+    <input type="text" id="commandLine" placeholder="Type a command..." />
   </div>
 
-  <!-- Scripts -->
+  <!-- Inputs escondidos -->
+  <input type="file" id="loadInput" accept=".map,application/json" hidden />
 
-  <!-- Libs -->
-  
+  <!-- ================= LIBS ================= -->
   <script src="libs/three.min.js"></script>
   <script src="libs/objLoader.js"></script>
-
   <script src="libs/kfw.js"></script>
 
-  <!-- Main Script -->
-  
+  <!-- ================= SCRIPTS ================= -->
   <script src="scripts/main.js"></script>
 
-  <!-- File import Scripts -->
-  
   <script src="scripts/import/plugin.js"></script>
   <script src="scripts/import/texture.js"></script>
 
-  <!-- Object Scripts -->
-  
   <script src="scripts/objects/color.js"></script>
   <script src="scripts/objects/add.js"></script>
   <script src="scripts/objects/wireframe.js"></script>
   <script src="scripts/objects/history.js"></script>
 
-  <!-- Code Scripts -->
-
   <script src="scripts/codes/scripting.js"></script>
   <script src="scripts/codes/json.js"></script>
 
-  <!-- Services -->
-  
   <script src="scripts/services/save.js"></script>
   <script src="scripts/services/load.js"></script>
-
   <script src="scripts/services/menuStrip.js"></script>
-  
   <script src="scripts/services/keys.js"></script>
-
   <script src="scripts/services/sounds.js"></script>
-
   <script src="scripts/services/lang.js"></script>
-  
-  <script>
-    function isMobileOrTablet() {
-      return /Mobi|Android|iPad|iPhone|iPod|Tablet/i.test(navigator.userAgent) || window.innerWidth < 1024;
-    }
-
-    if (isMobileOrTablet()) {
-      document.body.innerHTML = `
-        <div style="
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-align: center;
-          height: 100vh;
-          background-color: #111;
-          color: white;
-          font-family: sans-serif;
-          padding: 20px;
-        ">
-          <div>
-            <h1 style="font-size: 2em;">Your device is not supported on this site.</h1>
-            <p style="font-size: 1.2em;">Use a computer to access this site.</p>
-          </div>
-        </div>
-      `;
-    }
-  </script>
 
   <script>
+    // Script focus toggle
     const focusBtn = document.getElementById("focusScriptBtn");
     const exitBtn = document.getElementById("exitScriptFocusBtn");
-
     focusBtn.addEventListener("click", () => {
       document.body.classList.add("focusing-script");
       exitBtn.style.display = "inline-block";
     });
-
     exitBtn.addEventListener("click", () => {
       document.body.classList.remove("focusing-script");
       exitBtn.style.display = "none";
     });
-  </script>
 
-  <script>
+    // Import Texture
     document.getElementById('importTextureBtn').addEventListener('click', () => {
       document.getElementById('importButton').click();
     });
+
+    // Mobile detection
+    function isMobileOrTablet() {
+      return /Mobi|Android|iPad|iPhone|iPod|Tablet/i.test(navigator.userAgent) || window.innerWidth < 1024;
+    }
+    if (isMobileOrTablet()) {
+      document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;text-align:center;height:100vh;background-color:#111;color:white;font-family:sans-serif;padding:20px;">
+        <div>
+          <h1 style="font-size:2em;">Your device is not supported on this site.</h1>
+          <p style="font-size:1.2em;">Use a computer to access this site.</p>
+        </div>
+      </div>`;
+    }
   </script>
 </body>
 </html>
