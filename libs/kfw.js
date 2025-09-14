@@ -30,7 +30,11 @@ const mesh = new THREE.Mesh();
 const box_geometry = new THREE.BoxGeometry(1, 1, 1);
 const circle_geometry = new THREE.CircleGeometry(1, 32);
 const cone_geometry = new THREE.ConeGeometry(1, 2, 32);
-const pyramid_geometry = new THREE.ConeGeometry(1, 2, 4); 
+const pyramid_geometry = new THREE.ConeGeometry(
+  Math.sqrt(2) / 2,
+  1,
+  4
+);
 const cylinder_geometry = new THREE.CylinderGeometry(1, 1, 2, 32);
 const dodecahedron_geometry = new THREE.DodecahedronGeometry(1, 0);
 const extrude_geometry = new THREE.ExtrudeGeometry([], { depth: 1, bevelEnabled: false }); // precisa de Shape
