@@ -49,6 +49,9 @@ function createPyramid() {
   pyramid.castShadow = true;
   pyramid.receiveShadow = true;
 
+  pyramid.rotation.x = Math.PI / 2;  // ponta para cima
+  pyramid.rotation.z = Math.PI / 4;  // 45° no eixo Z
+  
   scene.add(pyramid);
   cubes.push(pyramid);
 
@@ -151,6 +154,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
