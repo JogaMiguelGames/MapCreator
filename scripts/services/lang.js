@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Add Sphere": "Adicionar Esfera",
     "Add Plane": "Adicionar Plano",
     "Add Camera": "Adicionar Câmera",
-    "Wireframe": "Grade (Wireframe)",
+    "Wireframe": "Wireframe",
     "Import Texture": "Importar Textura",
     "Sky Color:": "Cor do Céu:",
     "Scale X:": "Escala X:",
@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "Scripting": "Scripts",
     "Run Script": "Executar Script",
     "Type a command...": "Digite um comando...",
-    "🔙 Back": "🔙 Voltar"
+    "Back": "Voltar"
   };
 
   // Só traduz se idioma for pt-BR
