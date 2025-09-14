@@ -1,11 +1,5 @@
 // -- Add.js -- Map Creator
 
-const addCube = document.getElementById('addCubeBtn');
-const addSphere = document.getElementById('addSphereBtn');
-const addPlane = document.getElementById('addPlaneBtn');
-
-const addCamera = document.getElementById('addCameraBtn');
-
 function createCube() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const newCube = new THREE.Mesh(box_geometry, newMaterial);
@@ -42,6 +36,27 @@ function createSphere() {
   updateCubeList();
 
   pushToHistory({ type: 'delete', object: newSphere });
+}
+
+function createPyramid() {
+  const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const newPlane = new THREE.Mesh(pyramid_geometry, newMaterial);
+
+  newPlane.position.set(0, 0, 0);
+  newPlane.rotation.x = -Math.PI / 2; // deixa o plano virado para o chão
+  
+  newPlane.name = `Pyramid ${cubes.length}`;
+  newPlane.castShadow = true;
+  newPlane.receiveShadow = true;
+
+  scene.add(newPlane);
+  cubes.push(newPlane);
+
+  selectedCube = newPlane;
+  updatePanelForCube(newPlane);
+  updateCubeList();
+
+  pushToHistory({ type: 'delete', object: newPlane });
 }
 
 function createPlane() {
@@ -116,22 +131,6 @@ function createCamera() {
   );
 }
 
-addCube.addEventListener('click', () => {
-  createCube();
-});
-
-addSphere.addEventListener('click', () => {
-  createSphere();
-});
-
-addPlane.addEventListener('click', () => {
-  createPlane();
-});
-
-addCamera.addEventListener('click', () => {
-  createCamera();
-});
-
 document.getElementById("commandLine").addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
     const command = this.value.trim();
@@ -152,6 +151,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
