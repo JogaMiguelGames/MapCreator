@@ -51,7 +51,6 @@ const wireframe_geometry = new THREE.WireframeGeometry(box_geometry);
 const edges_geometry = new THREE.EdgesGeometry(box_geometry);
 
 pyramid_geometry.rotateX(Math.PI / 2);
-pyramid_geometry.rotateZ(Math.PI / 4);
 
 // --- Geometries from examples/jsm (não fazem parte do core) ---
 // import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
