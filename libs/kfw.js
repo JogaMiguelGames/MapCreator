@@ -50,6 +50,8 @@ const torus_knot_geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
 const wireframe_geometry = new THREE.WireframeGeometry(box_geometry);
 const edges_geometry = new THREE.EdgesGeometry(box_geometry);
 
+pyramid_geometry.rotateX(Math.PI / 2);
+
 // --- Geometries from examples/jsm (não fazem parte do core) ---
 // import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 // import { TeapotGeometry } from 'three/examples/jsm/geometries/TeapotGeometry.js';
