@@ -40,23 +40,23 @@ function createSphere() {
 
 function createPyramid() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-  const newPlane = new THREE.Mesh(pyramid_geometry, newMaterial);
+  const pyramid = new THREE.Mesh(pyramid_geometry, newMaterial);
 
-  newPlane.position.set(0, 0, 0);
-  newPlane.rotation.x = -Math.PI / 2; // deixa o plano virado para o chão
+  pyramid.position.set(0, 0, 0);
+  pyramid.scale.set(0.71, 0.71, 1);
   
-  newPlane.name = `Pyramid ${cubes.length}`;
-  newPlane.castShadow = true;
-  newPlane.receiveShadow = true;
+  pyramid.name = `Pyramid ${cubes.length}`;
+  pyramid.castShadow = true;
+  pyramid.receiveShadow = true;
 
-  scene.add(newPlane);
-  cubes.push(newPlane);
+  scene.add(pyramid);
+  cubes.push(pyramid);
 
-  selectedCube = newPlane;
-  updatePanelForCube(newPlane);
+  selectedCube = pyramid;
+  updatePanelForCube(pyramid);
   updateCubeList();
 
-  pushToHistory({ type: 'delete', object: newPlane });
+  pushToHistory({ type: 'delete', object: pyramid });
 }
 
 function createPlane() {
@@ -151,6 +151,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
