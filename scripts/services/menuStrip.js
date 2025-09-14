@@ -1,3 +1,4 @@
+// scripts/services/menuStrip.js
 (function(){
   const fileBtn = document.getElementById('fileMenuBtn');
   if (!fileBtn) return;
@@ -40,15 +41,50 @@
     }
   });
 
-// Abrir mapa
-  document.getElementById("menuLoad")?.addEventListener("click", () => {
-    openMap();
-  });
-  
-  // Salvar mapa
-  document.getElementById("menuSave")?.addEventListener("click", () => {
-    saveMap();
-  });
+  // helper: tenta chamar função global, senão faz fallback em botão/input
+  function safeInvoke(fnNameOrArray, fallbackBtnId, fallbackInputId) {
+    const names = Array.isArray(fnNameOrArray) ? fnNameOrArray : [fnNameOrArray];
+    for (const name of names) {
+      if (typeof window[name] === 'function') {
+        try { window[name](); return true; } catch (err) { console.error(err); }
+      }
+    }
+
+    if (fallbackBtnId) {
+      const btn = document.getElementById(fallbackBtnId);
+      if (btn) { btn.click(); return true; }
+    }
+    if (fallbackInputId) {
+      const inp = document.getElementById(fallbackInputId);
+      if (inp) { inp.click(); return true; }
+    }
+
+    console.warn('safeInvoke: nenhuma ação disponível para', names);
+    return false;
+  }
+
+  // --- FILE menu: Open (menuOpen or menuLoad) ---
+  const menuOpenEl = document.getElementById('menuOpen') || document.getElementById('menuLoad');
+  if (menuOpenEl) {
+    menuOpenEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // tenta vários nomes comuns e fallback para botão/input
+      safeInvoke(['openMap','loadMap','openFileDialog'], 'loadButton', 'loadInput');
+      fileBtn.classList.remove('open');
+      fileBtn.setAttribute('aria-expanded','false');
+    });
+  }
+
+  // --- FILE menu: Save (menuSave) ---
+  const menuSaveEl = document.getElementById('menuSave');
+  if (menuSaveEl) {
+    menuSaveEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      safeInvoke('saveMap', 'saveButton');
+      fileBtn.classList.remove('open');
+      fileBtn.setAttribute('aria-expanded','false');
+    });
+  }
 
   // -- ADD MENU: cria objetos direto --
   document.getElementById('menuCube')?.addEventListener('click', () => {
