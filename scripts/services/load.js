@@ -1,10 +1,19 @@
-// --- LOAD ---
+// ===================== LOAD.JS =====================
+
+// Referências aos botões e input hidden
 const loadButton = document.getElementById('loadButton');
 const loadInput = document.getElementById('loadInput');
 
-loadButton.addEventListener('click', () => loadInput.click());
+// Função que abre o seletor de arquivos
+function openMap() {
+  loadInput.click();
+}
 
-loadInput.addEventListener('change', () => {
+// Clique no botão "Load"
+loadButton?.addEventListener('click', openMap);
+
+// Quando o usuário escolhe um arquivo
+loadInput?.addEventListener('change', () => {
   const file = loadInput.files[0];
   if (!file) return;
 
@@ -13,7 +22,7 @@ loadInput.addEventListener('change', () => {
     try {
       const mapData = JSON.parse(e.target.result);
       loadMapData(mapData);
-      loadInput.value = '';
+      loadInput.value = ''; // reseta para permitir reabrir o mesmo arquivo depois
     } catch (err) {
       alert('Erro ao carregar mapa: arquivo inválido ou corrompido.');
       console.error(err);
@@ -26,24 +35,27 @@ loadInput.addEventListener('change', () => {
 function loadMapData(mapData) {
   const cubesData = mapData.cubes || mapData.objects || [];
 
+  // Restaura a cor do fundo
   if (mapData.sceneColor) {
     scene.background.set(mapData.sceneColor);
     if (bgColorInput) bgColorInput.value = mapData.sceneColor;
   }
 
-  // Limpa objetos antigos
+  // Remove objetos antigos
   cubes.forEach(c => scene.remove(c));
   cubes.length = 0;
 
+  // Recria objetos
   cubesData.forEach(data => {
     if (!data.position || !data.scale || !data.rotation) return;
 
+    // Se for câmera
     if (data.type === 'camera') {
       const mtlLoader = new THREE.MTLLoader();
       mtlLoader.setPath('resources/models/editor/camera/');
       mtlLoader.load('camera.mtl', (materials) => {
         materials.preload();
-    
+
         const loader = new THREE.OBJLoader();
         loader.setMaterials(materials);
         loader.setPath('resources/models/editor/camera/');
@@ -52,28 +64,28 @@ function loadMapData(mapData) {
           obj.position.set(data.position.x, data.position.y, data.position.z);
           obj.scale.set(data.scale.x, data.scale.y, data.scale.z);
           obj.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
-    
+
           obj.userData.isCameraModel = true;
-    
-          // garante que as sombras estejam ativas
+
+          // Ativa sombras
           obj.traverse(child => {
             if (child.isMesh) {
               child.castShadow = true;
               child.receiveShadow = true;
             }
           });
-    
+
           scene.add(obj);
           cubes.push(obj);
           updatePanelForCube(obj);
           updateCubeList();
         });
       });
-    
-      return; // já tratou a câmera
+
+      return; // pula para o próximo objeto
     }
 
-    // Seleciona geometria correta
+    // Seleciona geometria padrão
     let geometry;
     switch (data.type) {
       case 'sphere':
@@ -86,7 +98,9 @@ function loadMapData(mapData) {
         geometry = box_geometry;
     }
 
-    const material = new THREE.MeshStandardMaterial({ color: data.color || '#ffffff' });
+    const material = new THREE.MeshStandardMaterial({
+      color: data.color || '#ffffff'
+    });
     const obj = new THREE.Mesh(geometry, material);
 
     obj.name = data.name || 'Cube';
@@ -97,6 +111,7 @@ function loadMapData(mapData) {
     obj.castShadow = true;
     obj.receiveShadow = true;
 
+    // Aplica textura se existir
     if (data.texture) {
       const img = new Image();
       img.src = data.texture;
@@ -112,6 +127,7 @@ function loadMapData(mapData) {
     cubes.push(obj);
   });
 
+  // Atualiza painel e lista
   selectedCube = cubes[0] || null;
   updatePanelForCube(selectedCube);
   updateCubeList();
