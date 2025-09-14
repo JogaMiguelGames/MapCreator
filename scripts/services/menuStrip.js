@@ -40,15 +40,14 @@
     }
   });
 
-  // -- FILE MENU: chama funções diretamente --
-  document.getElementById('menuOpen')?.addEventListener('click', () => {
-    loadButton.click(); // ou chamar diretamente a função de load se quiser
-    fileBtn.classList.remove('open');
+// Abrir mapa
+  document.getElementById("menuLoad")?.addEventListener("click", () => {
+    openMap();
   });
-
-  document.getElementById('menuSave')?.addEventListener('click', () => {
-    document.getElementById('saveButton').click(); // ou criar função saveMap() e chamar direto
-    fileBtn.classList.remove('open');
+  
+  // Salvar mapa
+  document.getElementById("menuSave")?.addEventListener("click", () => {
+    saveMap();
   });
 
   // -- ADD MENU: cria objetos direto --
