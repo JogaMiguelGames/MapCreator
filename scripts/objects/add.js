@@ -43,6 +43,7 @@ function createCylinder() {
   const newCylinder = new THREE.Mesh(cylinder_geometry, newMaterial);
   
   newCylinder.position.set(0, 0, 0);
+  newCylinder.scale.set(0.5, 0.5, 0.5);
   newCylinder.name = `Cylinder ${cubes.length}`;
   newCylinder.castShadow = true;
   newCylinder.receiveShadow = true;
@@ -152,6 +153,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
