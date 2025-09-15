@@ -92,6 +92,11 @@
     addBtn.classList.remove('open');
   });
 
+  document.getElementById('menuCylinder')?.addEventListener('click', () => {
+    createCylinder();
+    addBtn.classList.remove('open');
+  });
+
   document.getElementById('menuSphere')?.addEventListener('click', () => {
     createSphere();
     addBtn.classList.remove('open');
