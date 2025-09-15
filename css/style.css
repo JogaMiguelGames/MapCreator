@@ -531,6 +531,20 @@ body.focusing-script #exitScriptFocusBtn {
   display: block;
 }
 
+/* Ícones nos dropdowns */
+.menuItem .dropdown li {
+  display: flex;
+  align-items: center;
+  gap: 8px;             /* espaço entre ícone e texto */
+}
+
+.menuItem .dropdown li .menu-icon {
+  width: 16px;
+  height: 16px;
+  object-fit: contain;
+  pointer-events: none; /* não interfere no clique */
+}
+
 /* topMenu agora fixo e respeitando o painel (substitui regras conflitantes) */
 #topMenu {
   position: fixed;
@@ -584,5 +598,6 @@ body.focusing-script #exitScriptFocusBtn {
 /* estilinho scrollbar para o leftButtons */
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
 
 
