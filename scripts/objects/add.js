@@ -136,6 +136,9 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     if (command.toLowerCase() === "create.new.cube") {
       createCube();
     }
+    else if (command.toLowerCase() === "create.new.cylinder") {
+      createCylinder();
+    }
     else if (command.toLowerCase() === "create.new.sphere") {
       createSphere();
     }
@@ -149,6 +152,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
