@@ -28,10 +28,10 @@ const mesh = new THREE.Mesh();
 
 // --- Geometries (Core) ---
 const box_geometry = new THREE.BoxGeometry(1, 1, 1);
-const circle_geometry = new THREE.CircleGeometry(1, 32);
+const circle_geometry = new THREE.CircleGeometry(1, 16);
 const cone_geometry = new THREE.ConeGeometry(1, 2, 32);
 const pyramid_geometry = new THREE.ConeGeometry(1, 2, 4);
-const cylinder_geometry = new THREE.CylinderGeometry(1, 1, 2, 32);
+const cylinder_geometry = new THREE.CylinderGeometry(1, 1, 2, 16);
 const dodecahedron_geometry = new THREE.DodecahedronGeometry(1, 0);
 const extrude_geometry = new THREE.ExtrudeGeometry([], { depth: 1, bevelEnabled: false }); // precisa de Shape
 const icosahedron_geometry = new THREE.IcosahedronGeometry(1, 0);
