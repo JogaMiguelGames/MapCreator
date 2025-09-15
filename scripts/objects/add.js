@@ -38,29 +38,23 @@ function createSphere() {
   pushToHistory({ type: 'delete', object: newSphere });
 }
 
-function createPyramid() {
+function createCylinder() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-  const pyramid = new THREE.Mesh(pyramid_geometry, newMaterial);
-
-  pyramid.scale.set(0.71, 0.71, 1);
-  pyramid.position.set(0, 0, 0);
-  pyramid.rotation.x = -Math.PI / 2;
+  const newCylinder = new THREE.Mesh(cylinder_geometry, newMaterial);
   
-  pyramid.name = `Pyramid ${cubes.length}`;
-  pyramid.castShadow = true;
-  pyramid.receiveShadow = true;
+  newCylinder.position.set(0, 0, 0);
+  newCylinder.name = `Cylinder ${cubes.length}`;
+  newCylinder.castShadow = true;
+  newCylinder.receiveShadow = true;
 
-  pyramid.rotation.x = Math.PI / 2;  // ponta para cima
-  pyramid.rotation.z = Math.PI / 4;  // 45° no eixo Z
-  
-  scene.add(pyramid);
-  cubes.push(pyramid);
+  scene.add(newCylinder);
+  cubes.push(newCylinder);
 
-  selectedCube = pyramid;
-  updatePanelForCube(pyramid);
+  selectedCube = newCylinder;
+  updatePanelForCube(newCylinder);
   updateCubeList();
 
-  pushToHistory({ type: 'delete', object: pyramid });
+  pushToHistory({ type: 'delete', object: newCylinder });
 }
 
 function createPlane() {
@@ -155,6 +149,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
