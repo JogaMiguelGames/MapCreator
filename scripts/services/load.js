@@ -96,6 +96,9 @@ function loadMapData(mapData) {
       case 'sphere':
         geometry = sphere_geometry;
         break;
+      case 'cylinder':
+        geometry = cylinder_geometry;
+        break;
       case 'plane':
         geometry = plane_geometry;
         break;
