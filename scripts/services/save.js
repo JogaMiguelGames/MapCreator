@@ -18,6 +18,11 @@ function saveMap() {
         color = `#${obj.material?.color?.getHexString() || 'ffffff'}`;
         if (obj.material?.map?.image?.src) textureData = obj.material.map.image.src;
 
+      } else if (obj.geometry === cylinder_geometry) {
+        type = 'cylinder';
+        color = `#${obj.material?.color?.getHexString() || 'ffffff'}`;
+        if (obj.material?.map?.image?.src) textureData = obj.material.map.image.src;
+
       } else if (obj.geometry === plane_geometry) {
         type = 'plane';
         color = `#${obj.material?.color?.getHexString() || 'ffffff'}`;
