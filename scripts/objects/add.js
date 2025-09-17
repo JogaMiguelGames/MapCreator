@@ -58,7 +58,7 @@ function createCylinder() {
   pushToHistory({ type: 'delete', object: newCylinder });
 }
 
-function createPlane() {
+function createCone() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const newCone = new THREE.Mesh(cone_geometry, newMaterial);
 
@@ -164,6 +164,9 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     else if (command.toLowerCase() === "create.new.sphere") {
       createSphere();
     }
+    else if (command.toLowerCase() === "create.new.sphere") {
+      createCone();
+    }
     else if (command.toLowerCase() === "create.new.plane") {
       createPlane();
     }
@@ -174,6 +177,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
