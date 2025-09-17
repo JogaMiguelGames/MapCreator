@@ -99,6 +99,9 @@ function loadMapData(mapData) {
       case 'cylinder':
         geometry = cylinder_geometry;
         break;
+      case 'cone':
+        geometry = cone_geometry;
+        break;
       case 'plane':
         geometry = plane_geometry;
         break;
