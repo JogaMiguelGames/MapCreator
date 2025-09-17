@@ -63,6 +63,7 @@ function createCone() {
   const newCone = new THREE.Mesh(cone_geometry, newMaterial);
 
   newCone.position.set(0, 0, 0);
+  newCobe.scale.set(0.5, 0.5, 0.5);
   
   newCone.name = `Cone ${cubes.length}`;
   newCone.castShadow = true;
@@ -176,6 +177,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
