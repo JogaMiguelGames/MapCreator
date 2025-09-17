@@ -63,7 +63,6 @@ function createCone() {
   const newCone = new THREE.Mesh(cone_geometry, newMaterial);
 
   newCone.position.set(0, 0, 0);
-  newCone.rotation.x = -Math.PI / 2; // deixa o plano virado para o chão
   
   newCone.name = `Cone ${cubes.length}`;
   newCone.castShadow = true;
@@ -84,7 +83,7 @@ function createPlane() {
   const newPlane = new THREE.Mesh(plane_geometry, newMaterial);
 
   newPlane.position.set(0, 0, 0);
-  newPlane.rotation.x = -Math.PI / 2; // deixa o plano virado para o chão
+  newPlane.rotation.x = -Math.PI / 2;
   
   newPlane.name = `Plane ${cubes.length}`;
   newPlane.castShadow = true;
@@ -177,6 +176,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
