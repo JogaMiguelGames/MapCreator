@@ -60,6 +60,27 @@ function createCylinder() {
 
 function createPlane() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const newCone = new THREE.Mesh(cone_geometry, newMaterial);
+
+  newCone.position.set(0, 0, 0);
+  newCone.rotation.x = -Math.PI / 2; // deixa o plano virado para o chão
+  
+  newCone.name = `Cone ${cubes.length}`;
+  newCone.castShadow = true;
+  newCone.receiveShadow = true;
+
+  scene.add(newCone);
+  cubes.push(newCone);
+
+  selectedCube = newCone;
+  updatePanelForCube(newCone);
+  updateCubeList();
+
+  pushToHistory({ type: 'delete', object: newCone });
+}
+
+function createPlane() {
+  const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const newPlane = new THREE.Mesh(plane_geometry, newMaterial);
 
   newPlane.position.set(0, 0, 0);
@@ -153,6 +174,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
