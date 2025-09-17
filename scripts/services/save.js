@@ -23,6 +23,11 @@ function saveMap() {
         color = `#${obj.material?.color?.getHexString() || 'ffffff'}`;
         if (obj.material?.map?.image?.src) textureData = obj.material.map.image.src;
 
+      } else if (obj.geometry === cone_geometry) {
+        type = 'cone';
+        color = `#${obj.material?.color?.getHexString() || 'ffffff'}`;
+        if (obj.material?.map?.image?.src) textureData = obj.material.map.image.src;
+
       } else if (obj.geometry === plane_geometry) {
         type = 'plane';
         color = `#${obj.material?.color?.getHexString() || 'ffffff'}`;
@@ -85,3 +90,4 @@ function saveMap() {
 
 // Clique no botão "Save"
 saveButton?.addEventListener('click', saveMap);
+
