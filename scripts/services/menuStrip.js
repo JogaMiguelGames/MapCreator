@@ -102,6 +102,12 @@
     addBtn.classList.remove('open');
   });
 
+  document.getElementById('menuCone')?.addEventListener('click', () => {
+    createCone();
+    addBtn.classList.remove('open');
+  });
+
+
   document.getElementById('menuPlane')?.addEventListener('click', () => {
     createPlane();
     addBtn.classList.remove('open');
