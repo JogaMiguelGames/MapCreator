@@ -1,108 +1,105 @@
-(function(){
-  // Inicializa o objeto global de plugins
-  window.mapCreator = window.mapCreator || {};
-  mapCreator.plugins = mapCreator.plugins || [];
+// scripts/import/plugin.js
+(function() {
+  const pluginBtn = document.getElementById('pluginBtn');
+  const pluginInput = document.getElementById('pluginFileInput');
 
-  const pluginBtn = document.getElementById("pluginBtn");
-  const pluginInput = document.getElementById("pluginFileInput");
-  const menuBar = document.getElementById("menuBar");
+  if (!pluginBtn || !pluginInput) return;
 
-  if (!pluginBtn || !pluginInput || !menuBar) return;
-
-  // Função para salvar plugins no localStorage
-  function savePlugins() {
-    localStorage.setItem("mapCreator.plugins", JSON.stringify(mapCreator.plugins));
-  }
-
-  // Função para renderizar menus dos plugins
-  function renderPlugins() {
-    // Remove menus antigos
-    document.querySelectorAll(".pluginMenu").forEach(e => e.remove());
-
-    mapCreator.plugins.forEach(p => {
-      if(!p.name || !p.variable) return;
-
-      const menuItem = document.createElement("div");
-      menuItem.className = "menuItem pluginMenu";
-      menuItem.tabIndex = 0;
-      menuItem.innerHTML = `<span>${p.name}</span>`;
-      const dropdown = document.createElement("ul");
-      dropdown.className = "dropdown";
-      menuItem.appendChild(dropdown);
-
-      // Adiciona ao menuBar
-      menuBar.appendChild(menuItem);
-
-      // Clique abre/fecha
-      menuItem.addEventListener("click", (e)=>{
-        e.stopPropagation();
-        const opened = menuItem.classList.toggle("open");
-        menuItem.setAttribute("aria-expanded", opened ? "true":"false");
-      });
-
-      // Fechar ao clicar fora
-      document.addEventListener("click", (e)=>{
-        if(!menuItem.contains(e.target)){
-          menuItem.classList.remove("open");
-          menuItem.setAttribute("aria-expanded","false");
-        }
-      });
-    });
+  // Inicializa array de plugins no localStorage se não existir
+  if (!localStorage.getItem('mapCreator.plugins')) {
+    localStorage.setItem('mapCreator.plugins', JSON.stringify([]));
   }
 
   // Função para adicionar plugin
-  function addPlugin(file) {
-    if (!file.name.endsWith(".plugin")) {
-      alert("Only .plugin files are allowed!");
+  function addPluginFromText(text) {
+    const pluginObj = {};
+
+    // Procura linha "variavel = menuButton"
+    const matchVar = text.match(/(\w+)\s*=\s*menuButton/);
+    if (!matchVar) {
+      alert("Plugin file must contain 'variable = menuButton'");
+      return;
+    }
+
+    const variable = matchVar[1];
+
+    // Procura variável.name = "NomeDoMenu"
+    const matchName = text.match(new RegExp(variable + '\\.name\\s*=\\s*(.+)'));
+    let name;
+    if (matchName) {
+      name = matchName[1].replace(/['"]/g,'').trim();
+    } else {
+      name = variable.charAt(0).toUpperCase() + variable.slice(1);
+    }
+
+    pluginObj.variable = variable;
+    pluginObj.name = name;
+
+    // Cria menu item
+    const addMenuBtn = document.getElementById('addMenuBtn');
+    if (!addMenuBtn) return;
+
+    const li = document.createElement('li');
+    li.textContent = pluginObj.name;
+    li.setAttribute('role','menuitem');
+    li.setAttribute('tabindex','-1');
+
+    // Quando clicar, executa o plugin
+    li.addEventListener('click', () => {
+      try {
+        const wrappedCode = `(function(plugin){ ${text} })(plugin);`;
+        eval(wrappedCode);
+        alert(`Plugin "${pluginObj.name}" executed!`);
+      } catch(err) {
+        console.error(err);
+        alert('Error executing plugin: ' + err.message);
+      }
+      addMenuBtn.classList.remove('open');
+      addMenuBtn.setAttribute('aria-expanded','false');
+    });
+
+    addMenuBtn.querySelector('.dropdown').appendChild(li);
+
+    // Salva no localStorage
+    const savedPlugins = JSON.parse(localStorage.getItem('mapCreator.plugins'));
+    savedPlugins.push(text);
+    localStorage.setItem('mapCreator.plugins', JSON.stringify(savedPlugins));
+  }
+
+  // Ao clicar no botão, abre seletor de arquivos
+  pluginBtn.addEventListener('click', () => {
+    pluginInput.click();
+  });
+
+  // Quando escolher arquivo
+  pluginInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!file.name.endsWith('.plugin')) {
+      alert('Only .plugin files are allowed!');
       return;
     }
 
     const reader = new FileReader();
-    reader.onload = (e)=>{
-      const text = e.target.result;
-      const pluginObj = {};
-
-      try {
-        // Procura linha "variable = menuButton"
-        const match = text.match(/(\w+)\s*=\s*menuButton/);
-        if(match){
-          pluginObj.variable = match[1];
-          pluginObj.name = pluginObj.variable.charAt(0).toUpperCase() + pluginObj.variable.slice(1);
-        } else {
-          alert("Plugin file must contain 'variable = menuButton'");
-          return;
-        }
-
-        mapCreator.plugins.push(pluginObj);
-        savePlugins();
-        renderPlugins();
-        alert(`Plugin "${pluginObj.name}" imported!`);
-
-      } catch(err){
-        console.error(err);
-        alert("Failed to import plugin: "+err.message);
-      }
+    reader.onload = (e) => {
+      addPluginFromText(e.target.result);
     };
-
     reader.readAsText(file);
-  }
 
-  // Botão abre input
-  pluginBtn.addEventListener("click", ()=> pluginInput.click());
-
-  // Input seleciona arquivos
-  pluginInput.addEventListener("change", (e)=>{
-    const files = Array.from(e.target.files);
-    files.forEach(file => addPlugin(file));
+    // Limpa input para poder importar o mesmo arquivo novamente
+    pluginInput.value = '';
   });
 
-  // Carrega plugins do localStorage ao iniciar
-  const saved = localStorage.getItem("mapCreator.plugins");
-  if(saved){
-    try {
-      mapCreator.plugins = JSON.parse(saved);
-      renderPlugins();
-    } catch(err){ console.error(err); }
+  // --- Recarrega plugins do localStorage ao abrir a página ---
+  function loadPlugins() {
+    const savedPlugins = JSON.parse(localStorage.getItem('mapCreator.plugins'));
+    if (!savedPlugins) return;
+
+    for (const text of savedPlugins) {
+      addPluginFromText(text);
+    }
   }
 
+  loadPlugins();
 })();
