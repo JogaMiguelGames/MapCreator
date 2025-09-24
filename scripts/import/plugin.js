@@ -5,81 +5,23 @@
 
   if (!pluginBtn || !pluginInput) return;
 
-  // Estrutura para guardar plugins carregados
-  window.mapCreator = window.mapCreator || {};
-  mapCreator.plugins = mapCreator.plugins || [];
+  // Load saved plugins from localStorage
+  const savedPlugins = JSON.parse(localStorage.getItem('mapCreator.plugins') || '[]');
 
-  // Função para criar um menu no menuBar
-  function createPluginMenu(plugin) {
-    const menuBar = document.getElementById('menuBar');
-    if (!menuBar) return;
-
-    const newMenu = document.createElement('div');
-    newMenu.classList.add('menuItem');
-    newMenu.setAttribute('role', 'menuitem');
-    newMenu.setAttribute('tabindex', '0');
-    newMenu.setAttribute('aria-haspopup', 'true');
-    newMenu.setAttribute('aria-expanded', 'false');
-
-    const menuTitle = document.createElement('span');
-    menuTitle.textContent = plugin.name;
-    newMenu.appendChild(menuTitle);
-
-    const dropdown = document.createElement('ul');
-    dropdown.classList.add('dropdown');
-    dropdown.setAttribute('role', 'menu');
-    newMenu.appendChild(dropdown);
-
-    // Exemplo de item no dropdown
-    const item = document.createElement('li');
-    item.textContent = plugin.version ? `Version: ${plugin.version}` : 'Plugin';
-    item.setAttribute('role', 'menuitem');
-    dropdown.appendChild(item);
-
-    menuBar.appendChild(newMenu);
-
-    // Event listeners
-    newMenu.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const opened = newMenu.classList.toggle('open');
-      newMenu.setAttribute('aria-expanded', opened ? 'true' : 'false');
-    });
-
-    // Fechar ao clicar fora
-    document.addEventListener('click', (e) => {
-      if (!newMenu.contains(e.target)) {
-        newMenu.classList.remove('open');
-        newMenu.setAttribute('aria-expanded', 'false');
-      }
-    });
-  }
-
-  // Função para salvar plugin no localStorage
-  function savePlugin(plugin) {
-    mapCreator.plugins.push(plugin);
-    localStorage.setItem('mapCreatorPlugins', JSON.stringify(mapCreator.plugins));
-  }
-
-  // Função para carregar plugins do localStorage
-  function loadPlugins() {
-    const saved = localStorage.getItem('mapCreatorPlugins');
-    if (!saved) return;
+  savedPlugins.forEach(pluginCode => {
     try {
-      const plugins = JSON.parse(saved);
-      plugins.forEach(p => createPluginMenu(p));
-      mapCreator.plugins = plugins;
+      importPluginFromCode(pluginCode);
     } catch (err) {
-      console.error('Failed to load plugins from localStorage', err);
+      console.error('Failed to load saved plugin:', err);
     }
-  }
+  });
 
-  // Evento do botão
   pluginBtn.addEventListener('click', () => {
     pluginInput.click();
   });
 
-  pluginInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
+  pluginInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
     if (!file) return;
 
     if (!file.name.endsWith('.plugin')) {
@@ -88,32 +30,84 @@
     }
 
     const reader = new FileReader();
-    reader.onload = (e) => {
-      const content = e.target.result;
+    reader.onload = (ev) => {
+      const content = ev.target.result;
 
       try {
-        const plugin = {};
-        const wrappedCode = `(function(plugin){ ${content} })(plugin);`;
-        eval(wrappedCode);
+        importPluginFromCode(content);
 
-        if (!plugin.name) {
-          alert('Plugin must have a name!');
-          return;
-        }
+        savedPlugins.push(content);
+        localStorage.setItem('mapCreator.plugins', JSON.stringify(savedPlugins));
 
-        createPluginMenu(plugin);
-        savePlugin(plugin);
-
-        alert(`Plugin "${plugin.name}" imported successfully!` + (plugin.version ? ` Version: ${plugin.version}` : ''));
-
+        alert(`Plugin imported successfully!`);
       } catch (err) {
         console.error(err);
         alert('Failed to import plugin: ' + err.message);
       }
     };
+
     reader.readAsText(file);
   });
 
-  // Carrega plugins salvos automaticamente
-  loadPlugins();
+  function importPluginFromCode(code) {
+    // Criamos o plugin e tornamos menuButton global dentro do eval
+    const plugin = {};
+    window.menuButton = plugin; // ⚠️ Aqui: menuButton global
+
+    try {
+      eval(code); // plugin .plugin pode acessar menuButton diretamente
+    } finally {
+      delete window.menuButton; // limpamos após execução
+    }
+
+    if (!plugin.name) {
+      throw new Error('Plugin must have a name property!');
+    }
+
+    createPluginMenu(plugin);
+  }
+
+  function createPluginMenu(plugin) {
+    const menuBar = document.getElementById('menuBar');
+    if (!menuBar) return;
+
+    const menuItem = document.createElement('div');
+    menuItem.className = 'menuItem';
+    menuItem.setAttribute('role', 'menuitem');
+    menuItem.setAttribute('tabindex', '0');
+    menuItem.setAttribute('aria-haspopup', 'true');
+    menuItem.setAttribute('aria-expanded', 'false');
+
+    const span = document.createElement('span');
+    span.textContent = plugin.name;
+    menuItem.appendChild(span);
+
+    const dropdown = document.createElement('ul');
+    dropdown.className = 'dropdown';
+    dropdown.setAttribute('role', 'menu');
+    dropdown.setAttribute('aria-label', plugin.name + ' menu');
+
+    menuItem.appendChild(dropdown);
+    menuBar.appendChild(menuItem);
+
+    menuItem.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const opened = menuItem.classList.toggle('open');
+      menuItem.setAttribute('aria-expanded', opened ? 'true' : 'false');
+    });
+
+    menuItem.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        menuItem.click();
+      }
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!menuItem.contains(e.target)) {
+        menuItem.classList.remove('open');
+        menuItem.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
 })();
