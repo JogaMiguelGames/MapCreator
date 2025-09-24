@@ -1,10 +1,10 @@
 // ================== Plugin Import System ==================
 const pluginBtn = document.getElementById('pluginBtn');
-
-// File input for a single plugin (.plugin files only)
 const pluginFileInput = document.getElementById('pluginFileInput');
-// File input for a whole plugin folder (.plugin files only)
 const pluginFolderInput = document.getElementById('pluginFolderInput');
+
+// Where new menu items will be added
+const menuBar = document.getElementById('menuBar');
 
 pluginBtn.addEventListener('click', () => {
   if (pluginFileInput) {
@@ -16,46 +16,59 @@ pluginBtn.addEventListener('click', () => {
   }
 });
 
-// Function to import and validate a plugin file
+// Parse and apply .plugin commands
 function importPluginFile(file) {
-  // Reject anything that isn't a .plugin file
   if (!file.name.endsWith(".plugin")) {
-    alert(`❌ File "${file.name}" is not a valid plugin file (.plugin required).`);
+    alert(`❌ File "${file.name}" is not a valid .plugin file.`);
     return;
   }
 
   const reader = new FileReader();
-
   reader.onload = (e) => {
     const content = e.target.result;
-
     try {
-      const plugin = {};
+      const lines = content.split(/\r?\n/).map(l => l.trim()).filter(l => l);
 
-      // Run the plugin code inside an isolated scope
-      const wrappedCode = `(function(plugin){ ${content} })(plugin);`;
-      eval(wrappedCode);
+      // Storage for declared menu buttons
+      const buttons = {};
 
-      // Validate plugin.name
-      if (!plugin.name) {
-        alert(`The plugin file "${file.name}" does not define a "name" property!`);
-        return;
-      }
+      for (const line of lines) {
+        // Example: myButton = menuButton
+        if (/^\w+\s*=\s*menuButton$/i.test(line)) {
+          const varName = line.split("=")[0].trim();
+          const button = document.createElement("div");
+          button.className = "menuItem";
+          button.textContent = "(unnamed)";
+          button.dataset.pluginVar = varName;
 
-      // Validate plugin.version if present
-      let versionText = '';
-      if (plugin.version !== undefined) {
-        const versionStr = plugin.version.toString();
-        if (/^[0-9.]+$/.test(versionStr)) {
-          versionText = versionStr;
+          // Add empty dropdown list
+          const dropdown = document.createElement("ul");
+          dropdown.className = "dropdown";
+          button.appendChild(dropdown);
+
+          menuBar.appendChild(button);
+          buttons[varName] = { element: button, dropdown };
+
+        // Example: myButton.name = SomeText
+        } else if (/^\w+\.name\s*=\s*.+$/i.test(line)) {
+          const [left, right] = line.split("=");
+          const varName = left.split(".")[0].trim();
+          const newName = right.trim();
+
+          if (buttons[varName]) {
+            buttons[varName].element.firstChild.textContent = newName;
+          }
+
         } else {
-          alert(`Invalid version in plugin "${plugin.name}". Only numbers and dots are allowed.`);
-          return;
+          console.warn("Unrecognized plugin command:", line);
         }
       }
 
-      alert(`✅ Plugin "${plugin.name}" imported successfully!` + 
-            (versionText ? ` Version: ${versionText}` : ''));
+      if (Object.keys(buttons).length > 0) {
+        alert(`✅ Plugin "${file.name}" loaded and menu items created!`);
+      } else {
+        alert(`⚠️ Plugin "${file.name}" did not create any menu items.`);
+      }
 
     } catch (err) {
       console.error(err);
@@ -66,7 +79,7 @@ function importPluginFile(file) {
   reader.readAsText(file);
 }
 
-// Listener for single .plugin file
+// Listener for single plugin
 if (pluginFileInput) {
   pluginFileInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
@@ -74,18 +87,13 @@ if (pluginFileInput) {
   });
 }
 
-// Listener for folder of .plugin files
+// Listener for plugin folder
 if (pluginFolderInput) {
   pluginFolderInput.addEventListener('change', (event) => {
     const files = event.target.files;
     if (!files.length) return;
-
     for (const file of files) {
-      if (file.name.endsWith(".plugin")) {
-        importPluginFile(file);
-      } else {
-        alert(`Skipping invalid file "${file.name}". Only .plugin files are allowed.`);
-      }
+      importPluginFile(file);
     }
   });
 }
