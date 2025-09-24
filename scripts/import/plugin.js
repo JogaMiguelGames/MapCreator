@@ -1,99 +1,105 @@
-// ================== Plugin Import System ==================
-const pluginBtn = document.getElementById('pluginBtn');
-const pluginFileInput = document.getElementById('pluginFileInput');
-const pluginFolderInput = document.getElementById('pluginFolderInput');
+// plugin.js
 
-// Where new menu items will be added
-const menuBar = document.getElementById('menuBar');
+const PLUGIN_STORAGE_KEY = "mapCreator.plugins";
 
-pluginBtn.addEventListener('click', () => {
-  if (pluginFileInput) {
-    pluginFileInput.click();
-  } else if (pluginFolderInput) {
-    pluginFolderInput.click();
-  } else {
-    alert("No plugin input element found in the HTML!");
+// --- Load all plugins from localStorage ---
+function loadPluginsFromStorage() {
+  const raw = localStorage.getItem(PLUGIN_STORAGE_KEY);
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return [];
   }
-});
+}
 
-// Parse and apply .plugin commands
-function importPluginFile(file) {
+// --- Save plugin list back to localStorage ---
+function savePluginsToStorage(plugins) {
+  localStorage.setItem(PLUGIN_STORAGE_KEY, JSON.stringify(plugins));
+}
+
+// --- Add new plugin (.plugin file) ---
+function addPlugin(file) {
   if (!file.name.endsWith(".plugin")) {
-    alert(`❌ File "${file.name}" is not a valid .plugin file.`);
+    alert("Only .plugin files are allowed!");
     return;
   }
 
   const reader = new FileReader();
-  reader.onload = (e) => {
+  reader.onload = function (e) {
     const content = e.target.result;
-    try {
-      const lines = content.split(/\r?\n/).map(l => l.trim()).filter(l => l);
 
-      // Storage for declared menu buttons
-      const buttons = {};
+    // Example: "myVar = menuButton\nmyVar.name = File"
+    const lines = content.split("\n").map(l => l.trim()).filter(Boolean);
+    const plugin = { name: file.name, content: content, parsed: [] };
 
-      for (const line of lines) {
-        // Example: myButton = menuButton
-        if (/^\w+\s*=\s*menuButton$/i.test(line)) {
-          const varName = line.split("=")[0].trim();
-          const button = document.createElement("div");
-          button.className = "menuItem";
-          button.textContent = "(unnamed)";
-          button.dataset.pluginVar = varName;
-
-          // Add empty dropdown list
-          const dropdown = document.createElement("ul");
-          dropdown.className = "dropdown";
-          button.appendChild(dropdown);
-
-          menuBar.appendChild(button);
-          buttons[varName] = { element: button, dropdown };
-
-        // Example: myButton.name = SomeText
-        } else if (/^\w+\.name\s*=\s*.+$/i.test(line)) {
-          const [left, right] = line.split("=");
-          const varName = left.split(".")[0].trim();
-          const newName = right.trim();
-
-          if (buttons[varName]) {
-            buttons[varName].element.firstChild.textContent = newName;
-          }
-
-        } else {
-          console.warn("Unrecognized plugin command:", line);
-        }
+    lines.forEach(line => {
+      // Parse "variable = menuButton"
+      if (/=\s*menuButton/i.test(line)) {
+        const variable = line.split("=")[0].trim();
+        plugin.parsed.push({ type: "menuButton", variable });
       }
 
-      if (Object.keys(buttons).length > 0) {
-        alert(`✅ Plugin "${file.name}" loaded and menu items created!`);
-      } else {
-        alert(`⚠️ Plugin "${file.name}" did not create any menu items.`);
+      // Parse "variable.name = Something"
+      if (/\.name\s*=/.test(line)) {
+        const [varPart, namePart] = line.split("=");
+        const variable = varPart.replace(".name", "").trim();
+        const menuName = namePart.trim();
+        plugin.parsed.push({ type: "menuName", variable, name: menuName });
       }
+    });
 
-    } catch (err) {
-      console.error(err);
-      alert(`❌ Failed to import plugin ${file.name}: ${err.message}`);
-    }
+    // Save to localStorage
+    const plugins = loadPluginsFromStorage();
+    plugins.push(plugin);
+    savePluginsToStorage(plugins);
+
+    renderMenus(); // update UI immediately
   };
 
   reader.readAsText(file);
 }
 
-// Listener for single plugin
-if (pluginFileInput) {
-  pluginFileInput.addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (file) importPluginFile(file);
+// --- Render menus from plugins ---
+function renderMenus() {
+  const menuBar = document.getElementById("menuBar");
+  if (!menuBar) return;
+  menuBar.innerHTML = ""; // clear old
+
+  const plugins = loadPluginsFromStorage();
+
+  plugins.forEach(plugin => {
+    plugin.parsed.forEach(item => {
+      if (item.type === "menuName") {
+        const menuItem = document.createElement("div");
+        menuItem.className = "menuItem";
+        menuItem.textContent = item.name;
+
+        const dropdown = document.createElement("ul");
+        dropdown.className = "dropdown";
+        menuItem.appendChild(dropdown);
+
+        // toggle open
+        menuItem.addEventListener("click", () => {
+          menuItem.classList.toggle("open");
+        });
+
+        menuBar.appendChild(menuItem);
+      }
+    });
   });
 }
 
-// Listener for plugin folder
-if (pluginFolderInput) {
-  pluginFolderInput.addEventListener('change', (event) => {
-    const files = event.target.files;
-    if (!files.length) return;
-    for (const file of files) {
-      importPluginFile(file);
-    }
-  });
-}
+// --- Load on startup ---
+document.addEventListener("DOMContentLoaded", () => {
+  renderMenus();
+
+  // Example: input for adding plugins
+  const input = document.getElementById("pluginInput");
+  if (input) {
+    input.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file) addPlugin(file);
+    });
+  }
+});
