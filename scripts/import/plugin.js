@@ -2,7 +2,7 @@
 (function(){
   const PLUGIN_STORAGE_KEY = "mapCreator.plugins";
 
-  // --- Load all plugins from localStorage ---
+  // --- Load plugins from localStorage ---
   function loadPluginsFromStorage() {
     const raw = localStorage.getItem(PLUGIN_STORAGE_KEY);
     if (!raw) return [];
@@ -49,10 +49,10 @@
     reader.readAsText(file);
   }
 
-  // --- Create plugin menu item compatible with menuStrip.js ---
+  // --- Create plugin menu item ---
   function createPluginMenu(plugin) {
     const menuItem = document.createElement("div");
-    menuItem.className = "menuItem";
+    menuItem.className = "menuItem plugin";
     menuItem.textContent = plugin.name;
     menuItem.setAttribute("tabindex","0");
     menuItem.setAttribute("aria-haspopup","true");
@@ -62,14 +62,12 @@
     dropdown.className = "dropdown";
     menuItem.appendChild(dropdown);
 
-    // Click toggle
     menuItem.addEventListener("click",(e)=>{
       e.stopPropagation();
       const opened = menuItem.classList.toggle("open");
       menuItem.setAttribute("aria-expanded", opened ? "true":"false");
     });
 
-    // Keyboard support
     menuItem.addEventListener("keydown",(e)=>{
       if(e.key==="Enter"||e.key===" ") { e.preventDefault(); menuItem.click(); }
     });
@@ -77,23 +75,17 @@
     return menuItem;
   }
 
-  // --- Render default menus + plugin menus ---
+  // --- Render menus ---
   function renderPlugins() {
     const menuBar = document.getElementById("menuBar");
     if(!menuBar) return;
 
-    // keep File/Add existing buttons
-    const fileBtn = document.getElementById("fileMenuBtn");
-    const addBtn = document.getElementById("addMenuBtn");
-
     // remove old plugin menus
     document.querySelectorAll(".menuItem.plugin").forEach(el=>el.remove());
 
-    // load plugins
     const plugins = loadPluginsFromStorage();
     plugins.forEach(plugin=>{
       const pluginMenu = createPluginMenu(plugin);
-      pluginMenu.classList.add("plugin");
       menuBar.appendChild(pluginMenu);
     });
   }
@@ -106,15 +98,19 @@
     });
   });
 
-  // --- Input to load plugins ---
+  // --- Setup plugin button ---
   document.addEventListener("DOMContentLoaded",()=>{
     renderPlugins();
 
-    const input = document.getElementById("pluginInput");
-    if(input){
-      input.addEventListener("change",(e)=>{
-        const file = e.target.files[0];
-        if(file) addPlugin(file);
+    const pluginBtn = document.getElementById("pluginBtn");
+    const pluginInput = document.getElementById("pluginFolderInput"); // CORRETO: usar o id certo
+
+    if(pluginBtn && pluginInput) {
+      pluginBtn.addEventListener("click", () => pluginInput.click());
+
+      pluginInput.addEventListener("change", (e)=>{
+        const files = Array.from(e.target.files);
+        files.forEach(file => addPlugin(file));
       });
     }
   });
