@@ -1,20 +1,56 @@
-// plugin.js
 (function(){
-  const PLUGIN_STORAGE_KEY = "mapCreator.plugins";
+  // Inicializa o objeto global de plugins
+  window.mapCreator = window.mapCreator || {};
+  mapCreator.plugins = mapCreator.plugins || [];
 
-  // --- Load plugins from localStorage ---
-  function loadPluginsFromStorage() {
-    const raw = localStorage.getItem(PLUGIN_STORAGE_KEY);
-    if (!raw) return [];
-    try { return JSON.parse(raw); } catch { return []; }
+  const pluginBtn = document.getElementById("pluginBtn");
+  const pluginInput = document.getElementById("pluginFileInput");
+  const menuBar = document.getElementById("menuBar");
+
+  if (!pluginBtn || !pluginInput || !menuBar) return;
+
+  // Função para salvar plugins no localStorage
+  function savePlugins() {
+    localStorage.setItem("mapCreator.plugins", JSON.stringify(mapCreator.plugins));
   }
 
-  // --- Save plugins ---
-  function savePluginsToStorage(plugins) {
-    localStorage.setItem(PLUGIN_STORAGE_KEY, JSON.stringify(plugins));
+  // Função para renderizar menus dos plugins
+  function renderPlugins() {
+    // Remove menus antigos
+    document.querySelectorAll(".pluginMenu").forEach(e => e.remove());
+
+    mapCreator.plugins.forEach(p => {
+      if(!p.name || !p.variable) return;
+
+      const menuItem = document.createElement("div");
+      menuItem.className = "menuItem pluginMenu";
+      menuItem.tabIndex = 0;
+      menuItem.innerHTML = `<span>${p.name}</span>`;
+      const dropdown = document.createElement("ul");
+      dropdown.className = "dropdown";
+      menuItem.appendChild(dropdown);
+
+      // Adiciona ao menuBar
+      menuBar.appendChild(menuItem);
+
+      // Clique abre/fecha
+      menuItem.addEventListener("click", (e)=>{
+        e.stopPropagation();
+        const opened = menuItem.classList.toggle("open");
+        menuItem.setAttribute("aria-expanded", opened ? "true":"false");
+      });
+
+      // Fechar ao clicar fora
+      document.addEventListener("click", (e)=>{
+        if(!menuItem.contains(e.target)){
+          menuItem.classList.remove("open");
+          menuItem.setAttribute("aria-expanded","false");
+        }
+      });
+    });
   }
 
-  // --- Add new plugin (.plugin file) ---
+  // Função para adicionar plugin
   function addPlugin(file) {
     if (!file.name.endsWith(".plugin")) {
       alert("Only .plugin files are allowed!");
@@ -22,96 +58,51 @@
     }
 
     const reader = new FileReader();
-    reader.onload = function(e) {
-      const content = e.target.result;
-      const lines = content.split("\n").map(l=>l.trim()).filter(Boolean);
-      const plugin = { name: file.name, content, parsed: [] };
+    reader.onload = (e)=>{
+      const text = e.target.result;
+      const pluginObj = {};
 
-      lines.forEach(line => {
-        if (/=\s*menuButton/i.test(line)) {
-          const variable = line.split("=")[0].trim();
-          plugin.parsed.push({ type:"menuButton", variable });
+      try {
+        // Procura linha "variable = menuButton"
+        const match = text.match(/(\w+)\s*=\s*menuButton/);
+        if(match){
+          pluginObj.variable = match[1];
+          pluginObj.name = pluginObj.variable.charAt(0).toUpperCase() + pluginObj.variable.slice(1);
+        } else {
+          alert("Plugin file must contain 'variable = menuButton'");
+          return;
         }
-        if (/\.name\s*=/.test(line)) {
-          const [varPart,namePart] = line.split("=");
-          const variable = varPart.replace(".name","").trim();
-          const menuName = namePart.trim();
-          plugin.parsed.push({ type:"menuName", variable, name:menuName });
-        }
-      });
 
-      const plugins = loadPluginsFromStorage();
-      plugins.push(plugin);
-      savePluginsToStorage(plugins);
+        mapCreator.plugins.push(pluginObj);
+        savePlugins();
+        renderPlugins();
+        alert(`Plugin "${pluginObj.name}" imported!`);
 
-      renderPlugins();
+      } catch(err){
+        console.error(err);
+        alert("Failed to import plugin: "+err.message);
+      }
     };
+
     reader.readAsText(file);
   }
 
-  // --- Create plugin menu item ---
-  function createPluginMenu(plugin) {
-    const menuItem = document.createElement("div");
-    menuItem.className = "menuItem plugin";
-    menuItem.textContent = plugin.name;
-    menuItem.setAttribute("tabindex","0");
-    menuItem.setAttribute("aria-haspopup","true");
-    menuItem.setAttribute("aria-expanded","false");
+  // Botão abre input
+  pluginBtn.addEventListener("click", ()=> pluginInput.click());
 
-    const dropdown = document.createElement("ul");
-    dropdown.className = "dropdown";
-    menuItem.appendChild(dropdown);
-
-    menuItem.addEventListener("click",(e)=>{
-      e.stopPropagation();
-      const opened = menuItem.classList.toggle("open");
-      menuItem.setAttribute("aria-expanded", opened ? "true":"false");
-    });
-
-    menuItem.addEventListener("keydown",(e)=>{
-      if(e.key==="Enter"||e.key===" ") { e.preventDefault(); menuItem.click(); }
-    });
-
-    return menuItem;
-  }
-
-  // --- Render menus ---
-  function renderPlugins() {
-    const menuBar = document.getElementById("menuBar");
-    if(!menuBar) return;
-
-    // remove old plugin menus
-    document.querySelectorAll(".menuItem.plugin").forEach(el=>el.remove());
-
-    const plugins = loadPluginsFromStorage();
-    plugins.forEach(plugin=>{
-      const pluginMenu = createPluginMenu(plugin);
-      menuBar.appendChild(pluginMenu);
-    });
-  }
-
-  // --- Close plugin menus when clicked outside ---
-  document.addEventListener("click",()=>{
-    document.querySelectorAll(".menuItem.plugin.open").forEach(menu=>{
-      menu.classList.remove("open");
-      menu.setAttribute("aria-expanded","false");
-    });
+  // Input seleciona arquivos
+  pluginInput.addEventListener("change", (e)=>{
+    const files = Array.from(e.target.files);
+    files.forEach(file => addPlugin(file));
   });
 
-  // --- Setup plugin button ---
-  document.addEventListener("DOMContentLoaded",()=>{
-    renderPlugins();
+  // Carrega plugins do localStorage ao iniciar
+  const saved = localStorage.getItem("mapCreator.plugins");
+  if(saved){
+    try {
+      mapCreator.plugins = JSON.parse(saved);
+      renderPlugins();
+    } catch(err){ console.error(err); }
+  }
 
-    const pluginBtn = document.getElementById("pluginBtn");
-    const pluginInput = document.getElementById("pluginFolderInput"); // CORRETO: usar o id certo
-
-    if(pluginBtn && pluginInput) {
-      pluginBtn.addEventListener("click", () => pluginInput.click());
-
-      pluginInput.addEventListener("change", (e)=>{
-        const files = Array.from(e.target.files);
-        files.forEach(file => addPlugin(file));
-      });
-    }
-  });
 })();
