@@ -29,7 +29,6 @@ function addPlugin(file) {
   reader.onload = function (e) {
     const content = e.target.result;
 
-    // Example: "myVar = menuButton\nmyVar.name = File"
     const lines = content.split("\n").map(l => l.trim()).filter(Boolean);
     const plugin = { name: file.name, content: content, parsed: [] };
 
@@ -60,31 +59,39 @@ function addPlugin(file) {
   reader.readAsText(file);
 }
 
-// --- Render menus from plugins ---
+// --- Helper to create menu items ---
+function createMenu(name) {
+  const menuItem = document.createElement("div");
+  menuItem.className = "menuItem";
+  menuItem.textContent = name;
+
+  const dropdown = document.createElement("ul");
+  dropdown.className = "dropdown";
+  menuItem.appendChild(dropdown);
+
+  menuItem.addEventListener("click", () => {
+    menuItem.classList.toggle("open");
+  });
+
+  return menuItem;
+}
+
+// --- Render menus from plugins + defaults ---
 function renderMenus() {
   const menuBar = document.getElementById("menuBar");
   if (!menuBar) return;
   menuBar.innerHTML = ""; // clear old
 
-  const plugins = loadPluginsFromStorage();
+  // Add default menus first
+  menuBar.appendChild(createMenu("File"));
+  menuBar.appendChild(createMenu("Add"));
 
+  // Then load plugins
+  const plugins = loadPluginsFromStorage();
   plugins.forEach(plugin => {
     plugin.parsed.forEach(item => {
       if (item.type === "menuName") {
-        const menuItem = document.createElement("div");
-        menuItem.className = "menuItem";
-        menuItem.textContent = item.name;
-
-        const dropdown = document.createElement("ul");
-        dropdown.className = "dropdown";
-        menuItem.appendChild(dropdown);
-
-        // toggle open
-        menuItem.addEventListener("click", () => {
-          menuItem.classList.toggle("open");
-        });
-
-        menuBar.appendChild(menuItem);
+        menuBar.appendChild(createMenu(item.name));
       }
     });
   });
@@ -94,7 +101,6 @@ function renderMenus() {
 document.addEventListener("DOMContentLoaded", () => {
   renderMenus();
 
-  // Example: input for adding plugins
   const input = document.getElementById("pluginInput");
   if (input) {
     input.addEventListener("change", (e) => {
