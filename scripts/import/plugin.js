@@ -5,73 +5,79 @@
 
   if (!pluginBtn || !pluginInput) return;
 
-  // Inicializa array de plugins no localStorage se não existir
-  if (!localStorage.getItem('mapCreator.plugins')) {
-    localStorage.setItem('mapCreator.plugins', JSON.stringify([]));
-  }
+  // Estrutura para guardar plugins carregados
+  window.mapCreator = window.mapCreator || {};
+  mapCreator.plugins = mapCreator.plugins || [];
 
-  // Função para adicionar plugin
-  function addPluginFromText(text) {
-    const pluginObj = {};
+  // Função para criar um menu no menuBar
+  function createPluginMenu(plugin) {
+    const menuBar = document.getElementById('menuBar');
+    if (!menuBar) return;
 
-    // Procura linha "variavel = menuButton"
-    const matchVar = text.match(/(\w+)\s*=\s*menuButton/);
-    if (!matchVar) {
-      alert("Plugin file must contain 'variable = menuButton'");
-      return;
-    }
+    const newMenu = document.createElement('div');
+    newMenu.classList.add('menuItem');
+    newMenu.setAttribute('role', 'menuitem');
+    newMenu.setAttribute('tabindex', '0');
+    newMenu.setAttribute('aria-haspopup', 'true');
+    newMenu.setAttribute('aria-expanded', 'false');
 
-    const variable = matchVar[1];
+    const menuTitle = document.createElement('span');
+    menuTitle.textContent = plugin.name;
+    newMenu.appendChild(menuTitle);
 
-    // Procura variável.name = "NomeDoMenu"
-    const matchName = text.match(new RegExp(variable + '\\.name\\s*=\\s*(.+)'));
-    let name;
-    if (matchName) {
-      name = matchName[1].replace(/['"]/g,'').trim();
-    } else {
-      name = variable.charAt(0).toUpperCase() + variable.slice(1);
-    }
+    const dropdown = document.createElement('ul');
+    dropdown.classList.add('dropdown');
+    dropdown.setAttribute('role', 'menu');
+    newMenu.appendChild(dropdown);
 
-    pluginObj.variable = variable;
-    pluginObj.name = name;
+    // Exemplo de item no dropdown
+    const item = document.createElement('li');
+    item.textContent = plugin.version ? `Version: ${plugin.version}` : 'Plugin';
+    item.setAttribute('role', 'menuitem');
+    dropdown.appendChild(item);
 
-    // Cria menu item
-    const addMenuBtn = document.getElementById('addMenuBtn');
-    if (!addMenuBtn) return;
+    menuBar.appendChild(newMenu);
 
-    const li = document.createElement('li');
-    li.textContent = pluginObj.name;
-    li.setAttribute('role','menuitem');
-    li.setAttribute('tabindex','-1');
-
-    // Quando clicar, executa o plugin
-    li.addEventListener('click', () => {
-      try {
-        const wrappedCode = `(function(plugin){ ${text} })(plugin);`;
-        eval(wrappedCode);
-        alert(`Plugin "${pluginObj.name}" executed!`);
-      } catch(err) {
-        console.error(err);
-        alert('Error executing plugin: ' + err.message);
-      }
-      addMenuBtn.classList.remove('open');
-      addMenuBtn.setAttribute('aria-expanded','false');
+    // Event listeners
+    newMenu.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const opened = newMenu.classList.toggle('open');
+      newMenu.setAttribute('aria-expanded', opened ? 'true' : 'false');
     });
 
-    addMenuBtn.querySelector('.dropdown').appendChild(li);
-
-    // Salva no localStorage
-    const savedPlugins = JSON.parse(localStorage.getItem('mapCreator.plugins'));
-    savedPlugins.push(text);
-    localStorage.setItem('mapCreator.plugins', JSON.stringify(savedPlugins));
+    // Fechar ao clicar fora
+    document.addEventListener('click', (e) => {
+      if (!newMenu.contains(e.target)) {
+        newMenu.classList.remove('open');
+        newMenu.setAttribute('aria-expanded', 'false');
+      }
+    });
   }
 
-  // Ao clicar no botão, abre seletor de arquivos
+  // Função para salvar plugin no localStorage
+  function savePlugin(plugin) {
+    mapCreator.plugins.push(plugin);
+    localStorage.setItem('mapCreatorPlugins', JSON.stringify(mapCreator.plugins));
+  }
+
+  // Função para carregar plugins do localStorage
+  function loadPlugins() {
+    const saved = localStorage.getItem('mapCreatorPlugins');
+    if (!saved) return;
+    try {
+      const plugins = JSON.parse(saved);
+      plugins.forEach(p => createPluginMenu(p));
+      mapCreator.plugins = plugins;
+    } catch (err) {
+      console.error('Failed to load plugins from localStorage', err);
+    }
+  }
+
+  // Evento do botão
   pluginBtn.addEventListener('click', () => {
     pluginInput.click();
   });
 
-  // Quando escolher arquivo
   pluginInput.addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -83,23 +89,31 @@
 
     const reader = new FileReader();
     reader.onload = (e) => {
-      addPluginFromText(e.target.result);
+      const content = e.target.result;
+
+      try {
+        const plugin = {};
+        const wrappedCode = `(function(plugin){ ${content} })(plugin);`;
+        eval(wrappedCode);
+
+        if (!plugin.name) {
+          alert('Plugin must have a name!');
+          return;
+        }
+
+        createPluginMenu(plugin);
+        savePlugin(plugin);
+
+        alert(`Plugin "${plugin.name}" imported successfully!` + (plugin.version ? ` Version: ${plugin.version}` : ''));
+
+      } catch (err) {
+        console.error(err);
+        alert('Failed to import plugin: ' + err.message);
+      }
     };
     reader.readAsText(file);
-
-    // Limpa input para poder importar o mesmo arquivo novamente
-    pluginInput.value = '';
   });
 
-  // --- Recarrega plugins do localStorage ao abrir a página ---
-  function loadPlugins() {
-    const savedPlugins = JSON.parse(localStorage.getItem('mapCreator.plugins'));
-    if (!savedPlugins) return;
-
-    for (const text of savedPlugins) {
-      addPluginFromText(text);
-    }
-  }
-
+  // Carrega plugins salvos automaticamente
   loadPlugins();
 })();
