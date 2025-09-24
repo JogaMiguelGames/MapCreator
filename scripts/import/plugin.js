@@ -60,16 +60,30 @@ function addPlugin(file) {
 }
 
 // --- Helper to create menu items ---
-function createMenu(name) {
+function createMenu(name, options = []) {
   const menuItem = document.createElement("div");
   menuItem.className = "menuItem";
   menuItem.textContent = name;
 
   const dropdown = document.createElement("ul");
   dropdown.className = "dropdown";
+
+  options.forEach(opt => {
+    const li = document.createElement("li");
+    li.textContent = opt.label;
+
+    if (typeof opt.action === "function") {
+      li.addEventListener("click", opt.action);
+    }
+
+    dropdown.appendChild(li);
+  });
+
   menuItem.appendChild(dropdown);
 
-  menuItem.addEventListener("click", () => {
+  // toggle open
+  menuItem.addEventListener("click", (e) => {
+    e.stopPropagation(); // evita fechar outros menus
     menuItem.classList.toggle("open");
   });
 
@@ -82,11 +96,25 @@ function renderMenus() {
   if (!menuBar) return;
   menuBar.innerHTML = ""; // clear old
 
-  // Add default menus first
-  menuBar.appendChild(createMenu("File"));
-  menuBar.appendChild(createMenu("Add"));
+  // Default File menu
+  const fileMenu = createMenu("File", [
+    { label: "Save", action: () => document.getElementById("menuSave")?.click() },
+    { label: "Open", action: () => document.getElementById("menuLoad")?.click() },
+  ]);
+  menuBar.appendChild(fileMenu);
 
-  // Then load plugins
+  // Default Add menu
+  const addMenu = createMenu("Add", [
+    { label: "Create Cube", action: () => document.getElementById("menuCube")?.click() },
+    { label: "Create Cylinder", action: () => document.getElementById("menuCylinder")?.click() },
+    { label: "Create Sphere", action: () => document.getElementById("menuSphere")?.click() },
+    { label: "Create Cone", action: () => document.getElementById("menuCone")?.click() },
+    { label: "Create Plane", action: () => document.getElementById("menuPlane")?.click() },
+    { label: "Create Camera", action: () => document.getElementById("menuCamera")?.click() },
+  ]);
+  menuBar.appendChild(addMenu);
+
+  // Load plugin menus
   const plugins = loadPluginsFromStorage();
   plugins.forEach(plugin => {
     plugin.parsed.forEach(item => {
@@ -96,6 +124,13 @@ function renderMenus() {
     });
   });
 }
+
+// --- Close all menus if clicked outside ---
+document.addEventListener("click", () => {
+  document.querySelectorAll(".menuItem.open").forEach(menu => {
+    menu.classList.remove("open");
+  });
+});
 
 // --- Load on startup ---
 document.addEventListener("DOMContentLoaded", () => {
