@@ -91,11 +91,16 @@ function onPointerUp() {
     canvas.style.cursor = 'auto';
   }
 }
+// Pega o container <main> do HTML
+const container = document.getElementById('sceneContainer');
+container.appendChild(renderer.domElement);
 
-canvas.addEventListener('pointerdown', onPointerDown);
-canvas.addEventListener('pointermove', onPointerMove);
-canvas.addEventListener('pointerup', onPointerUp);
-canvas.addEventListener('pointerleave', onPointerUp);
+// Depois, nos eventos, substitua 'canvas' por 'renderer.domElement' ou 'container'
+// Exemplo:
+container.addEventListener('pointerdown', onPointerDown);
+container.addEventListener('pointermove', onPointerMove);
+container.addEventListener('pointerup', onPointerUp);
+container.addEventListener('pointerleave', onPointerUp);
 
 // -- Luzes
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // luz ambiente suave
@@ -480,6 +485,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
