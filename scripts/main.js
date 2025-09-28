@@ -37,7 +37,6 @@ offsets.forEach(data => {
 let selectedSphere = null;
 let offset = 0;
 let plane = new THREE.Plane();
-const mouse = new THREE.Vector2();
 
 function onMouseDown(event){
   const rect = renderer.domElement.getBoundingClientRect();
