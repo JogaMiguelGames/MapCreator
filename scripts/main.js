@@ -7,104 +7,105 @@ mainCube.receiveShadow = true;
 scene.add(mainCube);
 
 const cubes = [mainCube];
+let selectedCube = mainCube;
 
-// === Esferas de manipulação ===
+// === Esferas de manipulação (raio 0.2) ===
 const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 
-const sphereOffsets = [
-  { offset: new THREE.Vector3(0, 0.4, 0), axis: 'y', color: 0x00ff00 }, // topo
-  { offset: new THREE.Vector3(0, -0.4, 0), axis: 'y', color: 0x00ff00 }, // baixo
-  { offset: new THREE.Vector3(0.4, 0, 0), axis: 'x', color: 0xff0000 }, // direita
-  { offset: new THREE.Vector3(-0.4, 0, 0), axis: 'x', color: 0xff0000 }, // esquerda
-  { offset: new THREE.Vector3(0, 0, 0.4), axis: 'z', color: 0x0000ff }, // frente
-  { offset: new THREE.Vector3(0, 0, -0.4), axis: 'z', color: 0x0000ff }  // trás
+const sphereData = [
+  { offset: new THREE.Vector3(0, 0.5, 0), color: 0x00ff00, axis: 'y' }, // topo
+  { offset: new THREE.Vector3(0, -0.5, 0), color: 0x00ff00, axis: 'y' }, // baixo
+  { offset: new THREE.Vector3(0.5, 0, 0), color: 0xff0000, axis: 'x' }, // direita
+  { offset: new THREE.Vector3(-0.5, 0, 0), color: 0xff0000, axis: 'x' }, // esquerda
+  { offset: new THREE.Vector3(0, 0, 0.5), color: 0x0000ff, axis: 'z' }, // frente
+  { offset: new THREE.Vector3(0, 0, -0.5), color: 0x0000ff, axis: 'z' } // trás
 ];
 
-const manipSpheres = [];
+const gizmos = [];
 
-sphereOffsets.forEach(info => {
-  const mat = new THREE.MeshStandardMaterial({ color: info.color });
+sphereData.forEach(data => {
+  const mat = new THREE.MeshStandardMaterial({ color: data.color });
   const sphere = new THREE.Mesh(sphereGeometrySmall, mat);
-  sphere.position.copy(info.offset.clone().multiplyScalar(2));
+  sphere.position.copy(data.offset);
+  sphere.userData.axis = data.axis;
+  sphere.userData.offset = data.offset.clone();
   sphere.visible = false; // só aparece quando o cubo é selecionado
-  sphere.userData.axis = info.axis; // eixo permitido
-  sphere.castShadow = true;
-  sphere.receiveShadow = true;
   mainCube.add(sphere);
-  manipSpheres.push(sphere);
+  gizmos.push(sphere);
 });
 
-// === Interação com esferas ===
+// --- Raycaster para arrastar ---
 let draggingSphere = null;
-let dragOffset = 0;
+const plane = new THREE.Plane();
+const planeNormal = new THREE.Vector3();
+const intersectPoint = new THREE.Vector3();
+const offset = new THREE.Vector3();
 
-function getAxisVector(axis){
-  if(axis === 'x') return new THREE.Vector3(1,0,0);
-  if(axis === 'y') return new THREE.Vector3(0,1,0);
-  if(axis === 'z') return new THREE.Vector3(0,0,1);
-}
-
-// Mouse events
 canvas.addEventListener('mousedown', e => {
-  mouse.x = ((e.clientX / window.innerWidth) * 2) - 1;
-  mouse.y = -((e.clientY / window.innerHeight) * 2) + 1;
+  mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
 
-  const intersects = raycaster.intersectObjects(manipSpheres);
+  const intersects = raycaster.intersectObjects(gizmos);
   if(intersects.length > 0){
     draggingSphere = intersects[0].object;
-    // diferença inicial entre posição do cubo e mouse
-    const axisVec = getAxisVector(draggingSphere.userData.axis);
-    dragOffset = mainCube.position.clone().dot(axisVec);
+
+    // Plano de movimento perpendicular ao eixo
+    const axis = draggingSphere.userData.axis;
+    if(axis === 'x') planeNormal.set(0, 1, 0);
+    if(axis === 'y') planeNormal.set(1, 0, 0);
+    if(axis === 'z') planeNormal.set(0, 1, 0);
+    plane.setFromNormalAndCoplanarPoint(planeNormal, draggingSphere.getWorldPosition(new THREE.Vector3()));
+
+    const intersectsPlane = raycaster.ray.intersectPlane(plane, intersectPoint);
+    offset.copy(intersectPoint).sub(draggingSphere.position.clone());
   }
 });
 
 canvas.addEventListener('mousemove', e => {
   if(!draggingSphere) return;
-
-  mouse.x = ((e.clientX / window.innerWidth) * 2) - 1;
-  mouse.y = -((e.clientY / window.innerHeight) * 2) + 1;
+  mouse.x = (e.clientX / window.innerWidth) * 2 - 1;
+  mouse.y = -(e.clientY / window.innerHeight) * 2 + 1;
   raycaster.setFromCamera(mouse, camera);
 
-  const axis = draggingSphere.userData.axis;
-  const planeNormal = getAxisVector(axis);
-  const plane = new THREE.Plane().setFromNormalAndCoplanarPoint(
-    new THREE.Vector3().copy(planeNormal).normalize(),
-    mainCube.position
-  );
+  const intersectsPlane = raycaster.ray.intersectPlane(plane, intersectPoint);
+  if(intersectsPlane){
+    const axis = draggingSphere.userData.axis;
+    const newPos = intersectPoint.clone().sub(offset);
 
-  const intersectPoint = new THREE.Vector3();
-  raycaster.ray.intersectPlane(plane, intersectPoint);
+    // Movimento restrito por eixo
+    const localPos = mainCube.worldToLocal(newPos.clone());
+    if(axis === 'x') localPos.y = draggingSphere.userData.offset.y, localPos.z = draggingSphere.userData.offset.z;
+    if(axis === 'y') localPos.x = draggingSphere.userData.offset.x, localPos.z = draggingSphere.userData.offset.z;
+    if(axis === 'z') localPos.x = draggingSphere.userData.offset.x, localPos.y = draggingSphere.userData.offset.y;
 
-  // snap grid 1x1x1
-  if(axis === 'x'){
-    const newX = Math.round(intersectPoint.x);
-    mainCube.position.x = newX;
-  } else if(axis === 'y'){
-    const newY = Math.round(intersectPoint.y);
-    mainCube.position.y = newY;
-  } else if(axis === 'z'){
-    const newZ = Math.round(intersectPoint.z);
-    mainCube.position.z = newZ;
+    // Snap 1x1
+    localPos.x = Math.round(localPos.x);
+    localPos.y = Math.round(localPos.y);
+    localPos.z = Math.round(localPos.z);
+
+    mainCube.position.copy(mainCube.localToWorld(localPos));
   }
 });
 
-document.addEventListener('mouseup', e => {
+canvas.addEventListener('mouseup', e => {
   draggingSphere = null;
 });
 
-// === Atualiza visibilidade das esferas conforme cubo selecionado ===
-function updateManipSpheres(){
-  manipSpheres.forEach(s => s.visible = (selectedCube === mainCube));
+// === Mostrar gizmos apenas quando o cubo estiver selecionado ===
+function updateGizmosVisibility(){
+  gizmos.forEach(s => s.visible = (selectedCube === mainCube));
 }
 
-// Chamar dentro do loop animate()
+// No loop principal ou update
 function animate(time=0){
   requestAnimationFrame(animate);
   const delta = (time - lastTime)/1000;
   lastTime = time;
+
   updateCamera(delta);
-  updateManipSpheres();
+  updateGizmosVisibility();
+
   renderer.render(scene, camera);
 }
 animate();
@@ -492,6 +493,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
