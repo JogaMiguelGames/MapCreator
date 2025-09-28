@@ -29,11 +29,26 @@ offsets.forEach(o => {
   sphere.castShadow = true;
   sphere.receiveShadow = true;
   sphere.userData.axis = o.axis; // eixo permitido
+  sphere.visible = false; // inicialmente invisível
   mainCube.add(sphere);
   spheres.push(sphere);
 });
 
-// === Drag Controls ===
+// === Função para atualizar visibilidade das esferas com base no cubo selecionado ===
+function updateSpheresVisibility() {
+  const visible = selectedCube === mainCube;
+  spheres.forEach(s => s.visible = visible);
+}
+
+// Chame sempre que o cubo selecionado mudar:
+function setSelectedCube(cube) {
+  selectedCube = cube;
+  updatePanelForCube(selectedCube);
+  updateCubeList();
+  updateSpheresVisibility(); // atualiza visibilidade
+}
+
+// === Drag Controls === (mesmo código que já estava)
 let selectedSphere = null;
 const plane = new THREE.Plane();
 const offset = new THREE.Vector3();
@@ -43,6 +58,8 @@ const dragRaycaster = new THREE.Raycaster();
 const mouseVec = new THREE.Vector2();
 
 function onPointerDown(event) {
+  if (!selectedCube || selectedCube !== mainCube) return; // só ativa se o cubo principal estiver selecionado
+
   const rect = renderer.domElement.getBoundingClientRect();
   mouseVec.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouseVec.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -475,6 +492,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
