@@ -178,27 +178,54 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
   }
 });
 
+// ================= CAMERA FOLLOW LOGIC =================
+let savedCameraPosition = new THREE.Vector3();
+let savedCameraRotation = new THREE.Euler();
+let followingCamera = false;
 
+function startFollowingCamera() {
+  const targetCamera = scene.getObjectByName("Camera");
+  if (!targetCamera) {
+    console.warn("Nenhum objeto 'Camera' encontrado!");
+    return;
+  }
 
+  // Salvar posição/rotação atuais da camera do usuário
+  savedCameraPosition.copy(camera.position);
+  savedCameraRotation.copy(camera.rotation);
 
+  // Ativar modo follow
+  followingCamera = true;
 
+  // Ajustar já de cara a posição/rotação
+  camera.position.copy(targetCamera.position);
+  camera.quaternion.copy(targetCamera.quaternion);
+}
 
+function stopFollowingCamera() {
+  followingCamera = false;
 
+  // Restaurar posição e rotação
+  camera.position.copy(savedCameraPosition);
+  camera.rotation.copy(savedCameraRotation);
+}
 
+// Atualiza a cada frame — precisa estar dentro do loop
+const oldAnimate = animate; // pega a função animate original (definida no kfw.js)
+animate = function () {
+  requestAnimationFrame(animate);
 
+  if (followingCamera) {
+    const targetCamera = scene.getObjectByName("Camera");
+    if (targetCamera) {
+      camera.position.copy(targetCamera.position);
+      camera.quaternion.copy(targetCamera.quaternion);
+    }
+  }
 
+  oldAnimate(); // chama a versão original
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Eventos dos botões Run e Stop
+document.getElementById("runButton").addEventListener("click", startFollowingCamera);
+document.getElementById("stopButton").addEventListener("click", stopFollowingCamera);
