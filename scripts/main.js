@@ -1,5 +1,7 @@
 // === Cube principal ===
-const mainCube = new THREE.Mesh(box_geometry, white_material);
+const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
+const whiteMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
+const mainCube = new THREE.Mesh(boxGeometry, whiteMaterial);
 mainCube.position.set(0, 0, 0);
 mainCube.name = 'Cube 1';
 mainCube.castShadow = true;
@@ -13,33 +15,34 @@ const sphereGeometrySmall = new THREE.SphereGeometry(0.4, 16, 8);
 const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 
 const offsets = [
-  new THREE.Vector3( 0,  0.4,  0), // topo
-  new THREE.Vector3( 0, -0.4,  0), // baixo
-  new THREE.Vector3( 0.4,  0,  0), // direita
-  new THREE.Vector3(-0.4,  0,  0), // esquerda
-  new THREE.Vector3( 0,  0,  0.4), // frente
-  new THREE.Vector3( 0,  0, -0.4)  // trás
+  new THREE.Vector3( 0,  0.5,  0), // topo
+  new THREE.Vector3( 0, -0.5,  0), // baixo
+  new THREE.Vector3( 0.5,  0,  0), // direita
+  new THREE.Vector3(-0.5,  0,  0), // esquerda
+  new THREE.Vector3( 0,  0,  0.5), // frente
+  new THREE.Vector3( 0,  0, -0.5)  // trás
 ];
 
 const spheres = [];
-
 offsets.forEach(offset => {
   const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
   sphere.position.copy(offset);
   sphere.castShadow = true;
   sphere.receiveShadow = true;
-  mainCube.add(sphere); // adiciona como filho do cubo
+  mainCube.add(sphere);
   spheres.push(sphere);
 });
 
 // === Drag das esferas com snap 1x1x1 ===
 let selectedSphere = null;
-let dragPlane = new THREE.Plane();
-let dragOffset = new THREE.Vector3();
+const dragPlane = new THREE.Plane();
+const dragOffset = new THREE.Vector3();
+const mouse = new THREE.Vector2();
+const raycaster = new THREE.Raycaster();
 
-// Pegando o elemento <main> onde o renderer está
-const canvas = document.getElementById('sceneContainer');
-canvas.appendChild(renderer.domElement); // adiciona o renderer no <main>
+// Container <main>
+const container = document.getElementById('sceneContainer');
+container.appendChild(renderer.domElement);
 
 function onPointerDown(event) {
   const rect = renderer.domElement.getBoundingClientRect();
@@ -51,7 +54,6 @@ function onPointerDown(event) {
 
   if (intersects.length > 0) {
     selectedSphere = intersects[0].object;
-
     dragPlane.setFromNormalAndCoplanarPoint(
       camera.getWorldDirection(new THREE.Vector3()),
       selectedSphere.getWorldPosition(new THREE.Vector3())
@@ -59,8 +61,7 @@ function onPointerDown(event) {
 
     raycaster.ray.intersectPlane(dragPlane, dragOffset);
     dragOffset.sub(selectedSphere.getWorldPosition(new THREE.Vector3()));
-
-    canvas.style.cursor = 'grabbing';
+    container.style.cursor = 'grabbing';
   }
 }
 
@@ -77,6 +78,7 @@ function onPointerMove(event) {
   if (raycaster.ray.intersectPlane(dragPlane, intersect)) {
     intersect.sub(dragOffset);
 
+    // Snap 1x1x1
     intersect.x = Math.round(intersect.x);
     intersect.y = Math.round(intersect.y);
     intersect.z = Math.round(intersect.z);
@@ -88,15 +90,11 @@ function onPointerMove(event) {
 function onPointerUp() {
   if (selectedSphere) {
     selectedSphere = null;
-    canvas.style.cursor = 'auto';
+    container.style.cursor = 'auto';
   }
 }
-// Pega o container <main> do HTML
-const container = document.getElementById('sceneContainer');
-container.appendChild(renderer.domElement);
 
-// Depois, nos eventos, substitua 'canvas' por 'renderer.domElement' ou 'container'
-// Exemplo:
+// Eventos
 container.addEventListener('pointerdown', onPointerDown);
 container.addEventListener('pointermove', onPointerMove);
 container.addEventListener('pointerup', onPointerUp);
@@ -485,6 +483,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
