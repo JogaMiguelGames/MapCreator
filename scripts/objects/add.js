@@ -189,8 +189,6 @@ function startFollowingCamera() {
   savedCameraPosition.copy(camera.position)
   savedCameraRotation.copy(camera.rotation)
   followingCamera = true
-  camera.position.copy(targetCamera.position)
-  camera.quaternion.copy(targetCamera.quaternion)
 }
 
 function stopFollowingCamera() {
@@ -199,18 +197,22 @@ function stopFollowingCamera() {
   camera.rotation.copy(savedCameraRotation)
 }
 
-const oldAnimate = animate
-animate = function () {
+function updateCameraFollow() {
+  if (!followingCamera) return
+  const targetCamera = scene.getObjectByName("Camera")
+  if (!targetCamera) return
+  camera.position.lerp(targetCamera.position, 0.05)
+  camera.quaternion.slerp(targetCamera.quaternion, 0.05)
+}
+
+// no seu loop principal já existente
+function animate() {
   requestAnimationFrame(animate)
-  if (followingCamera) {
-    const targetCamera = scene.getObjectByName("Camera")
-    if (targetCamera) {
-      camera.position.lerp(targetCamera.position, 0.1)
-      camera.quaternion.slerp(targetCamera.quaternion, 0.1)
-    }
-  }
-  oldAnimate()
+  updateCameraFollow()
+  renderer.render(scene, camera)
 }
 
 document.getElementById("runButton").addEventListener("click", startFollowingCamera)
 document.getElementById("stopButton").addEventListener("click", stopFollowingCamera)
+
+animate()
