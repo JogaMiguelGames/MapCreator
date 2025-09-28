@@ -1,4 +1,4 @@
-// -- Add.js -- Map Creator
+// -- Add.js -- Map Creator 
 
 function createCube() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
@@ -177,42 +177,3 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
-
-// ================= CAMERA FOLLOW LOGIC =================
-let savedCameraPosition = new THREE.Vector3()
-let savedCameraRotation = new THREE.Euler()
-let followingCamera = false
-
-function startFollowingCamera() {
-  const targetCamera = scene.getObjectByName("Camera")
-  if (!targetCamera) return
-  savedCameraPosition.copy(camera.position)
-  savedCameraRotation.copy(camera.rotation)
-  followingCamera = true
-}
-
-function stopFollowingCamera() {
-  followingCamera = false
-  camera.position.copy(savedCameraPosition)
-  camera.rotation.copy(savedCameraRotation)
-}
-
-function updateCameraFollow() {
-  if (!followingCamera) return
-  const targetCamera = scene.getObjectByName("Camera")
-  if (!targetCamera) return
-  camera.position.lerp(targetCamera.position, 0.05)
-  camera.quaternion.slerp(targetCamera.quaternion, 0.05)
-}
-
-// no seu loop principal já existente
-function animate() {
-  requestAnimationFrame(animate)
-  updateCameraFollow()
-  renderer.render(scene, camera)
-}
-
-document.getElementById("runButton").addEventListener("click", startFollowingCamera)
-document.getElementById("stopButton").addEventListener("click", stopFollowingCamera)
-
-animate()
