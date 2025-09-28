@@ -32,10 +32,6 @@ offsets.forEach(o => {
   spheres.push(sphere);
 });
 
-// --- Agora sim você pode usar o mainCube
-let selectedCube = mainCube;
-
-
 // === Drag das esferas movendo o cubo ===
 const dragRaycaster = new THREE.Raycaster(); // <-- corrigido
 let draggedSphere = null;
@@ -475,6 +471,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
