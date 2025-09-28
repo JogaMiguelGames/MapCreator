@@ -8,16 +8,16 @@ scene.add(mainCube);
 
 const cubes = [mainCube];
 
-// === Esferas coladas em cada lado do cubo (raio 0.2) ===
+// === Esferas coladas no cubo (raio 0.2) ===
 const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 
 const sphereInfos = [
-  { offset: new THREE.Vector3(0, 0.4, 0), color: 0x00ff00, axis: 'y' },  // topo
-  { offset: new THREE.Vector3(0, -0.4, 0), color: 0x00ff00, axis: 'y' }, // baixo
-  { offset: new THREE.Vector3(0.4, 0, 0), color: 0xff0000, axis: 'x' },  // direita
-  { offset: new THREE.Vector3(-0.4, 0, 0), color: 0xff0000, axis: 'x' }, // esquerda
-  { offset: new THREE.Vector3(0, 0, 0.4), color: 0x0000ff, axis: 'z' },  // frente
-  { offset: new THREE.Vector3(0, 0, -0.4), color: 0x0000ff, axis: 'z' }  // trás
+  { offset: new THREE.Vector3(0, 0.4, 0), axis: 'y', color: 0x00ff00 }, // topo
+  { offset: new THREE.Vector3(0, -0.4, 0), axis: 'y', color: 0x00ff00 }, // baixo
+  { offset: new THREE.Vector3(0.4, 0, 0), axis: 'x', color: 0xff0000 }, // direita
+  { offset: new THREE.Vector3(-0.4, 0, 0), axis: 'x', color: 0xff0000 }, // esquerda
+  { offset: new THREE.Vector3(0, 0, 0.4), axis: 'z', color: 0x0000ff }, // frente
+  { offset: new THREE.Vector3(0, 0, -0.4), axis: 'z', color: 0x0000ff } // trás
 ];
 
 const spheres = [];
@@ -26,82 +26,81 @@ sphereInfos.forEach(info => {
   const mat = new THREE.MeshStandardMaterial({ color: info.color });
   const sphere = new THREE.Mesh(sphereGeometrySmall, mat);
   sphere.position.copy(info.offset.clone().multiplyScalar(2));
-  sphere.userData.axis = info.axis;
   sphere.castShadow = true;
   sphere.receiveShadow = true;
-  sphere.visible = false; // inicialmente invisível
+  sphere.visible = false; // só aparece quando cubo selecionado
+  sphere.userData.axis = info.axis;
   mainCube.add(sphere);
   spheres.push(sphere);
 });
 
-// === Mostrar esferas apenas se mainCube selecionado ===
-function updateSpheresVisibility() {
-  spheres.forEach(s => s.visible = (selectedCube === mainCube));
-}
-updateSpheresVisibility();
+// === Drag logic ===
+let selectedSphere = null;
+let offsetStart = new THREE.Vector3();
 
-// === Dragging com grid 1x1x1 por eixo ===
-let draggingSphere = null;
-let dragOffset = new THREE.Vector3();
+const plane = new THREE.Plane();
+const raycasterDrag = new THREE.Raycaster();
+const mouseDrag = new THREE.Vector2();
 
-canvas.addEventListener('mousedown', (event) => {
-  mouse.x = ((event.clientX / window.innerWidth) * 2) - 1;
-  mouse.y = -((event.clientY / window.innerHeight) * 2) + 1;
+function onPointerDown(event) {
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouseDrag.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouseDrag.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(spheres);
+  raycasterDrag.setFromCamera(mouseDrag, camera);
+  const intersects = raycasterDrag.intersectObjects(spheres, true);
 
   if (intersects.length > 0) {
-    draggingSphere = intersects[0].object;
-    const worldPos = new THREE.Vector3();
-    draggingSphere.getWorldPosition(worldPos);
-    dragOffset.copy(worldPos).sub(camera.position);
+    selectedSphere = intersects[0].object;
+    const axis = selectedSphere.userData.axis;
+
+    // Definir plano perpendicular ao eixo
+    if (axis === 'x') plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0), selectedSphere.getWorldPosition(new THREE.Vector3()));
+    if (axis === 'y') plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,0,1), selectedSphere.getWorldPosition(new THREE.Vector3()));
+    if (axis === 'z') plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0), selectedSphere.getWorldPosition(new THREE.Vector3()));
+
+    const intersectPoint = new THREE.Vector3();
+    raycasterDrag.ray.intersectPlane(plane, intersectPoint);
+    offsetStart.copy(intersectPoint).sub(mainCube.position);
   }
-});
+}
 
-canvas.addEventListener('mousemove', (event) => {
-  if (!draggingSphere) return;
+function onPointerMove(event) {
+  if (!selectedSphere) return;
 
-  mouse.x = ((event.clientX / window.innerWidth) * 2) - 1;
-  mouse.y = -((event.clientY / window.innerHeight) * 2) + 1;
+  const rect = renderer.domElement.getBoundingClientRect();
+  mouseDrag.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  mouseDrag.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-  raycaster.setFromCamera(mouse, camera);
-  const planeNormal = new THREE.Vector3();
-  const axis = draggingSphere.userData.axis;
+  raycasterDrag.setFromCamera(mouseDrag, camera);
 
-  if (axis === 'x') planeNormal.set(0, 1, 0);
-  if (axis === 'y') planeNormal.set(1, 0, 0);
-  if (axis === 'z') planeNormal.set(0, 1, 0);
+  const intersectPoint = new THREE.Vector3();
+  raycasterDrag.ray.intersectPlane(plane, intersectPoint);
 
-  const plane = new THREE.Plane();
-  plane.setFromNormalAndCoplanarPoint(planeNormal, mainCube.position);
+  const delta = intersectPoint.clone().sub(offsetStart);
 
-  const intersection = new THREE.Vector3();
-  raycaster.ray.intersectPlane(plane, intersection);
+  const axis = selectedSphere.userData.axis;
 
-  if (intersection) {
-    const newPos = intersection.clone().sub(dragOffset);
+  // Aplicar grid e eixo
+  const newPos = mainCube.position.clone();
+  if (axis === 'x') newPos.x = Math.round((mainCube.position.x + delta.x));
+  if (axis === 'y') newPos.y = Math.round((mainCube.position.y + delta.y));
+  if (axis === 'z') newPos.z = Math.round((mainCube.position.z + delta.z));
 
-    // Movimenta apenas no eixo certo
-    const cubePos = mainCube.position.clone();
-    if (axis === 'x') cubePos.x = Math.round(newPos.x + mainCube.position.x);
-    if (axis === 'y') cubePos.y = Math.round(newPos.y + mainCube.position.y);
-    if (axis === 'z') cubePos.z = Math.round(newPos.z + mainCube.position.z);
+  mainCube.position.copy(newPos);
+}
 
-    mainCube.position.copy(cubePos);
-  }
-});
+function onPointerUp() {
+  selectedSphere = null;
+}
 
-document.addEventListener('mouseup', () => {
-  draggingSphere = null;
-});
+renderer.domElement.addEventListener('pointerdown', onPointerDown);
+renderer.domElement.addEventListener('pointermove', onPointerMove);
+renderer.domElement.addEventListener('pointerup', onPointerUp);
 
-// === Atualiza visibilidade sempre que muda seleção ===
-function selectCube(cube) {
-  selectedCube = cube;
-  updatePanelForCube(selectedCube);
-  updateCubeList();
-  updateSpheresVisibility();
+// === Mostrar/esconder esferas quando cubo selecionado ===
+function updateSphereVisibility() {
+  spheres.forEach(s => s.visible = (selectedCube === mainCube));
 }
 
 // -- Luzes
@@ -487,6 +486,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
