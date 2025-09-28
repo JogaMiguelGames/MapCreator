@@ -1,11 +1,32 @@
+// === Cube principal ===
 const mainCube = new THREE.Mesh(box_geometry, white_material);
-mainCube.position.set(0, 0, 0); // acima do “chão” que será colocado depois
+mainCube.position.set(0, 0, 0);
 mainCube.name = 'Cube 1';
-mainCube.castShadow = true;      // projeta sombra
-mainCube.receiveShadow = true;   // recebe sombra de outros objetos
+mainCube.castShadow = true;
+mainCube.receiveShadow = true;
 scene.add(mainCube);
 
 const cubes = [mainCube];
+
+// === Esferas coladas em cada lado do cubo ===
+const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+
+const offsets = [
+  new THREE.Vector3( 0,  0.5,  0), // topo
+  new THREE.Vector3( 0, -0.5,  0), // baixo
+  new THREE.Vector3( 0.5,  0,  0), // direita
+  new THREE.Vector3(-0.5,  0,  0), // esquerda
+  new THREE.Vector3( 0,  0,  0.5), // frente
+  new THREE.Vector3( 0,  0, -0.5)  // trás
+];
+
+offsets.forEach(offset => {
+  const sphere = new THREE.Mesh(sphere_geometry, sphereMaterial);
+  sphere.position.copy(offset.clone().multiplyScalar(2));
+  sphere.castShadow = true;
+  sphere.receiveShadow = true;
+  mainCube.add(sphere);
+});
 
 // -- Luzes
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // luz ambiente suave
@@ -390,6 +411,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
