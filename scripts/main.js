@@ -1,3 +1,41 @@
+// === Cube principal ===
+const mainCube = new THREE.Mesh(box_geometry, white_material);
+mainCube.position.set(0, 0, 0);
+mainCube.name = 'Cube 1';
+mainCube.castShadow = true;
+mainCube.receiveShadow = true;
+scene.add(mainCube);
+
+const cubes = [mainCube];
+
+// === Esferas coladas em cada lado do cubo (raio 0.4) ===
+const sphereGeometrySmall = new THREE.SphereGeometry(0.4, 16, 8);
+const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+
+const offsets = [
+  { pos: new THREE.Vector3( 0,  0.4,  0), axis: 'y' }, // topo
+  { pos: new THREE.Vector3( 0, -0.4,  0), axis: 'y' }, // baixo
+  { pos: new THREE.Vector3( 0.4,  0,  0), axis: 'x' }, // direita
+  { pos: new THREE.Vector3(-0.4,  0,  0), axis: 'x' }, // esquerda
+  { pos: new THREE.Vector3( 0,  0,  0.4), axis: 'z' }, // frente
+  { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z' }  // trás
+];
+
+const spheres = [];
+offsets.forEach(o => {
+  const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
+  sphere.position.copy(o.pos);
+  sphere.userData.axis = o.axis;
+  sphere.castShadow = true;
+  sphere.receiveShadow = true;
+  scene.add(sphere);
+  spheres.push(sphere);
+});
+
+// --- Agora sim você pode usar o mainCube
+let selectedCube = mainCube;
+
+
 // === Drag das esferas movendo o cubo ===
 const dragRaycaster = new THREE.Raycaster(); // <-- corrigido
 let draggedSphere = null;
