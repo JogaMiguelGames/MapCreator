@@ -9,7 +9,7 @@ scene.add(mainCube);
 const cubes = [mainCube];
 
 // === Esferas coladas em cada lado do cubo (raio 0.4) ===
-const sphereGeometrySmall = new THREE.SphereGeometry(0.3, 16, 8);
+const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 
 const offsets = [
@@ -412,6 +412,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
