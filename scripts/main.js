@@ -13,33 +13,32 @@ const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 
 const offsets = [
-  new THREE.Vector3( 0,  0.4,  0), // topo
-  new THREE.Vector3( 0, -0.4,  0), // baixo
-  new THREE.Vector3( 0.4,  0,  0), // direita
-  new THREE.Vector3(-0.4,  0,  0), // esquerda
-  new THREE.Vector3( 0,  0,  0.4), // frente
-  new THREE.Vector3( 0,  0, -0.4)  // trás
+  { pos: new THREE.Vector3(0, 0.4, 0), axis: 'y' }, // topo
+  { pos: new THREE.Vector3(0, -0.4, 0), axis: 'y' }, // baixo
+  { pos: new THREE.Vector3(0.4, 0, 0), axis: 'x' }, // direita
+  { pos: new THREE.Vector3(-0.4, 0, 0), axis: 'x' }, // esquerda
+  { pos: new THREE.Vector3(0, 0, 0.4), axis: 'z' }, // frente
+  { pos: new THREE.Vector3(0, 0, -0.4), axis: 'z' }  // trás
 ];
 
 const spheres = [];
 
-offsets.forEach(offset => {
+offsets.forEach(o => {
   const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
-  sphere.position.copy(offset.clone().multiplyScalar(2));
+  sphere.position.copy(o.pos.clone().multiplyScalar(2));
+  sphere.userData.axis = o.axis; // guarda o eixo de movimento
   sphere.castShadow = true;
   sphere.receiveShadow = true;
   mainCube.add(sphere);
   spheres.push(sphere);
 });
 
-// === Drag das esferas com grid snapping ===
+// === Drag das esferas movendo o cubo ===
 let draggedSphere = null;
 let plane = new THREE.Plane();
 let intersection = new THREE.Vector3();
 let offset = new THREE.Vector3();
 const gridSize = 1;
-
-const dragRaycaster = new THREE.Raycaster();
 
 renderer.domElement.addEventListener('mousedown', (event) => {
   const rect = renderer.domElement.getBoundingClientRect();
@@ -52,13 +51,17 @@ renderer.domElement.addEventListener('mousedown', (event) => {
   if (intersects.length > 0) {
     draggedSphere = intersects[0].object;
 
-    // plano de movimento paralelo à câmera
-    plane.setFromNormalAndCoplanarPoint(
-      camera.getWorldDirection(plane.normal).clone().negate(),
-      draggedSphere.getWorldPosition(new THREE.Vector3())
+    // Define plano perpendicular ao eixo que a esfera controla
+    const axis = draggedSphere.userData.axis;
+    const normal = new THREE.Vector3(
+      axis === 'x' ? 1 : 0,
+      axis === 'y' ? 1 : 0,
+      axis === 'z' ? 1 : 0
     );
+    plane.setFromNormalAndCoplanarPoint(normal, mainCube.position);
 
-    plane.projectPoint(draggedSphere.getWorldPosition(new THREE.Vector3()), offset);
+    // Calcula offset inicial
+    plane.projectPoint(mainCube.position, offset);
   }
 });
 
@@ -73,14 +76,13 @@ renderer.domElement.addEventListener('mousemove', (event) => {
   dragRaycaster.ray.intersectPlane(plane, intersection);
 
   if (intersection) {
+    const axis = draggedSphere.userData.axis;
     const newPos = intersection.clone().sub(offset);
 
     // Snap para grid de 1x1x1
-    newPos.x = Math.round(newPos.x / gridSize) * gridSize;
-    newPos.y = Math.round(newPos.y / gridSize) * gridSize;
-    newPos.z = Math.round(newPos.z / gridSize) * gridSize;
-
-    draggedSphere.position.copy(newPos);
+    if (axis === 'x') mainCube.position.x = Math.round(newPos.x / gridSize) * gridSize;
+    if (axis === 'y') mainCube.position.y = Math.round(newPos.y / gridSize) * gridSize;
+    if (axis === 'z') mainCube.position.z = Math.round(newPos.z / gridSize) * gridSize;
   }
 });
 
@@ -471,6 +473,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
