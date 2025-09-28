@@ -1,7 +1,5 @@
 // === Cube principal ===
-const boxGeometry = new THREE.BoxGeometry(1, 1, 1);
-const whiteMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-const mainCube = new THREE.Mesh(boxGeometry, whiteMaterial);
+const mainCube = new THREE.Mesh(box_geometry, white_material);
 mainCube.position.set(0, 0, 0);
 mainCube.name = 'Cube 1';
 mainCube.castShadow = true;
@@ -10,95 +8,85 @@ scene.add(mainCube);
 
 const cubes = [mainCube];
 
-// === Esferas coladas em cada lado do cubo (raio 0.4) ===
-const sphereGeometrySmall = new THREE.SphereGeometry(0.4, 16, 8);
+// === Esferas coladas em cada lado do cubo (raio 0.2) ===
+const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 
 const offsets = [
-  new THREE.Vector3( 0,  0.5,  0), // topo
-  new THREE.Vector3( 0, -0.5,  0), // baixo
-  new THREE.Vector3( 0.5,  0,  0), // direita
-  new THREE.Vector3(-0.5,  0,  0), // esquerda
-  new THREE.Vector3( 0,  0,  0.5), // frente
-  new THREE.Vector3( 0,  0, -0.5)  // trás
+  new THREE.Vector3( 0,  0.4,  0), // topo
+  new THREE.Vector3( 0, -0.4,  0), // baixo
+  new THREE.Vector3( 0.4,  0,  0), // direita
+  new THREE.Vector3(-0.4,  0,  0), // esquerda
+  new THREE.Vector3( 0,  0,  0.4), // frente
+  new THREE.Vector3( 0,  0, -0.4)  // trás
 ];
 
 const spheres = [];
+
 offsets.forEach(offset => {
   const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
-  sphere.position.copy(offset);
+  sphere.position.copy(offset.clone().multiplyScalar(2));
   sphere.castShadow = true;
   sphere.receiveShadow = true;
   mainCube.add(sphere);
   spheres.push(sphere);
 });
 
-// === Drag das esferas com snap 1x1x1 ===
-let selectedSphere = null;
-const dragPlane = new THREE.Plane();
-const dragOffset = new THREE.Vector3();
-const mouse = new THREE.Vector2();
-const raycaster = new THREE.Raycaster();
+// === Drag das esferas com grid snapping ===
+let draggedSphere = null;
+let plane = new THREE.Plane();
+let intersection = new THREE.Vector3();
+let offset = new THREE.Vector3();
+const gridSize = 1;
 
-// Container <main>
-const container = document.getElementById('sceneContainer');
-container.appendChild(renderer.domElement);
+const dragRaycaster = new THREE.Raycaster();
 
-function onPointerDown(event) {
+renderer.domElement.addEventListener('mousedown', (event) => {
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-  raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(spheres, true);
+  dragRaycaster.setFromCamera(mouse, camera);
+  const intersects = dragRaycaster.intersectObjects(spheres);
 
   if (intersects.length > 0) {
-    selectedSphere = intersects[0].object;
-    dragPlane.setFromNormalAndCoplanarPoint(
-      camera.getWorldDirection(new THREE.Vector3()),
-      selectedSphere.getWorldPosition(new THREE.Vector3())
+    draggedSphere = intersects[0].object;
+
+    // plano de movimento paralelo à câmera
+    plane.setFromNormalAndCoplanarPoint(
+      camera.getWorldDirection(plane.normal).clone().negate(),
+      draggedSphere.getWorldPosition(new THREE.Vector3())
     );
 
-    raycaster.ray.intersectPlane(dragPlane, dragOffset);
-    dragOffset.sub(selectedSphere.getWorldPosition(new THREE.Vector3()));
-    container.style.cursor = 'grabbing';
+    plane.projectPoint(draggedSphere.getWorldPosition(new THREE.Vector3()), offset);
   }
-}
+});
 
-function onPointerMove(event) {
-  if (!selectedSphere) return;
+renderer.domElement.addEventListener('mousemove', (event) => {
+  if (!draggedSphere) return;
 
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-  raycaster.setFromCamera(mouse, camera);
+  dragRaycaster.setFromCamera(mouse, camera);
+  dragRaycaster.ray.intersectPlane(plane, intersection);
 
-  const intersect = new THREE.Vector3();
-  if (raycaster.ray.intersectPlane(dragPlane, intersect)) {
-    intersect.sub(dragOffset);
+  if (intersection) {
+    const newPos = intersection.clone().sub(offset);
 
-    // Snap 1x1x1
-    intersect.x = Math.round(intersect.x);
-    intersect.y = Math.round(intersect.y);
-    intersect.z = Math.round(intersect.z);
+    // Snap para grid de 1x1x1
+    newPos.x = Math.round(newPos.x / gridSize) * gridSize;
+    newPos.y = Math.round(newPos.y / gridSize) * gridSize;
+    newPos.z = Math.round(newPos.z / gridSize) * gridSize;
 
-    selectedSphere.position.copy(intersect.clone().sub(mainCube.position));
+    draggedSphere.position.copy(newPos);
   }
-}
+});
 
-function onPointerUp() {
-  if (selectedSphere) {
-    selectedSphere = null;
-    container.style.cursor = 'auto';
-  }
-}
-
-// Eventos
-container.addEventListener('pointerdown', onPointerDown);
-container.addEventListener('pointermove', onPointerMove);
-container.addEventListener('pointerup', onPointerUp);
-container.addEventListener('pointerleave', onPointerUp);
+renderer.domElement.addEventListener('mouseup', () => {
+  draggedSphere = null;
+});
 
 // -- Luzes
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // luz ambiente suave
@@ -483,6 +471,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
