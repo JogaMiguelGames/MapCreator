@@ -37,7 +37,6 @@ offsets.forEach(data => {
 let selectedSphere = null;
 let offset = 0;
 let plane = new THREE.Plane();
-const raycaster = new THREE.Raycaster();
 const mouse = new THREE.Vector2();
 
 function onMouseDown(event){
@@ -474,6 +473,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
