@@ -9,7 +9,7 @@ scene.add(mainCube);
 const cubes = [mainCube];
 
 // === Esferas coladas em cada lado do cubo (raio 0.2) ===
-const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
+const sphereGeometrySmall = new THREE.SphereGeometry(0.4, 16, 8);
 const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 
 const offsets = [
@@ -25,20 +25,21 @@ const spheres = [];
 
 offsets.forEach(offset => {
   const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
-  sphere.position.copy(offset.clone().multiplyScalar(2));
+  sphere.position.copy(offset);
   sphere.castShadow = true;
   sphere.receiveShadow = true;
-  mainCube.add(sphere);
+  mainCube.add(sphere); // adiciona como filho do cubo
   spheres.push(sphere);
 });
 
-// === Drag das esferas com snap no grid 1x1x1 ===
+// === Drag das esferas com snap 1x1x1 ===
+const canvas = renderer.domElement; // garantir que canvas esteja definido antes
 let selectedSphere = null;
 let dragPlane = new THREE.Plane();
 let dragOffset = new THREE.Vector3();
 
 function onPointerDown(event) {
-  const rect = renderer.domElement.getBoundingClientRect();
+  const rect = canvas.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
@@ -48,13 +49,13 @@ function onPointerDown(event) {
   if (intersects.length > 0) {
     selectedSphere = intersects[0].object;
 
-    // Plano de arraste paralelo à câmera
+    // plano de arraste paralelo à câmera
     dragPlane.setFromNormalAndCoplanarPoint(
-      camera.getWorldDirection(dragPlane.normal),
+      camera.getWorldDirection(new THREE.Vector3()),
       selectedSphere.getWorldPosition(new THREE.Vector3())
     );
 
-    // Offset entre clique e posição da esfera
+    // offset entre clique e posição da esfera
     raycaster.ray.intersectPlane(dragPlane, dragOffset);
     dragOffset.sub(selectedSphere.getWorldPosition(new THREE.Vector3()));
 
@@ -65,7 +66,7 @@ function onPointerDown(event) {
 function onPointerMove(event) {
   if (!selectedSphere) return;
 
-  const rect = renderer.domElement.getBoundingClientRect();
+  const rect = canvas.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
@@ -80,7 +81,7 @@ function onPointerMove(event) {
     intersect.y = Math.round(intersect.y);
     intersect.z = Math.round(intersect.z);
 
-    // Atualiza posição relativa à cube
+    // Atualiza posição relativa ao cubo
     selectedSphere.position.copy(intersect.clone().sub(mainCube.position));
   }
 }
@@ -480,6 +481,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
