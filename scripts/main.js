@@ -1,101 +1,73 @@
-// === Cube principal ===
-const mainCube = new THREE.Mesh(box_geometry, white_material);
-mainCube.position.set(0, 0, 0);
-mainCube.name = 'Cube 1';
-mainCube.castShadow = true;
-mainCube.receiveShadow = true;
-scene.add(mainCube);
-
-const cubes = [mainCube];
-
-// === Esferas coladas em cada lado do cubo (raio 0.2) ===
-const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
-const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-
-const offsets = [
-  new THREE.Vector3( 0,  0.4,  0), // topo → eixo Y
-  new THREE.Vector3( 0, -0.4,  0), // baixo → eixo Y
-  new THREE.Vector3( 0.4,  0,  0), // direita → eixo X
-  new THREE.Vector3(-0.4,  0,  0), // esquerda → eixo X
-  new THREE.Vector3( 0,  0,  0.4), // frente → eixo Z
-  new THREE.Vector3( 0,  0, -0.4)  // trás → eixo Z
-];
-
-const axisMap = ['y','y','x','x','z','z']; // eixo que cada esfera controla
 const spheres = [];
 
-offsets.forEach((offset,i) => {
+offsets.forEach(offset => {
   const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
   sphere.position.copy(offset.clone().multiplyScalar(2));
   sphere.castShadow = true;
   sphere.receiveShadow = true;
   mainCube.add(sphere);
-  spheres.push({mesh: sphere, axis: axisMap[i]});
+  spheres.push(sphere);
 });
 
-// === Drag para mover o cubo via esferas com grid snapping ===
+// === Drag das esferas com snap 1x1x1 ===
 let draggedSphere = null;
-let plane = new THREE.Plane();
-let intersection = new THREE.Vector3();
-let offset = new THREE.Vector3();
-const gridSize = 1;
+const plane = new THREE.Plane();
+const intersection = new THREE.Vector3();
+const offset = new THREE.Vector3();
 
-renderer.domElement.addEventListener('mousedown', (event) => {
+function onPointerDown(event) {
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-  dragRaycaster.setFromCamera(mouse, camera);
-  const intersects = dragRaycaster.intersectObjects(spheres.map(s => s.mesh));
+  raycaster.setFromCamera(mouse, camera);
+  const intersects = raycaster.intersectObjects(spheres, true);
 
-  if (intersects.length > 0) {
-    const idx = spheres.findIndex(s => s.mesh === intersects[0].object);
-    draggedSphere = spheres[idx];
+  if(intersects.length > 0){
+    draggedSphere = intersects[0].object;
 
-    // plano de arrasto perpendicular ao eixo da esfera
-    const worldPos = mainCube.getWorldPosition(new THREE.Vector3());
-    switch(draggedSphere.axis){
-      case 'x': plane.set(new THREE.Vector3(0,1,0), worldPos.y); break;
-      case 'y': plane.set(new THREE.Vector3(1,0,0), worldPos.x); break;
-      case 'z': plane.set(new THREE.Vector3(1,0,0), worldPos.x); break;
-    }
+    // Plano para movimento (perpendicular à câmera)
+    plane.setFromNormalAndCoplanarPoint(
+      camera.getWorldDirection(plane.normal),
+      draggedSphere.getWorldPosition(new THREE.Vector3())
+    );
+
+    // Calcular offset inicial
+    raycaster.ray.intersectPlane(plane, intersection);
+    offset.copy(intersection).sub(draggedSphere.getWorldPosition(new THREE.Vector3()));
   }
-});
+}
 
-renderer.domElement.addEventListener('mousemove', (event) => {
-  if (!draggedSphere) return;
+function onPointerMove(event){
+  if(!draggedSphere) return;
 
   const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-  dragRaycaster.setFromCamera(mouse, camera);
-  dragRaycaster.ray.intersectPlane(plane, intersection);
+  raycaster.setFromCamera(mouse, camera);
+  if(raycaster.ray.intersectPlane(plane, intersection)){
+    const newPos = intersection.clone().sub(offset);
 
-  if (intersection) {
-    const cubeWorldPos = mainCube.getWorldPosition(new THREE.Vector3());
-    let delta = intersection.clone().sub(cubeWorldPos);
+    // Snap grid 1x1x1
+    newPos.x = Math.round(newPos.x);
+    newPos.y = Math.round(newPos.y);
+    newPos.z = Math.round(newPos.z);
 
-    // Aplica delta somente no eixo permitido
-    const newPos = mainCube.position.clone();
-    switch(draggedSphere.axis){
-      case 'x': newPos.x += delta.x; break;
-      case 'y': newPos.y += delta.y; break;
-      case 'z': newPos.z += delta.z; break;
-    }
-
-    // Snap para grid
-    newPos.x = Math.round(newPos.x / gridSize) * gridSize;
-    newPos.y = Math.round(newPos.y / gridSize) * gridSize;
-    newPos.z = Math.round(newPos.z / gridSize) * gridSize;
-
-    mainCube.position.copy(newPos);
+    // Atualiza posição local da esfera em relação ao cubo
+    const parentInverse = new THREE.Matrix4().getInverse(draggedSphere.parent.matrixWorld);
+    draggedSphere.position.copy(newPos.applyMatrix4(parentInverse));
   }
-});
+}
 
-renderer.domElement.addEventListener('mouseup', () => {
+function onPointerUp(){
   draggedSphere = null;
-});
+}
+
+renderer.domElement.addEventListener('pointerdown', onPointerDown);
+renderer.domElement.addEventListener('pointermove', onPointerMove);
+renderer.domElement.addEventListener('pointerup', onPointerUp);
+
 
 // -- Luzes
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // luz ambiente suave
@@ -480,6 +452,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
