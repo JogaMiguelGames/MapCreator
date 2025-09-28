@@ -13,12 +13,12 @@ const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 
 const offsets = [
-  new THREE.Vector3( 0,  0.5,  0), // topo
-  new THREE.Vector3( 0, -0.5,  0), // baixo
-  new THREE.Vector3( 0.5,  0,  0), // direita
-  new THREE.Vector3(-0.5,  0,  0), // esquerda
-  new THREE.Vector3( 0,  0,  0.5), // frente
-  new THREE.Vector3( 0,  0, -0.5)  // trás
+  new THREE.Vector3( 0,  0.4,  0), // topo
+  new THREE.Vector3( 0, -0.4,  0), // baixo
+  new THREE.Vector3( 0.4,  0,  0), // direita
+  new THREE.Vector3(-0.4,  0,  0), // esquerda
+  new THREE.Vector3( 0,  0,  0.4), // frente
+  new THREE.Vector3( 0,  0, -0.4)  // trás
 ];
 
 offsets.forEach(offset => {
@@ -412,6 +412,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
