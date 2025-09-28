@@ -1,4 +1,26 @@
+// === Cube principal ===
+const mainCube = new THREE.Mesh(box_geometry, white_material);
+mainCube.position.set(0, 0, 0);
+mainCube.name = 'Cube 1';
+mainCube.castShadow = true;
+mainCube.receiveShadow = true;
+scene.add(mainCube);
+
+const cubes = [mainCube];
+
+// === Esferas coladas em cada lado do cubo (raio 0.2) ===
+const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
+const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 const spheres = [];
+
+const offsets = [
+  new THREE.Vector3( 0,  0.4,  0), // topo
+  new THREE.Vector3( 0, -0.4,  0), // baixo
+  new THREE.Vector3( 0.4,  0,  0), // direita
+  new THREE.Vector3(-0.4,  0,  0), // esquerda
+  new THREE.Vector3( 0,  0,  0.4), // frente
+  new THREE.Vector3( 0,  0, -0.4)  // trás
+];
 
 offsets.forEach(offset => {
   const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
@@ -9,65 +31,50 @@ offsets.forEach(offset => {
   spheres.push(sphere);
 });
 
-// === Drag das esferas com snap 1x1x1 ===
-let draggedSphere = null;
-const plane = new THREE.Plane();
-const intersection = new THREE.Vector3();
-const offset = new THREE.Vector3();
+// === Drag com grid 1x1x1 ===
+let selectedSphere = null;
+let offset = new THREE.Vector3();
 
 function onPointerDown(event) {
-  const rect = renderer.domElement.getBoundingClientRect();
-  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  mouse.x = ((event.clientX / window.innerWidth) * 2) - 1;
+  mouse.y = -((event.clientY / window.innerHeight) * 2) + 1;
 
   raycaster.setFromCamera(mouse, camera);
   const intersects = raycaster.intersectObjects(spheres, true);
 
-  if(intersects.length > 0){
-    draggedSphere = intersects[0].object;
-
-    // Plano para movimento (perpendicular à câmera)
-    plane.setFromNormalAndCoplanarPoint(
-      camera.getWorldDirection(plane.normal),
-      draggedSphere.getWorldPosition(new THREE.Vector3())
-    );
-
-    // Calcular offset inicial
-    raycaster.ray.intersectPlane(plane, intersection);
-    offset.copy(intersection).sub(draggedSphere.getWorldPosition(new THREE.Vector3()));
+  if (intersects.length > 0) {
+    selectedSphere = intersects[0].object;
+    // calcula offset entre ponto de clique e centro da esfera
+    offset.copy(intersects[0].point).sub(selectedSphere.position);
   }
 }
 
-function onPointerMove(event){
-  if(!draggedSphere) return;
+function onPointerMove(event) {
+  if (!selectedSphere) return;
 
-  const rect = renderer.domElement.getBoundingClientRect();
-  mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-  mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  mouse.x = ((event.clientX / window.innerWidth) * 2) - 1;
+  mouse.y = -((event.clientY / window.innerHeight) * 2) + 1;
 
   raycaster.setFromCamera(mouse, camera);
-  if(raycaster.ray.intersectPlane(plane, intersection)){
-    const newPos = intersection.clone().sub(offset);
+  const plane = new THREE.Plane(new THREE.Vector3(0, 1, 0), -selectedSphere.position.y);
+  const intersection = new THREE.Vector3();
+  raycaster.ray.intersectPlane(plane, intersection);
 
-    // Snap grid 1x1x1
-    newPos.x = Math.round(newPos.x);
-    newPos.y = Math.round(newPos.y);
-    newPos.z = Math.round(newPos.z);
-
-    // Atualiza posição local da esfera em relação ao cubo
-    const parentInverse = new THREE.Matrix4().getInverse(draggedSphere.parent.matrixWorld);
-    draggedSphere.position.copy(newPos.applyMatrix4(parentInverse));
+  if (intersection) {
+    // aplica offset e snap para grid 1x1x1
+    selectedSphere.position.x = Math.round(intersection.x - offset.x);
+    selectedSphere.position.y = Math.round(intersection.y - offset.y);
+    selectedSphere.position.z = Math.round(intersection.z - offset.z);
   }
 }
 
-function onPointerUp(){
-  draggedSphere = null;
+function onPointerUp() {
+  selectedSphere = null;
 }
 
 renderer.domElement.addEventListener('pointerdown', onPointerDown);
 renderer.domElement.addEventListener('pointermove', onPointerMove);
 renderer.domElement.addEventListener('pointerup', onPointerUp);
-
 
 // -- Luzes
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // luz ambiente suave
