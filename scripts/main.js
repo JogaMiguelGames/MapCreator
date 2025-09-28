@@ -8,22 +8,22 @@ scene.add(mainCube);
 
 const cubes = [mainCube];
 
-// === Esferas coladas em cada lado do cubo (raio 0.2) ===
+// === Esferas coladas em cada lado do cubo (raio 0.2) com cores por eixo ===
 const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
-const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 
 const offsets = [
-  { pos: new THREE.Vector3( 0,  0.4,  0), axis: 'y' }, // topo
-  { pos: new THREE.Vector3( 0, -0.4,  0), axis: 'y' }, // baixo
-  { pos: new THREE.Vector3( 0.4,  0,  0), axis: 'x' }, // direita
-  { pos: new THREE.Vector3(-0.4,  0,  0), axis: 'x' }, // esquerda
-  { pos: new THREE.Vector3( 0,  0,  0.4), axis: 'z' }, // frente
-  { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z' }  // trás
+  { pos: new THREE.Vector3( 0,  0.4,  0), axis: 'y', color: 0x00ff00 }, // topo
+  { pos: new THREE.Vector3( 0, -0.4,  0), axis: 'y', color: 0x00ff00 }, // baixo
+  { pos: new THREE.Vector3( 0.4,  0,  0), axis: 'x', color: 0xff0000 }, // direita
+  { pos: new THREE.Vector3(-0.4,  0,  0), axis: 'x', color: 0xff0000 }, // esquerda
+  { pos: new THREE.Vector3( 0,  0,  0.4), axis: 'z', color: 0x0000ff }, // frente
+  { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }  // trás
 ];
 
 const spheres = [];
 
 offsets.forEach(o => {
+  const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
   const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
   sphere.position.copy(o.pos.clone().multiplyScalar(2));
   sphere.castShadow = true;
@@ -53,7 +53,6 @@ function onPointerDown(event) {
   if (intersects.length > 0) {
     selectedSphere = intersects[0].object;
 
-    // Define o plano de movimento com base no eixo
     const axis = selectedSphere.userData.axis;
     if(axis === 'x') plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0), selectedSphere.getWorldPosition(new THREE.Vector3()));
     if(axis === 'y') plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,0,1), selectedSphere.getWorldPosition(new THREE.Vector3()));
@@ -78,16 +77,9 @@ function onPointerMove(event) {
     const worldPos = intersection.clone().sub(offset);
     const localPos = mainCube.worldToLocal(worldPos.clone());
 
-    // Snap para grid 1x1x1
-    if(axis === 'x') {
-      mainCube.position.x = Math.round(mainCube.position.x + localPos.x);
-    }
-    if(axis === 'y') {
-      mainCube.position.y = Math.round(mainCube.position.y + localPos.y);
-    }
-    if(axis === 'z') {
-      mainCube.position.z = Math.round(mainCube.position.z + localPos.z);
-    }
+    if(axis === 'x') mainCube.position.x = Math.round(mainCube.position.x + localPos.x);
+    if(axis === 'y') mainCube.position.y = Math.round(mainCube.position.y + localPos.y);
+    if(axis === 'z') mainCube.position.z = Math.round(mainCube.position.z + localPos.z);
   }
 }
 
@@ -483,6 +475,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
