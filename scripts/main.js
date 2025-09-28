@@ -8,7 +8,7 @@ scene.add(mainCube);
 
 const cubes = [mainCube];
 
-// === Esferas coladas em cada lado do cubo (raio 0.2) ===
+// === Esferas coladas em cada lado do cubo (raio 0.4) ===
 const sphereGeometrySmall = new THREE.SphereGeometry(0.4, 16, 8);
 const sphereMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
 
@@ -33,13 +33,16 @@ offsets.forEach(offset => {
 });
 
 // === Drag das esferas com snap 1x1x1 ===
-const canvas = renderer.domElement; // garantir que canvas esteja definido antes
 let selectedSphere = null;
 let dragPlane = new THREE.Plane();
 let dragOffset = new THREE.Vector3();
 
+// Pegando o elemento <main> onde o renderer está
+const canvas = document.getElementById('sceneContainer');
+canvas.appendChild(renderer.domElement); // adiciona o renderer no <main>
+
 function onPointerDown(event) {
-  const rect = canvas.getBoundingClientRect();
+  const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
@@ -49,13 +52,11 @@ function onPointerDown(event) {
   if (intersects.length > 0) {
     selectedSphere = intersects[0].object;
 
-    // plano de arraste paralelo à câmera
     dragPlane.setFromNormalAndCoplanarPoint(
       camera.getWorldDirection(new THREE.Vector3()),
       selectedSphere.getWorldPosition(new THREE.Vector3())
     );
 
-    // offset entre clique e posição da esfera
     raycaster.ray.intersectPlane(dragPlane, dragOffset);
     dragOffset.sub(selectedSphere.getWorldPosition(new THREE.Vector3()));
 
@@ -66,7 +67,7 @@ function onPointerDown(event) {
 function onPointerMove(event) {
   if (!selectedSphere) return;
 
-  const rect = canvas.getBoundingClientRect();
+  const rect = renderer.domElement.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
@@ -76,12 +77,10 @@ function onPointerMove(event) {
   if (raycaster.ray.intersectPlane(dragPlane, intersect)) {
     intersect.sub(dragOffset);
 
-    // Snap para grid 1x1x1
     intersect.x = Math.round(intersect.x);
     intersect.y = Math.round(intersect.y);
     intersect.z = Math.round(intersect.z);
 
-    // Atualiza posição relativa ao cubo
     selectedSphere.position.copy(intersect.clone().sub(mainCube.position));
   }
 }
@@ -481,6 +480,7 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
 
 
 
