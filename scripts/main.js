@@ -8,32 +8,33 @@ scene.add(mainCube);
 
 const cubes = [mainCube];
 
-// === Esferas coladas em cada lado do cubo (raio 0.2) com cores por eixo ===
 const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 
 const offsets = [
-  { pos: new THREE.Vector3( 0,  0.4,  0), axis: 'y', color: 0x00ff00 }, // topo
-  { pos: new THREE.Vector3( 0, -0.4,  0), axis: 'y', color: 0x00ff00 }, // baixo
-  { pos: new THREE.Vector3( 0.4,  0,  0), axis: 'x', color: 0xff0000 }, // direita
-  { pos: new THREE.Vector3(-0.4,  0,  0), axis: 'x', color: 0xff0000 }, // esquerda
-  { pos: new THREE.Vector3( 0,  0,  0.4), axis: 'z', color: 0x0000ff }, // frente
-  { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }  // trás
+  { pos: new THREE.Vector3( 0,  0.4,  0), axis: 'y', color: 0x00ff00 },
+  { pos: new THREE.Vector3( 0, -0.4,  0), axis: 'y', color: 0x00ff00 },
+  { pos: new THREE.Vector3( 0.4,  0,  0), axis: 'x', color: 0xff0000 },
+  { pos: new THREE.Vector3(-0.4,  0,  0), axis: 'x', color: 0xff0000 },
+  { pos: new THREE.Vector3( 0,  0,  0.4), axis: 'z', color: 0x0000ff },
+  { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }
 ];
 
 const spheres = [];
 
-// === Esferas ===
 offsets.forEach(o => {
   const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
   const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
+  
+  sphere.castShadow = false;
+  sphere.receiveShadow = false;
+  
   sphere.position.copy(o.pos.clone().multiplyScalar(2));
   sphere.userData.axis = o.axis; 
-  sphere.visible = false; // começa invisível
+  sphere.visible = false;
   mainCube.add(sphere);
   spheres.push(sphere);
 });
 
-// Controle da visibilidade das esferas
 function updateSpheresVisibility() {
   spheres.forEach(s => {
     s.visible = (selectedCube === mainCube);
@@ -484,4 +485,5 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
