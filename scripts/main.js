@@ -28,12 +28,10 @@ offsets.forEach(o => {
   sphere.castShadow = true;
   sphere.receiveShadow = true;
   sphere.userData.axis = o.axis; 
+  sphere.userData.dir = o.pos.clone().normalize();
   sphere.visible = false;
 
   scene.add(sphere);
-
-  sphere.userData.offset = o.pos.clone().multiplyScalar(2);
-
   spheres.push(sphere);
 });
 
@@ -476,10 +474,24 @@ function animate(time=0){
   const delta = (time - lastTime)/1000;
   lastTime = time;
   updateCamera(delta);
-  
+
   spheres.forEach(s => {
     if (s.visible) {
-      const worldPos = s.userData.offset.clone().applyMatrix4(mainCube.matrixWorld);
+      const dir = s.userData.dir.clone();
+
+      const halfSize = new THREE.Vector3(
+        (box_geometry.parameters.width  * mainCube.scale.x) / 2,
+        (box_geometry.parameters.height * mainCube.scale.y) / 2,
+        (box_geometry.parameters.depth  * mainCube.scale.z) / 2
+      );
+
+      const localPos = new THREE.Vector3(
+        dir.x * (halfSize.x + 0.2),
+        dir.y * (halfSize.y + 0.2),
+        dir.z * (halfSize.z + 0.2)
+      );
+
+      const worldPos = localPos.applyMatrix4(mainCube.matrixWorld);
       s.position.copy(worldPos);
     }
   });
@@ -491,5 +503,6 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
