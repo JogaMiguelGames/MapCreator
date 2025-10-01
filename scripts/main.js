@@ -464,26 +464,32 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-// Loop principal
 let lastTime = 0;
 function animate(time=0){
   requestAnimationFrame(animate);
   const delta = (time - lastTime)/1000;
   lastTime = time;
   updateCamera(delta);
+  
+  spheres.forEach(s => {
+    if (s.visible) {
+      const worldPos = s.userData.offset.clone().applyMatrix4(mainCube.matrixWorld);
+      s.position.copy(worldPos);
+    }
+  });
+
   renderer.render(scene, camera);
 }
 animate();
 
-// Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
