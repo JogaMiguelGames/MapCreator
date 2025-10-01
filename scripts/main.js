@@ -478,17 +478,18 @@ function animate(time=0){
   spheres.forEach(s => {
     if (s.visible) {
       const dir = s.userData.dir.clone();
+      const epsilon = 0.01;
 
       const halfSize = new THREE.Vector3(
         (box_geometry.parameters.width  * mainCube.scale.x) / 2,
         (box_geometry.parameters.height * mainCube.scale.y) / 2,
         (box_geometry.parameters.depth  * mainCube.scale.z) / 2
       );
-
+      
       const localPos = new THREE.Vector3(
-        dir.x * (halfSize.x + 0.2),
-        dir.y * (halfSize.y + 0.2),
-        dir.z * (halfSize.z + 0.2)
+        dir.x * (halfSize.x + epsilon),
+        dir.y * (halfSize.y + epsilon),
+        dir.z * (halfSize.z + epsilon)
       );
 
       const worldPos = localPos.applyMatrix4(mainCube.matrixWorld);
@@ -503,6 +504,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
