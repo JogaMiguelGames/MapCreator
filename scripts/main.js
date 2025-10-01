@@ -22,24 +22,26 @@ const offsets = [
 
 const spheres = [];
 
+// Criação das esferas (todas começam invisíveis)
 offsets.forEach(o => {
   const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
   const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
+  sphere.position.copy(o.pos.clone().multiplyScalar(2));
   sphere.castShadow = true;
   sphere.receiveShadow = true;
   sphere.userData.axis = o.axis; 
-  sphere.userData.dir = o.pos.clone().normalize();
-  sphere.visible = false;
-
-  scene.add(sphere);
+  sphere.visible = false; // <<< começa invisível
+  mainCube.add(sphere);
   spheres.push(sphere);
 });
 
+// Função para atualizar quais esferas ficam visíveis
 function updateSpheresVisibility() {
   spheres.forEach(s => {
     s.visible = (selectedCube === mainCube);
   });
 }
+
 // === Drag Controls ===
 let selectedSphere = null;
 const plane = new THREE.Plane();
@@ -361,7 +363,6 @@ function updateCubeList(){
         selectedCube = cube;
         updatePanelForCube(selectedCube);
         updateCubeList();
-        updateSpheresVisibility(); // <<< aqui também
         clickTimer = null;
       }, 250);
     });
@@ -421,6 +422,7 @@ function renameCube(div, cube){
 }
 
 function onClick(event){
+  // Converte coordenadas do clique do mouse para NDC (-1 a 1)
   const rect = canvas.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -432,7 +434,6 @@ function onClick(event){
     selectedCube = intersects[0].object;
     updatePanelForCube(selectedCube);
     updateCubeList();
-    updateSpheresVisibility(); // <<< garante atualização
   }
 }
 canvas.addEventListener('click', onClick);
@@ -462,49 +463,24 @@ document.addEventListener('keydown', e => {
   }
 });
 
+// Resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+// Loop principal
 let lastTime = 0;
 function animate(time=0){
   requestAnimationFrame(animate);
   const delta = (time - lastTime)/1000;
   lastTime = time;
   updateCamera(delta);
-
-  spheres.forEach(s => {
-    if (s.visible) {
-      const dir = s.userData.dir.clone();
-      const epsilon = 0.01;
-
-      const halfSize = new THREE.Vector3(
-        (box_geometry.parameters.width  * mainCube.scale.x) / 2,
-        (box_geometry.parameters.height * mainCube.scale.y) / 2,
-        (box_geometry.parameters.depth  * mainCube.scale.z) / 2
-      );
-      
-      const localPos = new THREE.Vector3(
-        dir.x * (halfSize.x + epsilon),
-        dir.y * (halfSize.y + epsilon),
-        dir.z * (halfSize.z + epsilon)
-      );
-
-      const worldPos = localPos.applyMatrix4(mainCube.matrixWorld);
-      s.position.copy(worldPos);
-    }
-  });
-
   renderer.render(scene, camera);
 }
 animate();
 
+// Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
-updateSpheresVisibility();
-
-
-
-
