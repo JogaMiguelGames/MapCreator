@@ -25,12 +25,15 @@ const spheres = [];
 offsets.forEach(o => {
   const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
   const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
-  sphere.position.copy(o.pos.clone().multiplyScalar(2));
   sphere.castShadow = true;
   sphere.receiveShadow = true;
   sphere.userData.axis = o.axis; 
   sphere.visible = false;
-  mainCube.add(sphere);
+
+  scene.add(sphere);
+
+  sphere.userData.offset = o.pos.clone().multiplyScalar(2);
+
   spheres.push(sphere);
 });
 
@@ -483,3 +486,4 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
