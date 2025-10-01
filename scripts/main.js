@@ -22,7 +22,7 @@ const offsets = [
 
 const spheres = [];
 
-// Criação das esferas (todas começam invisíveis)
+// === Esferas ===
 offsets.forEach(o => {
   const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
   const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
@@ -30,12 +30,12 @@ offsets.forEach(o => {
   sphere.castShadow = true;
   sphere.receiveShadow = true;
   sphere.userData.axis = o.axis; 
-  sphere.visible = false; // <<< começa invisível
+  sphere.visible = false; // começa invisível
   mainCube.add(sphere);
   spheres.push(sphere);
 });
 
-// Função para atualizar quais esferas ficam visíveis
+// Controle da visibilidade das esferas
 function updateSpheresVisibility() {
   spheres.forEach(s => {
     s.visible = (selectedCube === mainCube);
@@ -363,6 +363,7 @@ function updateCubeList(){
         selectedCube = cube;
         updatePanelForCube(selectedCube);
         updateCubeList();
+        updateSpheresVisibility(); // <<< aqui também
         clickTimer = null;
       }, 250);
     });
@@ -422,7 +423,6 @@ function renameCube(div, cube){
 }
 
 function onClick(event){
-  // Converte coordenadas do clique do mouse para NDC (-1 a 1)
   const rect = canvas.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -434,6 +434,7 @@ function onClick(event){
     selectedCube = intersects[0].object;
     updatePanelForCube(selectedCube);
     updateCubeList();
+    updateSpheresVisibility(); // <<< garante atualização
   }
 }
 canvas.addEventListener('click', onClick);
@@ -484,3 +485,4 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+updateSpheresVisibility();
