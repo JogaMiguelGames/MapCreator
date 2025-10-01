@@ -39,7 +39,6 @@ function updateSpheresVisibility() {
     s.visible = (selectedCube === mainCube);
   });
 }
-
 // === Drag Controls ===
 let selectedSphere = null;
 const plane = new THREE.Plane();
@@ -361,6 +360,7 @@ function updateCubeList(){
         selectedCube = cube;
         updatePanelForCube(selectedCube);
         updateCubeList();
+        updateSpheresVisibility(); // <<< aqui também
         clickTimer = null;
       }, 250);
     });
@@ -420,7 +420,6 @@ function renameCube(div, cube){
 }
 
 function onClick(event){
-  // Converte coordenadas do clique do mouse para NDC (-1 a 1)
   const rect = canvas.getBoundingClientRect();
   mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
@@ -432,6 +431,7 @@ function onClick(event){
     selectedCube = intersects[0].object;
     updatePanelForCube(selectedCube);
     updateCubeList();
+    updateSpheresVisibility(); // <<< garante atualização
   }
 }
 canvas.addEventListener('click', onClick);
@@ -482,4 +482,4 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
-
+updateSpheresVisibility();
