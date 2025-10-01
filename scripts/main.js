@@ -28,10 +28,17 @@ offsets.forEach(o => {
   sphere.position.copy(o.pos.clone().multiplyScalar(2));
   sphere.castShadow = true;
   sphere.receiveShadow = true;
-  sphere.userData.axis = o.axis; // eixo permitido
+  sphere.userData.axis = o.axis; 
+  sphere.visible = false;
   mainCube.add(sphere);
   spheres.push(sphere);
 });
+
+function updateSpheresVisibility() {
+  spheres.forEach(s => {
+    s.visible = (selectedCube === mainCube);
+  });
+}
 
 // === Drag Controls ===
 let selectedSphere = null;
@@ -475,3 +482,4 @@ animate();
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
+
