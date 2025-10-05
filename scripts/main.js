@@ -36,8 +36,10 @@ offsets.forEach(o => {
 });
 
 function updateSpheresVisibility() {
-  spheres.forEach(s => {
-    s.visible = (selectedCube === mainCube);
+  cubes.forEach(cube => {
+    if(cube.userData.spheres){
+      cube.userData.spheres.forEach(s => s.visible = (selectedCube === cube));
+    }
   });
 }
 
@@ -99,6 +101,35 @@ renderer.domElement.addEventListener('pointerdown', onPointerDown);
 renderer.domElement.addEventListener('pointermove', onPointerMove);
 renderer.domElement.addEventListener('pointerup', onPointerUp);
 renderer.domElement.addEventListener('pointerleave', onPointerUp);
+
+function addManipulationSpheres(cube) {
+  const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
+  const offsets = [
+    { pos: new THREE.Vector3( 0,  0.4,  0), axis: 'y', color: 0x00ff00 },
+    { pos: new THREE.Vector3( 0, -0.4,  0), axis: 'y', color: 0x00ff00 },
+    { pos: new THREE.Vector3( 0.4,  0,  0), axis: 'x', color: 0xff0000 },
+    { pos: new THREE.Vector3(-0.4,  0,  0), axis: 'x', color: 0xff0000 },
+    { pos: new THREE.Vector3( 0,  0,  0.4), axis: 'z', color: 0x0000ff },
+    { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }
+  ];
+
+  cube.userData.spheres = []; // armazenar referência às esferas
+
+  offsets.forEach(o => {
+    const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
+    const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
+
+    sphere.castShadow = false;
+    sphere.receiveShadow = false;
+
+    sphere.position.copy(o.pos.clone().multiplyScalar(2));
+    sphere.userData.axis = o.axis; 
+    sphere.visible = false;
+
+    cube.add(sphere);
+    cube.userData.spheres.push(sphere);
+  });
+}
 
 // -- Luzes
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // luz ambiente suave
@@ -485,5 +516,6 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
