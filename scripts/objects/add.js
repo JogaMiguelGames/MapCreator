@@ -9,17 +9,12 @@ function createCube() {
   newCube.castShadow = true;
   newCube.receiveShadow = true;
 
-  // Adiciona o cubo à cena
   scene.add(newCube);
   cubes.push(newCube);
-
-  // Adiciona as esferas de manipulação
-  addManipulationSpheres(newCube);
 
   selectedCube = newCube;
   updatePanelForCube(newCube);
   updateCubeList();
-  updateSpheresVisibility();
 
   pushToHistory({ type: 'delete', object: newCube });
 }
@@ -182,4 +177,3 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
-
