@@ -19,7 +19,7 @@ const offsets = [
   { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }
 ];
 
-const spheres = [];
+mainCube.userData.spheres = [];
 
 offsets.forEach(o => {
   const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
@@ -32,7 +32,7 @@ offsets.forEach(o => {
   sphere.userData.axis = o.axis; 
   sphere.visible = false;
   mainCube.add(sphere);
-  spheres.push(sphere);
+  mainCube.userData.spheres.push(sphere);
 });
 
 function updateSpheresVisibility() {
@@ -489,4 +489,5 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
