@@ -36,8 +36,11 @@ offsets.forEach(o => {
 });
 
 function updateSpheresVisibility() {
-  spheres.forEach(s => {
-    s.visible = (selectedCube === mainCube);
+  cubes.forEach(cube => {
+    const isSelected = (cube === selectedCube);
+    if (cube.userData.spheres) {
+      cube.userData.spheres.forEach(s => s.visible = isSelected);
+    }
   });
 }
 
@@ -56,7 +59,9 @@ function onPointerDown(event) {
   mouseVec.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
   dragRaycaster.setFromCamera(mouseVec, camera);
-  const intersects = dragRaycaster.intersectObjects(spheres);
+  if (!selectedCube || !selectedCube.userData.spheres) return;
+
+  const intersects = dragRaycaster.intersectObjects(selectedCube.userData.spheres);
 
   if (intersects.length > 0) {
     selectedSphere = intersects[0].object;
@@ -485,3 +490,4 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
