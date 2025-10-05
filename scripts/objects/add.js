@@ -1,22 +1,36 @@
 // -- Add.js -- Map Creator 
 
-function createCube() {
-  const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-  const newCube = new THREE.Mesh(box_geometry, newMaterial);
-  
-  newCube.position.set(0, 0, 0);
-  newCube.name = `Cube ${cubes.length}`;
-  newCube.castShadow = true;
-  newCube.receiveShadow = true;
+function createCube(name, position, material) {
+  const cube = new THREE.Mesh(box_geometry.clone(), material);
+  cube.position.copy(position);
+  cube.name = name;
+  cube.castShadow = true;
+  cube.receiveShadow = true;
 
-  scene.add(newCube);
-  cubes.push(newCube);
+  // Criar e adicionar esferas de manipulação a este cubo
+  const cubeSpheres = [];
 
-  selectedCube = newCube;
-  updatePanelForCube(newCube);
+  offsets.forEach(o => {
+    const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
+    const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), sphereMaterial);
+    
+    sphere.castShadow = false;
+    sphere.receiveShadow = false;
+    sphere.position.copy(o.pos.clone().multiplyScalar(2));
+    sphere.userData.axis = o.axis;
+    sphere.visible = false;
+    
+    cube.add(sphere);
+    cubeSpheres.push(sphere);
+  });
+
+  // Guardar as esferas neste cubo
+  cube.userData.spheres = cubeSpheres;
+
+  scene.add(cube);
+  cubes.push(cube);
   updateCubeList();
-
-  pushToHistory({ type: 'delete', object: newCube });
+  return cube;
 }
 
 function createSphere() {
@@ -177,3 +191,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
