@@ -9,33 +9,6 @@ function createCube() {
   newCube.castShadow = true;
   newCube.receiveShadow = true;
 
-  // === Adiciona esferas ao novo cubo ===
-  const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
-  const offsets = [
-    { pos: new THREE.Vector3( 0,  0.4,  0), axis: 'y', color: 0x00ff00 },
-    { pos: new THREE.Vector3( 0, -0.4,  0), axis: 'y', color: 0x00ff00 },
-    { pos: new THREE.Vector3( 0.4,  0,  0), axis: 'x', color: 0xff0000 },
-    { pos: new THREE.Vector3(-0.4,  0,  0), axis: 'x', color: 0xff0000 },
-    { pos: new THREE.Vector3( 0,  0,  0.4), axis: 'z', color: 0x0000ff },
-    { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }
-  ];
-
-  newCube.userData.spheres = []; // Array para armazenar as esferas deste cubo
-
-  offsets.forEach(o => {
-    const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
-    const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
-    
-    sphere.castShadow = false;
-    sphere.receiveShadow = false;
-    
-    sphere.position.copy(o.pos.clone().multiplyScalar(2));
-    sphere.userData.axis = o.axis; 
-    sphere.visible = false;
-    newCube.add(sphere);
-    newCube.userData.spheres.push(sphere);
-  });
-
   scene.add(newCube);
   cubes.push(newCube);
 
@@ -43,7 +16,6 @@ function createCube() {
   updatePanelForCube(newCube);
   updateCubeList();
 
-  updateSpheresVisibility(); // Atualiza visibilidade das esferas
   pushToHistory({ type: 'delete', object: newCube });
 }
 
@@ -204,5 +176,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     
     this.value = "";
   }
-});
-
+}); 
