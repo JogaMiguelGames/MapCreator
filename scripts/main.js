@@ -90,9 +90,9 @@ function onPointerMove(event) {
     const worldPos = intersection.clone().sub(offset);
     const localPos = mainCube.worldToLocal(worldPos.clone());
 
-    if(axis === 'x') mainCube.position.x = Math.round(mainCube.position.x + localPos.x);
-    if(axis === 'y') mainCube.position.y = Math.round(mainCube.position.y + localPos.y);
-    if(axis === 'z') mainCube.position.z = Math.round(mainCube.position.z + localPos.z);
+    if(axis === 'x') selectedCube.position.x = Math.round(selectedCube.position.x + localPos.x);
+    if(axis === 'y') selectedCube.position.y = Math.round(selectedCube.position.y + localPos.y);
+    if(axis === 'z') selectedCube.position.z = Math.round(selectedCube.position.z + localPos.z);
   }
 }
 
@@ -490,4 +490,5 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
