@@ -88,7 +88,7 @@ function onPointerMove(event) {
   if (dragRaycaster.ray.intersectPlane(plane, intersection)) {
     const axis = selectedSphere.userData.axis;
     const worldPos = intersection.clone().sub(offset);
-    const localPos = mainCube.worldToLocal(worldPos.clone());
+    const localPos = selectedCube.worldToLocal(worldPos.clone());
 
     if(axis === 'x') selectedCube.position.x = Math.round(selectedCube.position.x + localPos.x);
     if(axis === 'y') selectedCube.position.y = Math.round(selectedCube.position.y + localPos.y);
@@ -490,5 +490,6 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
