@@ -1,4 +1,4 @@
-// === Cube principal ===
+// === Cube principal === 
 const mainCube = new THREE.Mesh(box_geometry, white_material);
 mainCube.position.set(0, 0, 0);
 mainCube.name = 'Cube 1';
@@ -34,6 +34,12 @@ offsets.forEach(o => {
   mainCube.add(sphere);
   spheres.push(sphere);
 });
+
+function updateSpheresVisibility() {
+  spheres.forEach(s => {
+    s.visible = (selectedCube === mainCube);
+  });
+}
 
 // === Drag Controls ===
 let selectedSphere = null;
@@ -93,44 +99,6 @@ renderer.domElement.addEventListener('pointerdown', onPointerDown);
 renderer.domElement.addEventListener('pointermove', onPointerMove);
 renderer.domElement.addEventListener('pointerup', onPointerUp);
 renderer.domElement.addEventListener('pointerleave', onPointerUp);
-
-function addManipulationSpheres(cube) {
-  const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
-  const offsets = [
-    { pos: new THREE.Vector3( 0,  0.4,  0), axis: 'y', color: 0x00ff00 },
-    { pos: new THREE.Vector3( 0, -0.4,  0), axis: 'y', color: 0x00ff00 },
-    { pos: new THREE.Vector3( 0.4,  0,  0), axis: 'x', color: 0xff0000 },
-    { pos: new THREE.Vector3(-0.4,  0,  0), axis: 'x', color: 0xff0000 },
-    { pos: new THREE.Vector3( 0,  0,  0.4), axis: 'z', color: 0x0000ff },
-    { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }
-  ];
-
-  cube.userData.spheres = [];
-
-  offsets.forEach(o => {
-    const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
-    const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
-    
-    sphere.castShadow = false;
-    sphere.receiveShadow = false;
-    
-    sphere.position.copy(o.pos);
-    sphere.userData.axis = o.axis;
-    sphere.visible = false; // só aparece quando o cubo estiver selecionado
-    cube.add(sphere);
-    cube.userData.spheres.push(sphere);
-  });
-}
-
-function updateSpheresVisibility() {
-  cubes.forEach(cube => {
-    if(cube.userData.spheres){
-      cube.userData.spheres.forEach(s => {
-        s.visible = (cube === selectedCube);
-      });
-    }
-  });
-}
 
 // -- Luzes
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // luz ambiente suave
@@ -517,4 +485,3 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
-
