@@ -1,6 +1,6 @@
 // -- Add.js -- Map Creator 
 
-function createCube(name, position, material) {
+function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
   const cube = new THREE.Mesh(box_geometry.clone(), material);
   cube.position.copy(position);
   cube.name = name;
@@ -191,4 +191,5 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
