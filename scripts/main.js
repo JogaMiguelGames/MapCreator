@@ -36,8 +36,12 @@ offsets.forEach(o => {
 });
 
 function updateSpheresVisibility() {
-  spheres.forEach(s => {
-    s.visible = (selectedCube === mainCube);
+  cubes.forEach(cube => {
+    if(cube.userData.spheres){
+      cube.userData.spheres.forEach(s => {
+        s.visible = (cube === selectedCube);
+      });
+    }
   });
 }
 
@@ -485,3 +489,4 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
