@@ -1,32 +1,36 @@
-// -- Map Creator Lib -- mcl.js
+// -- mcl.js --
+import * as THREE from '../libs/three.min.js';
 
+// Geometrias básicas
+export const box_geometry = new THREE.BoxGeometry(1, 1, 1);
+export const sphere_geometry = new THREE.SphereGeometry(0.5, 16, 16);
+export const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 16);
+export const cylinder_geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 16);
+export const cone_geometry = new THREE.ConeGeometry(0.5, 1, 16);
+export const plane_geometry = new THREE.PlaneGeometry(2, 2);
+
+// Offsets para as esferas de manipulação do cubo
 export const offsets = [
-  { pos: new THREE.Vector3( 0,  0.4,  0), axis: 'y', color: 0x00ff00 },
-  { pos: new THREE.Vector3( 0, -0.4,  0), axis: 'y', color: 0x00ff00 },
-  { pos: new THREE.Vector3( 0.4,  0,  0), axis: 'x', color: 0xff0000 },
-  { pos: new THREE.Vector3(-0.4,  0,  0), axis: 'x', color: 0xff0000 },
-  { pos: new THREE.Vector3( 0,  0,  0.4), axis: 'z', color: 0x0000ff },
-  { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }
+    { axis: 'x', pos: new THREE.Vector3(1,0,0), color: 0xff0000 },
+    { axis: 'y', pos: new THREE.Vector3(0,1,0), color: 0x00ff00 },
+    { axis: 'z', pos: new THREE.Vector3(0,0,1), color: 0x0000ff },
 ];
 
-export const spheres = [];
-
+// Função para criar esferas de manipulação de um cubo
 export function createSpheresForCube(cube) {
-  offsets.forEach(o => {
-    const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
-    const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
-    
-    sphere.castShadow = false;
-    sphere.receiveShadow = false;
-    
-    sphere.position.copy(o.pos.clone().multiplyScalar(2));
-    sphere.userData.axis = o.axis; 
-    sphere.visible = false;
-    cube.add(sphere);
-    spheres.push(sphere);
-  });
+    const cubeSpheres = [];
+    offsets.forEach(o => {
+        const material = new THREE.MeshStandardMaterial({ color: o.color });
+        const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), material);
+        sphere.position.copy(o.pos.clone().multiplyScalar(2));
+        sphere.userData.axis = o.axis;
+        sphere.visible = false;
 
-  cube.userData.spheres = spheres;
+        cube.add(sphere);
+        cubeSpheres.push(sphere);
+    });
+    cube.userData.spheres = cubeSpheres;
+    return cubeSpheres;
 }
 
 export function updateSpheresVisibility(cubes = [], selectedCube) {
