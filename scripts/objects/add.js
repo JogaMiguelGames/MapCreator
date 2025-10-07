@@ -1,5 +1,11 @@
 // -- Add.js -- Map Creator 
 
+const offsets = [
+  { axis: 'x', pos: new THREE.Vector3(1, 0, 0), color: 0xff0000 },
+  { axis: 'y', pos: new THREE.Vector3(0, 1, 0), color: 0x00ff00 },
+  { axis: 'z', pos: new THREE.Vector3(0, 0, 1), color: 0x0000ff },
+];
+
 function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
   const cube = new THREE.Mesh(box_geometry.clone(), material);
   cube.position.copy(position);
@@ -191,6 +197,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
 
 
