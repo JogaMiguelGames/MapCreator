@@ -31,12 +31,13 @@ export function createSpheresForCube(cube) {
   cube.userData.spheres = spheres;
 }
 
-export function updateSpheresVisibility(cubes, selectedCube) {
+export function updateSpheresVisibility(cubes = [], selectedCube) {
+  if (!cubes) return;
   cubes.forEach(cube => {
-    const isSelected = (cube === selectedCube);
-    if (cube.userData.spheres) {
-      cube.userData.spheres.forEach(s => s.visible = isSelected);
-    }
+    const spheres = cube.userData?.spheres || [];
+    spheres.forEach(sphere => {
+      sphere.visible = (cube === selectedCube);
+    });
   });
 }
 
