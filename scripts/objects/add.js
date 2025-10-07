@@ -43,7 +43,7 @@ export function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
   return cube;
 }
 
-function createSphere() {
+export function createSphere() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const newSphere = new THREE.Mesh(sphere_geometry, newMaterial);
   
@@ -62,7 +62,7 @@ function createSphere() {
   pushToHistory({ type: 'delete', object: newSphere });
 }
 
-function createCylinder() {
+export function createCylinder() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const newCylinder = new THREE.Mesh(cylinder_geometry, newMaterial);
   
@@ -82,7 +82,7 @@ function createCylinder() {
   pushToHistory({ type: 'delete', object: newCylinder });
 }
 
-function createCone() {
+export function createCone() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const newCone = new THREE.Mesh(cone_geometry, newMaterial);
 
@@ -103,7 +103,7 @@ function createCone() {
   pushToHistory({ type: 'delete', object: newCone });
 }
 
-function createPlane() {
+export function createPlane() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const newPlane = new THREE.Mesh(plane_geometry, newMaterial);
 
@@ -124,7 +124,7 @@ function createPlane() {
   pushToHistory({ type: 'delete', object: newPlane });
 }
 
-function createCamera() {
+export function createCamera() {
   // Check if a camera already exists in the scene
   const existingCamera = scene.getObjectByName("Camera");
   if (existingCamera) {
@@ -201,6 +201,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
 
 
