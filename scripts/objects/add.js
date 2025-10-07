@@ -8,37 +8,44 @@ const offsets = [
   { axis: 'z', pos: new THREE.Vector3(0, 0, 1), color: 0x0000ff },
 ];
 
-export function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
-  const cube = new THREE.Mesh(box_geometry.clone(), material);
-  cube.position.copy(position);
-  cube.name = name;
-  cube.castShadow = true;
-  cube.receiveShadow = true;
+export function createCube(name = "Cube", position = new THREE.Vector3(0,0,0), material = null) {
+    material = material || new THREE.MeshStandardMaterial({ color: 0xffffff });
 
-  // Criar e adicionar esferas de manipulação a este cubo
-  const cubeSpheres = [];
+    const cube = new THREE.Mesh(box_geometry.clone(), material);
+    cube.position.copy(position);
+    cube.name = name;
+    cube.castShadow = true;
+    cube.receiveShadow = true;
 
-  offsets.forEach(o => {
-    const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
-    const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), sphereMaterial);
-    
-    sphere.castShadow = false;
-    sphere.receiveShadow = false;
-    sphere.position.copy(o.pos.clone().multiplyScalar(2));
-    sphere.userData.axis = o.axis;
-    sphere.visible = false;
-    
-    cube.add(sphere);
-    cubeSpheres.push(sphere);
-  });
+    // Criar e adicionar esferas de manipulação
+    const cubeSpheres = [];
+    offsets.forEach(o => {
+        const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
+        const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), sphereMaterial);
+        sphere.position.copy(o.pos.clone().multiplyScalar(2));
+        sphere.userData.axis = o.axis;
+        sphere.visible = false;
 
-  // Guardar as esferas neste cubo
-  cube.userData.spheres = cubeSpheres;
+        cube.add(sphere);
+        cubeSpheres.push(sphere);
+    });
 
-  scene.add(cube);
-  cubes.push(cube);
-  updateCubeList();
-  return cube;
+    // Guardar as esferas no cubo
+    cube.userData.spheres = cubeSpheres;
+
+    // Adicionar à cena e lista de objetos
+    scene.add(cube);
+    cubes.push(cube);
+
+    // Selecionar este cubo
+    selectedCube = cube;
+    updatePanelForCube(cube);
+    updateCubeList();
+
+    // Histórico
+    pushToHistory({ type: 'delete', object: cube });
+
+    return cube;
 }
 
 export function createSphere() {
@@ -199,6 +206,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
 
 
