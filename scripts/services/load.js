@@ -9,15 +9,23 @@ const urlParams = new URLSearchParams(window.location.search);
 const mapName = urlParams.get('map');
 
 if (mapName) {
-  // monta o path do JSON
-  const mapPath = `resources/maps/${mapName}.json`;
+  // Caminho correto relativo à editor.html
+  const mapPath = `resources/maps/${mapName}.map`;
 
   fetch(mapPath)
     .then(res => {
       if (!res.ok) throw new Error("Mapa não encontrado");
-      return res.json();
+      return res.text(); // usamos text() porque não é necessariamente JSON
     })
-    .then(mapData => {
+    .then(mapText => {
+      let mapData;
+      try {
+        mapData = JSON.parse(mapText); // só funciona se o arquivo for JSON válido
+      } catch(e) {
+        console.error("Arquivo não é JSON válido:", e);
+        alert("Erro: mapa não está em formato JSON");
+        return;
+      }
       loadMapData(mapData);
     })
     .catch(err => {
