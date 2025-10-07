@@ -1,6 +1,6 @@
 // -- Add.js -- Map Creator 
 
-import { sphereGeometrySmall, createSpheresForCube } from '../../libs/mcl.js';
+import { sphereGeometrySmall, offsets, createSpheresForCube } from '../../libs/mcl.js';
 
 const offsets = [
   { axis: 'x', pos: new THREE.Vector3(1, 0, 0), color: 0xff0000 },
@@ -199,6 +199,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
 
 
