@@ -1,10 +1,4 @@
-// === Cube principal === 
-const mainCube = new THREE.Mesh(box_geometry, white_material);
-mainCube.position.set(0, 0, 0);
-mainCube.name = 'Cube 1';
-mainCube.castShadow = true;
-mainCube.receiveShadow = true;
-scene.add(mainCube);
+const mainCube = createCube("Cube 1", new THREE.Vector3(0, 0, 0), white_material);
 
 const cubes = [mainCube];
 
@@ -490,6 +484,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
