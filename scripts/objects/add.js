@@ -2,8 +2,6 @@
 
 import { sphereGeometrySmall, offsets, spheres, selectedSphere, createSpheresForCube } from '../../libs/mcl.js';
 
-const sphereGeometrySmall = new THREE.SphereGeometry(0.1, 16, 16);
-
 const offsets = [
   { axis: 'x', pos: new THREE.Vector3(1, 0, 0), color: 0xff0000 },
   { axis: 'y', pos: new THREE.Vector3(0, 1, 0), color: 0x00ff00 },
@@ -201,6 +199,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
 
 
