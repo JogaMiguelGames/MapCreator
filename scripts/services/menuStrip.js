@@ -1,4 +1,7 @@
 // scripts/services/menuStrip.js
+
+import { createCube, createCylinder, createSphere, createCone, createPlane, createCamera } from '../objects/add.js';
+
 (function(){
   const fileBtn = document.getElementById('fileMenuBtn');
   if (!fileBtn) return;
