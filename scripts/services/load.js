@@ -66,7 +66,6 @@ loadInput?.addEventListener('change', () => {
   reader.readAsText(file);
 });
 
-// --- FUNÇÃO PRINCIPAL DE CARREGAR MAPA ---
 function loadMapData(mapData) {
   const cubesData = mapData.cubes || mapData.objects || [];
 
@@ -80,47 +79,9 @@ function loadMapData(mapData) {
   cubes.forEach(c => scene.remove(c));
   cubes.length = 0;
 
-  // Recria objetos
   cubesData.forEach(data => {
     if (!data.position || !data.scale || !data.rotation) return;
-
-    // Se for câmera
-    if (data.type === 'camera') {
-      const mtlLoader = new THREE.MTLLoader();
-      mtlLoader.setPath('resources/models/editor/camera/');
-      mtlLoader.load('camera.mtl', (materials) => {
-        materials.preload();
-
-        const loader = new THREE.OBJLoader();
-        loader.setMaterials(materials);
-        loader.setPath('resources/models/editor/camera/');
-        loader.load('camera.obj', (obj) => {
-          obj.name = data.name || 'Camera';
-          obj.position.set(data.position.x, data.position.y, data.position.z);
-          obj.scale.set(data.scale.x, data.scale.y, data.scale.z);
-          obj.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
-
-          obj.userData.isCameraModel = true;
-
-          // Ativa sombras
-          obj.traverse(child => {
-            if (child.isMesh) {
-              child.castShadow = true;
-              child.receiveShadow = true;
-            }
-          });
-
-          scene.add(obj);
-          cubes.push(obj);
-          updatePanelForCube(obj);
-          updateCubeList();
-        });
-      });
-
-      return; // pula para o próximo objeto
-    }
-
-    // Seleciona geometria padrão
+  
     let geometry;
     switch (data.type) {
       case 'sphere':
@@ -138,20 +99,20 @@ function loadMapData(mapData) {
       default:
         geometry = box_geometry;
     }
-
+  
     const material = new THREE.MeshStandardMaterial({
       color: data.color || '#ffffff'
     });
     const obj = new THREE.Mesh(geometry, material);
-
+  
     obj.name = data.name || 'Cube';
     obj.position.set(data.position.x, data.position.y, data.position.z);
     obj.scale.set(data.scale.x, data.scale.y, data.scale.z);
     obj.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
-
+  
     obj.castShadow = true;
     obj.receiveShadow = true;
-
+  
     // Aplica textura se existir
     if (data.texture) {
       const img = new Image();
@@ -163,13 +124,31 @@ function loadMapData(mapData) {
         obj.material.needsUpdate = true;
       };
     }
-
+  
+    // --- CRIA ESFERAS DE MANIPULAÇÃO ---
+    obj.userData.spheres = [];
+    offsets.forEach(o => {
+      const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
+      const sphere = new THREE.Mesh(sphereGeometrySmall, sphereMaterial);
+  
+      sphere.castShadow = false;
+      sphere.receiveShadow = false;
+  
+      sphere.position.copy(o.pos.clone().multiplyScalar(2));
+      sphere.userData.axis = o.axis;
+      sphere.visible = false;
+  
+      obj.add(sphere);
+      obj.userData.spheres.push(sphere);
+    });
+  
     scene.add(obj);
     cubes.push(obj);
   });
 
-  // Atualiza painel e lista
+  // Atualiza seleção
   selectedCube = cubes[0] || null;
   updatePanelForCube(selectedCube);
   updateCubeList();
+  updateSpheresVisibility(); // garante que só o selecionado mostra as esferas
 }
