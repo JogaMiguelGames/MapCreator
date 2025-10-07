@@ -4,6 +4,28 @@
 const loadButton = document.getElementById('loadButton');
 const loadInput = document.getElementById('loadInput');
 
+// Pega o parâmetro ?map=MapName
+const urlParams = new URLSearchParams(window.location.search);
+const mapName = urlParams.get('map');
+
+if (mapName) {
+  // monta o path do JSON
+  const mapPath = `resources/maps/${mapName}.json`;
+
+  fetch(mapPath)
+    .then(res => {
+      if (!res.ok) throw new Error("Mapa não encontrado");
+      return res.json();
+    })
+    .then(mapData => {
+      loadMapData(mapData);
+    })
+    .catch(err => {
+      console.error("Erro ao carregar mapa pelo link:", err);
+      alert("Erro ao carregar o mapa pelo link");
+    });
+}
+
 // Função que abre o seletor de arquivos
 function openMap() {
   if (!loadInput) {
