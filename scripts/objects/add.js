@@ -1,5 +1,7 @@
 // -- Add.js -- Map Creator 
 
+import { sphereGeometrySmall, offsets, spheres, selectedSphere, createSpheresForCube } from '../../libs/mcl.js';
+
 const sphereGeometrySmall = new THREE.SphereGeometry(0.1, 16, 16);
 
 const offsets = [
@@ -8,7 +10,7 @@ const offsets = [
   { axis: 'z', pos: new THREE.Vector3(0, 0, 1), color: 0x0000ff },
 ];
 
-function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
+export function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
   const cube = new THREE.Mesh(box_geometry.clone(), material);
   cube.position.copy(position);
   cube.name = name;
@@ -199,6 +201,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
 
 
