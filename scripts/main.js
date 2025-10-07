@@ -27,6 +27,8 @@ const cubes = [mainCube];
 // Cria esferas para o cube principal
 createSpheresForCube(mainCube);
 
+let selectedCube = mainCube;
+
 // Eventos de arraste
 renderer.domElement.addEventListener('pointerdown', e => onPointerDown(e, renderer, camera, selectedCube));
 renderer.domElement.addEventListener('pointermove', e => onPointerMove(e, renderer, camera, selectedCube));
@@ -158,8 +160,6 @@ bgColorInput.addEventListener('input', () => {
     scene.background.set(val);
   }
 });
-
-let selectedCube = mainCube;
 
 function updatePanelForCube(cube){
   if(!cube){
@@ -421,3 +421,4 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
