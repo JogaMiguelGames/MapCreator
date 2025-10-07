@@ -1,7 +1,5 @@
 // -- Map Creator Lib -- mcl.js
 
-export const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
-
 export const offsets = [
   { pos: new THREE.Vector3( 0,  0.4,  0), axis: 'y', color: 0x00ff00 },
   { pos: new THREE.Vector3( 0, -0.4,  0), axis: 'y', color: 0x00ff00 },
