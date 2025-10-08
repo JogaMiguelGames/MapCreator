@@ -40,6 +40,8 @@ function createSphere() {
   newSphere.castShadow = true;
   newSphere.receiveShadow = true;
 
+  addManipulationSpheres(newSphere); // <<< adiciona esferas
+
   scene.add(newSphere);
   cubes.push(newSphere);
 
@@ -59,6 +61,8 @@ function createCylinder() {
   newCylinder.name = `Cylinder ${cubes.length}`;
   newCylinder.castShadow = true;
   newCylinder.receiveShadow = true;
+
+  addManipulationSpheres(newCylinder); // <<< adiciona esferas
 
   scene.add(newCylinder);
   cubes.push(newCylinder);
@@ -81,6 +85,8 @@ function createCone() {
   newCone.castShadow = true;
   newCone.receiveShadow = true;
 
+  addManipulationSpheres(newCone); // <<< adiciona esferas
+
   scene.add(newCone);
   cubes.push(newCone);
 
@@ -101,6 +107,8 @@ function createPlane() {
   newPlane.name = `Plane ${cubes.length}`;
   newPlane.castShadow = true;
   newPlane.receiveShadow = true;
+
+  addManipulationSpheres(newPlane); // <<< adiciona esferas
 
   scene.add(newPlane);
   cubes.push(newPlane);
@@ -189,3 +197,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
