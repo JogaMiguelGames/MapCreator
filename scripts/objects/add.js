@@ -49,6 +49,8 @@ function createSphere() {
   updatePanelForCube(newSphere);
   updateCubeList();
 
+  if (typeof showAxesSpheres === "function") showAxesSpheres(selectedCube);
+  
   pushToHistory({ type: 'delete', object: newSphere });
 }
 
@@ -71,6 +73,8 @@ function createCylinder() {
   updatePanelForCube(newCylinder);
   updateCubeList();
 
+  if (typeof showAxesSpheres === "function") showAxesSpheres(selectedCube);
+  
   pushToHistory({ type: 'delete', object: newCylinder });
 }
 
@@ -94,6 +98,8 @@ function createCone() {
   updatePanelForCube(newCone);
   updateCubeList();
 
+  if (typeof showAxesSpheres === "function") showAxesSpheres(selectedCube);
+  
   pushToHistory({ type: 'delete', object: newCone });
 }
 
@@ -117,6 +123,8 @@ function createPlane() {
   updatePanelForCube(newPlane);
   updateCubeList();
 
+  if (typeof showAxesSpheres === "function") showAxesSpheres(selectedCube);
+  
   pushToHistory({ type: 'delete', object: newPlane });
 }
 
@@ -197,5 +205,6 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
 
