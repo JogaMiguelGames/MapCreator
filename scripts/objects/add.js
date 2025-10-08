@@ -34,13 +34,13 @@ function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), materi
 function createSphere() {
   const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const newSphere = new THREE.Mesh(sphere_geometry, newMaterial);
-  
+
   newSphere.position.set(0, 0, 0);
   newSphere.name = `Sphere ${cubes.length}`;
   newSphere.castShadow = true;
   newSphere.receiveShadow = true;
 
-  addManipulationSpheres(newSphere); // <<< adiciona esferas
+  addManipulationSpheres(newSphere);
 
   scene.add(newSphere);
   cubes.push(newSphere);
@@ -197,4 +197,5 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
