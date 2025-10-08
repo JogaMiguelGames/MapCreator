@@ -19,6 +19,26 @@ const offsets = [
   { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }
 ];
 
+function addManipulationSpheres(obj) {
+  const objSpheres = [];
+
+  offsets.forEach(o => {
+    const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
+    const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), sphereMaterial);
+    
+    sphere.castShadow = false;
+    sphere.receiveShadow = false;
+    sphere.position.copy(o.pos.clone().multiplyScalar(2));
+    sphere.userData.axis = o.axis;
+    sphere.visible = false;
+
+    obj.add(sphere);
+    objSpheres.push(sphere);
+  });
+
+  obj.userData.spheres = objSpheres;
+}
+
 const spheres = [];
 
 offsets.forEach(o => {
@@ -490,3 +510,4 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
