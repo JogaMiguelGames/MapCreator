@@ -221,8 +221,17 @@ function updateCamera(delta){
   const right = new THREE.Vector3();
   right.crossVectors(forward, camera.up).normalize();
 
-  const shiftMultiplier = (keys['ShiftLeft'] || keys['ShiftRight']) ? 3 : 1;
-  const speed = moveSpeed * shiftMultiplier;
+  let speedMultiplier = 1;
+
+  if (keys['ShiftLeft'] || keys['ShiftRight']) {
+    speedMultiplier = 3;
+  }
+
+  else if (keys['ControlLeft'] || keys['ControlRight']) {
+    speedMultiplier = 0.3;
+  }
+  
+  const speed = moveSpeed * speedMultiplier;
 
   if(keys['KeyW']) camera.position.addScaledVector(forward, speed * delta);
   if(keys['KeyS']) camera.position.addScaledVector(forward, -speed * delta);
@@ -516,3 +525,4 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
