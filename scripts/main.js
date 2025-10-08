@@ -19,21 +19,27 @@ const offsets = [
   { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }
 ];
 
-// --- Esferas de manipulação para qualquer objeto ---
 function addManipulationSpheres(obj) {
+  if (!obj) return;
+
   const objSpheres = [];
 
   offsets.forEach(o => {
     const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
     const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), sphereMaterial);
-    
+
     sphere.castShadow = false;
     sphere.receiveShadow = false;
-    sphere.position.copy(o.pos.clone().multiplyScalar(2));
     sphere.userData.axis = o.axis;
     sphere.visible = false;
 
-    obj.add(sphere);
+    // posição inicial baseada no objeto
+    sphere.position.copy(obj.position.clone().add(o.pos.clone().multiplyScalar(2)));
+
+    // adiciona na cena, não dentro do objeto
+    scene.add(sphere);
+    sphere.userData.parentObject = obj;
+
     objSpheres.push(sphere);
   });
 
@@ -254,7 +260,7 @@ bgColorInput.addEventListener('input', () => {
   }
 });
 
-let selectedCube = mainCube;
+let selectedCube = null;
 
 function updatePanelForCube(cube){
   if(!cube){
@@ -508,14 +514,24 @@ function animate(time=0){
   const delta = (time - lastTime)/1000;
   lastTime = time;
   updateCamera(delta);
+
+  // Atualiza posição das esferas
+  cubes.forEach(obj => {
+    if (!obj.userData.spheres) return;
+
+    obj.userData.spheres.forEach((sphere, i) => {
+      const offset = offsets[i].pos.clone().multiplyScalar(2);
+      const worldPos = obj.position.clone().add(offset);
+      sphere.position.copy(worldPos);
+    });
+  });
+
   renderer.render(scene, camera);
 }
+
 animate();
 
 // Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
-
-
-
