@@ -520,9 +520,17 @@ function animate(time=0){
     if (!obj.userData.spheres) return;
 
     obj.userData.spheres.forEach((sphere, i) => {
-      const offset = offsets[i].pos.clone().multiplyScalar(2);
-      const worldPos = obj.position.clone().add(offset);
-      sphere.position.copy(worldPos);
+      const offset = offsets[i].pos; // já definido: 0.4 ou -0.4
+      const cubeHalfScale = obj.scale.clone().multiplyScalar(0.5); // pega metade do tamanho do cube
+    
+      const newPos = obj.position.clone(); // começa na posição do cube
+    
+      // Ajusta somente no eixo que importa
+      if (offset.y !== 0) newPos.y += offset.y * obj.scale.y; // eixo Y
+      if (offset.x !== 0) newPos.x += offset.x * obj.scale.x; // eixo X
+      if (offset.z !== 0) newPos.z += offset.z * obj.scale.z; // eixo Z
+    
+      sphere.position.copy(newPos);
     });
   });
 
@@ -535,3 +543,4 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
