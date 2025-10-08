@@ -45,9 +45,7 @@ function createSphere() {
   scene.add(newSphere);
   cubes.push(newSphere);
 
-  selectedCube = newSphere;
   updateCubeList();
-  
   pushToHistory({ type: 'delete', object: newSphere });
 }
 
@@ -66,9 +64,8 @@ function createCylinder() {
   scene.add(newCylinder);
   cubes.push(newCylinder);
 
-  selectedCube = newCylinder;
+
   updateCubeList();
-  
   pushToHistory({ type: 'delete', object: newCylinder });
 }
 
@@ -88,9 +85,7 @@ function createCone() {
   scene.add(newCone);
   cubes.push(newCone);
 
-  selectedCube = newCone;
   updateCubeList();
-  
   pushToHistory({ type: 'delete', object: newCone });
 }
 
@@ -109,11 +104,8 @@ function createPlane() {
 
   scene.add(newPlane);
   cubes.push(newPlane);
-
-  selectedCube = newPlane;
-  updateCubeList();
-
   
+  updateCubeList();
   pushToHistory({ type: 'delete', object: newPlane });
 }
 
@@ -194,6 +186,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
 
 
