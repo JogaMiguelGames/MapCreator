@@ -515,24 +515,24 @@ function animate(time=0){
   lastTime = time;
   updateCamera(delta);
 
-  // Atualiza posição das esferas
-  cubes.forEach(obj => {
-    if (!obj.userData.spheres) return;
-
-    obj.userData.spheres.forEach((sphere, i) => {
-      const offset = offsets[i].pos; // já definido: 0.4 ou -0.4
-      const cubeHalfScale = obj.scale.clone().multiplyScalar(0.5); // pega metade do tamanho do cube
-    
-      const newPos = obj.position.clone(); // começa na posição do cube
-    
-      // Ajusta somente no eixo que importa
-      if (offset.y !== 0) newPos.y += offset.y * obj.scale.y; // eixo Y
-      if (offset.x !== 0) newPos.x += offset.x * obj.scale.x; // eixo X
-      if (offset.z !== 0) newPos.z += offset.z * obj.scale.z; // eixo Z
-    
+  cubes.forEach(cube => {
+    if (!cube.userData.spheres) return;
+  
+    cube.userData.spheres.forEach((sphere, i) => {
+      const offset = offsets[i].pos; // ex: 0.4 ou -0.4
+      const cubeScale = cube.scale;
+  
+      // Nova posição baseada no centro do cubo + offset global
+      const newPos = new THREE.Vector3(
+        offset.x * cubeScale.x + cube.position.x,
+        offset.y * cubeScale.y + cube.position.y,
+        offset.z * cubeScale.z + cube.position.z
+      );
+  
       sphere.position.copy(newPos);
     });
   });
+
 
   renderer.render(scene, camera);
 }
@@ -543,4 +543,5 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
