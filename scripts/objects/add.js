@@ -46,10 +46,7 @@ function createSphere() {
   cubes.push(newSphere);
 
   selectedCube = newSphere;
-  updatePanelForCube(newSphere);
   updateCubeList();
-
-  if (typeof showAxesSpheres === "function") showAxesSpheres(selectedCube);
   
   pushToHistory({ type: 'delete', object: newSphere });
 }
@@ -70,10 +67,7 @@ function createCylinder() {
   cubes.push(newCylinder);
 
   selectedCube = newCylinder;
-  updatePanelForCube(newCylinder);
   updateCubeList();
-
-  if (typeof showAxesSpheres === "function") showAxesSpheres(selectedCube);
   
   pushToHistory({ type: 'delete', object: newCylinder });
 }
@@ -95,10 +89,7 @@ function createCone() {
   cubes.push(newCone);
 
   selectedCube = newCone;
-  updatePanelForCube(newCone);
   updateCubeList();
-
-  if (typeof showAxesSpheres === "function") showAxesSpheres(selectedCube);
   
   pushToHistory({ type: 'delete', object: newCone });
 }
@@ -120,10 +111,8 @@ function createPlane() {
   cubes.push(newPlane);
 
   selectedCube = newPlane;
-  updatePanelForCube(newPlane);
   updateCubeList();
 
-  if (typeof showAxesSpheres === "function") showAxesSpheres(selectedCube);
   
   pushToHistory({ type: 'delete', object: newPlane });
 }
@@ -205,6 +194,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
 
 
