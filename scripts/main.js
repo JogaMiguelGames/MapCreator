@@ -19,47 +19,25 @@ const offsets = [
   { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }
 ];
 
+// --- Esferas de manipulação para qualquer objeto ---
 function addManipulationSpheres(obj) {
-  if (!obj) return;
-
   const objSpheres = [];
 
   offsets.forEach(o => {
     const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
     const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), sphereMaterial);
-
+    
     sphere.castShadow = false;
     sphere.receiveShadow = false;
+    sphere.position.copy(o.pos.clone().multiplyScalar(2));
     sphere.userData.axis = o.axis;
     sphere.visible = false;
 
-    // posição inicial baseada no objeto
-    sphere.position.copy(obj.position.clone().add(o.pos.clone().multiplyScalar(2)));
-
-    // adiciona na cena, não dentro do objeto
-    scene.add(sphere);
-    sphere.userData.parentObject = mainCube;
-
+    obj.add(sphere);
     objSpheres.push(sphere);
   });
 
   obj.userData.spheres = objSpheres;
-}
-
-function createSpheresForCube(cube) {
-  const spheres = [];
-  offsets.forEach(o => {
-    const mat = new THREE.MeshStandardMaterial({ color: o.color });
-    const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), mat);
-    sphere.visible = false;
-    sphere.castShadow = false;
-    sphere.receiveShadow = false;
-    sphere.userData.axis = o.axis;
-    sphere.userData.parentObject = cube;
-    scene.add(sphere);
-    spheres.push(sphere);
-  });
-  cube.userData.spheres = spheres;
 }
 
 // Torna acessível para todos os scripts (como add.js)
@@ -79,6 +57,7 @@ offsets.forEach(o => {
   sphere.position.copy(o.pos.clone().multiplyScalar(2));
   sphere.userData.axis = o.axis; 
   sphere.visible = false;
+  mainCube.add(sphere);
   spheres.push(sphere);
 });
 
@@ -275,7 +254,7 @@ bgColorInput.addEventListener('input', () => {
   }
 });
 
-let selectedCube = null;
+let selectedCube = mainCube;
 
 function updatePanelForCube(cube){
   if(!cube){
@@ -529,22 +508,11 @@ function animate(time=0){
   const delta = (time - lastTime)/1000;
   lastTime = time;
   updateCamera(delta);
-  
-  cubes.forEach(cube => {
-    if (!cube.userData.spheres) return;  
-    cube.userData.spheres.forEach((sphere, i) => {
-      const offset = offsets[i].pos.clone().multiply(cube.scale); // aplica escala
-      const worldPos = cube.localToWorld(offset); // aplica rotação + posição
-      sphere.position.copy(worldPos);
-    });
-  });
   renderer.render(scene, camera);
 }
-
-createSpheresForCube(mainCube);
 animate();
 
-selectedCube = mainCube;
+// Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
