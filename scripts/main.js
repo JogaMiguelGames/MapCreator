@@ -20,12 +20,14 @@ const offsets = [
 ];
 
 function addManipulationSpheres(obj) {
+  if (!obj) return;
+
   const objSpheres = [];
 
   offsets.forEach(o => {
     const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
     const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), sphereMaterial);
-    
+
     sphere.castShadow = false;
     sphere.receiveShadow = false;
     sphere.position.copy(o.pos.clone().multiplyScalar(2));
@@ -38,6 +40,11 @@ function addManipulationSpheres(obj) {
 
   obj.userData.spheres = objSpheres;
 }
+
+// Torna acessível para todos os scripts (como add.js)
+window.addManipulationSpheres = addManipulationSpheres;
+window.offsets = offsets;
+window.sphereGeometrySmall = sphereGeometrySmall;
 
 const spheres = [];
 
@@ -510,4 +517,5 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
