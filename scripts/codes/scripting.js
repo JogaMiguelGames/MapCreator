@@ -109,7 +109,7 @@ async function runLines(lines) {
       continue;
     }
 
-    if (line.startsWith('call(') && line.endsWith(')')) {
+    if (line.startsWith('call.function(') && line.endsWith(')')) {
       const funcName = line.slice(5, -1).trim();
       if (functions[funcName]) {
         await runLines(functions[funcName]);
@@ -413,3 +413,4 @@ document.addEventListener('DOMContentLoaded', () => {
     runScript(code);
   });
 });
+
