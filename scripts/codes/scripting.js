@@ -93,7 +93,7 @@ async function runLines(lines) {
     const line = lines[i].trim();
 
     if (line.startsWith('function ') && line.endsWith('()')) {
-      const funcName = line.slice(9, -2).trim();
+      const funcName = line.match(/^function\s+(\w+)\(\)$/)[1];
       const funcBody = [];
       i++;
       while (i < lines.length && lines[i].trim() !== 'end') {
@@ -413,4 +413,5 @@ document.addEventListener('DOMContentLoaded', () => {
     runScript(code);
   });
 });
+
 
