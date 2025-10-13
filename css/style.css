@@ -592,12 +592,28 @@ body.focusing-script #exitScriptFocusBtn {
   height: 100%;
 }
 
+#fovDisplay {
+  position: fixed;
+  bottom: 6px;
+  left: 8px;
+  font-family: Consolas, monospace;
+  font-size: 14px;
+  color: #0f0;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 3px 6px;
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 9999;
+  user-select: none;
+}
+
 /* não permitir que topMenu quebre linhas */
 #topMenu { flex-wrap: nowrap; }
 
 /* estilinho scrollbar para o leftButtons */
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
 
 
 
