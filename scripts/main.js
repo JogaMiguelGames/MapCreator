@@ -509,39 +509,26 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
-const fovLabel = document.createElement('div');
-fovLabel.style.position = 'fixed';
-fovLabel.style.bottom = '10px';
-fovLabel.style.left = '10px';
-fovLabel.style.padding = '6px 10px';
-fovLabel.style.background = 'rgba(0, 0, 0, 0.5)';
-fovLabel.style.color = 'white';
-fovLabel.style.fontFamily = 'monospace';
-fovLabel.style.fontSize = '14px';
-fovLabel.style.borderRadius = '6px';
-fovLabel.style.userSelect = 'none';
-fovLabel.style.pointerEvents = 'none';
-fovLabel.innerText = `FOV: ${camera.fov.toFixed(0)}`;
-document.body.appendChild(fovLabel);
+const fovDisplay = document.getElementById('fovDisplay');
 
-function updateFovLabel() {
-  fovLabel.innerText = `FOV: ${camera.fov.toFixed(0)}`;
+function updateFovDisplay() {
+  fovDisplay.textContent = `FOV: ${Math.round(camera.fov)}`;
 }
+
+updateFovDisplay();
 
 window.addEventListener('wheel', (event) => {
   if (event.ctrlKey) {
     event.preventDefault();
 
     const fovStep = 1.5;
-
     if (event.deltaY < 0) {
       camera.fov = Math.max(10, camera.fov - fovStep);
     } else {
       camera.fov = Math.min(120, camera.fov + fovStep);
     }
-
     camera.updateProjectionMatrix();
-    updateFovLabel();
+    updateFovDisplay();
   }
 }, { passive: false });
 
@@ -560,6 +547,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
