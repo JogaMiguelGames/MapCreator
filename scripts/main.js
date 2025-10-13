@@ -510,6 +510,22 @@ window.addEventListener('resize', () => {
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
 
+window.addEventListener('wheel', (event) => {
+  if (event.ctrlKey) {
+    event.preventDefault();
+
+    const fovStep = 1.5;
+
+    if (event.deltaY < 0) {
+      camera.fov = Math.max(10, camera.fov - fovStep);
+    } else {
+      camera.fov = Math.min(120, camera.fov + fovStep);
+    }
+
+    camera.updateProjectionMatrix();
+  }
+}, { passive: false });
+
 // Loop principal
 let lastTime = 0;
 function animate(time=0){
@@ -525,4 +541,5 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
