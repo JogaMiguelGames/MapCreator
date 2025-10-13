@@ -491,7 +491,7 @@ document.addEventListener('keydown', e => {
   const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
 
   if ((e.key === 'Delete' || e.key === 'Backspace') && !isTyping && selectedCube) {
-    e.preventDefault(); // Impede o navegador de voltar página
+    e.preventDefault();
     const idx = cubes.indexOf(selectedCube);
     if (idx !== -1) {
       scene.remove(selectedCube);
@@ -503,12 +503,30 @@ document.addEventListener('keydown', e => {
   }
 });
 
-// Resize
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth/window.innerHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(window.innerWidth, window.innerHeight);
 });
+
+const fovLabel = document.createElement('div');
+fovLabel.style.position = 'fixed';
+fovLabel.style.bottom = '10px';
+fovLabel.style.left = '10px';
+fovLabel.style.padding = '6px 10px';
+fovLabel.style.background = 'rgba(0, 0, 0, 0.5)';
+fovLabel.style.color = 'white';
+fovLabel.style.fontFamily = 'monospace';
+fovLabel.style.fontSize = '14px';
+fovLabel.style.borderRadius = '6px';
+fovLabel.style.userSelect = 'none';
+fovLabel.style.pointerEvents = 'none';
+fovLabel.innerText = `FOV: ${camera.fov.toFixed(0)}`;
+document.body.appendChild(fovLabel);
+
+function updateFovLabel() {
+  fovLabel.innerText = `FOV: ${camera.fov.toFixed(0)}`;
+}
 
 window.addEventListener('wheel', (event) => {
   if (event.ctrlKey) {
@@ -523,6 +541,7 @@ window.addEventListener('wheel', (event) => {
     }
 
     camera.updateProjectionMatrix();
+    updateFovLabel();
   }
 }, { passive: false });
 
@@ -541,5 +560,6 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
