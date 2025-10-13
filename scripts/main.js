@@ -91,26 +91,47 @@ function onPointerDown(event) {
 
   if (intersects.length > 0) {
     selectedSphere = intersects[0].object;
+    renderer.domElement.style.cursor = 'grabbing';
 
     const axis = selectedSphere.userData.axis;
     if(axis === 'x') plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0), selectedSphere.getWorldPosition(new THREE.Vector3()));
     if(axis === 'y') plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,0,1), selectedSphere.getWorldPosition(new THREE.Vector3()));
-    if(axis === 'z') plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(0,1,0), selectedSphere.getWorldPosition(new THREE.Vector3()));
+    if(axis === 'z') plane.setFromNormalAndCoplanarPoint(new THREE.Vector3(1,0,0), selectedSphere.getWorldPosition(new THREE.Vector3()));
 
     dragRaycaster.ray.intersectPlane(plane, offset);
     offset.sub(selectedSphere.getWorldPosition(new THREE.Vector3()));
   }
 }
 
-function onPointerMove(event) {
-  if (!selectedSphere) return;
+renderer.domElement.style.cursor = 'default';
 
+function updateCursor() {
+  if (selectedSphere) {
+    renderer.domElement.style.cursor = 'grabbing';
+  } else {
+    const rect = renderer.domElement.getBoundingClientRect();
+    dragRaycaster.setFromCamera(mouseVec, camera);
+
+    if (selectedCube && selectedCube.userData.spheres) {
+      const intersects = dragRaycaster.intersectObjects(selectedCube.userData.spheres);
+      if (intersects.length > 0) {
+        renderer.domElement.style.cursor = 'grab';
+        return;
+      }
+    }
+    renderer.domElement.style.cursor = 'default';
+  }
+}
+
+function onPointerMove(event) {
   const rect = renderer.domElement.getBoundingClientRect();
   mouseVec.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   mouseVec.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
   dragRaycaster.setFromCamera(mouseVec, camera);
+  updateCursor();
 
+  if (!selectedSphere) return;
   if (dragRaycaster.ray.intersectPlane(plane, intersection)) {
     const axis = selectedSphere.userData.axis;
     const worldPos = intersection.clone().sub(offset);
@@ -124,13 +145,13 @@ function onPointerMove(event) {
 
 function onPointerUp() {
   selectedSphere = null;
+  renderer.domElement.style.cursor = 'default';
 }
 
 renderer.domElement.addEventListener('pointerdown', onPointerDown);
 renderer.domElement.addEventListener('pointermove', onPointerMove);
 renderer.domElement.addEventListener('pointerup', onPointerUp);
 renderer.domElement.addEventListener('pointerleave', onPointerUp);
-
 // -- Luzes
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // luz ambiente suave
 scene.add(ambientLight);
@@ -547,6 +568,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
