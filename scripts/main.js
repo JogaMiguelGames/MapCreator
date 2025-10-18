@@ -206,8 +206,42 @@ function createHugeGrid(step = 1, color = 0x888888) {
   return lines;
 }
 
-// --- Criar o grid gigante ---
-const hugeGrid = createHugeGrid(1, 0x888888); // passo 1, cinza
+const gridGroup = new THREE.Group();
+scene.add(gridGroup);
+
+const gridStep = 1;       // distância entre linhas
+const gridLimit = 50;     // número de linhas para cada direção ao redor da câmera
+const gridColor = 0x888888;
+
+// Função para atualizar o grid baseado na posição da câmera
+function updateGridAroundCamera(camera) {
+  // Limpar linhas antigas
+  gridGroup.clear();
+
+  const camX = Math.round(camera.position.x);
+  const camZ = Math.round(camera.position.z);
+
+  const halfLimit = gridLimit / 2;
+
+  const vertices = [];
+
+  // Linhas paralelas ao X
+  for (let z = camZ - halfLimit; z <= camZ + halfLimit; z += gridStep) {
+    vertices.push(camX - halfLimit, 0, z, camX + halfLimit, 0, z);
+  }
+
+  // Linhas paralelas ao Z
+  for (let x = camX - halfLimit; x <= camX + halfLimit; x += gridStep) {
+    vertices.push(x, 0, camZ - halfLimit, x, 0, camZ + halfLimit);
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+  const material = new THREE.LineBasicMaterial({ color: gridColor });
+  const lines = new THREE.LineSegments(geometry, material);
+  gridGroup.add(lines);
+}
 
 // --- Controle de câmera ---
 camera.position.set(0, 1.6, 5);
@@ -613,6 +647,9 @@ function animate(time=0){
   const delta = (time - lastTime)/1000;
   lastTime = time;
   updateCamera(delta);
+
+  updateGridAroundCamera(camera);
+  
   renderer.render(scene, camera);
 }
 animate();
@@ -621,6 +658,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
