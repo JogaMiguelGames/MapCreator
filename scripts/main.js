@@ -390,7 +390,7 @@ function updateCubeList() {
   // --- Cubos dentro da pasta (recuados) ---
   cubes.forEach(cube => {
     const name = cube.name || 'Unnamed';
-
+  
     const div = document.createElement('div');
     div.className = 'cubeListItem';
     div.style.display = 'flex';
@@ -399,24 +399,31 @@ function updateCubeList() {
     div.style.borderRadius = '3px';
     div.style.cursor = 'pointer';
     div.style.gap = '6px';
-    div.style.marginLeft = '24px'; // <<--- recuo dentro da pasta
-
-    // Ícone do cubo
+    div.style.marginLeft = '24px'; // recuo dentro da pasta
+  
+    // Ícone do cubo / esfera
     const iconWrapper = document.createElement('div');
     iconWrapper.style.position = 'relative';
     iconWrapper.style.width = '20px';
     iconWrapper.style.height = '20px';
-
+  
     const icon = document.createElement('img');
-    icon.src = 'resources/images/ui/icons/cube.png';
-    icon.alt = 'cube icon';
+  
+    // --- VERIFICAÇÃO SE É UMA SPHERE ---
+    if (cube.geometry && cube.geometry.type === 'SphereGeometry') {
+      icon.src = 'resources/images/ui/icons/sphere.png';
+    } else {
+      icon.src = 'resources/images/ui/icons/cube.png';
+    }
+  
+    icon.alt = 'object icon';
     icon.style.width = '100%';
     icon.style.height = '100%';
     icon.style.objectFit = 'contain';
     iconWrapper.appendChild(icon);
-
+  
     // Ícone de textura (se houver)
-    if(cube.hasTexture){
+    if (cube.hasTexture) {
       const textureIcon = document.createElement('img');
       textureIcon.src = 'resources/images/ui/icons/texture.png';
       textureIcon.alt = 'texture icon';
@@ -427,14 +434,14 @@ function updateCubeList() {
       textureIcon.style.bottom = '-4px';
       iconWrapper.appendChild(textureIcon);
     }
-
+  
     div.appendChild(iconWrapper);
-
+  
     // Texto do cubo
     const text = document.createElement('span');
     text.textContent = name;
     div.appendChild(text);
-
+  
     // Destacar cubo selecionado
     if(cube === selectedCube){
       div.style.backgroundColor = '#3366ff';
@@ -578,6 +585,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
