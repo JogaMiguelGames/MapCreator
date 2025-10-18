@@ -184,7 +184,7 @@ addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000)
 addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
 
 function createHugeGrid(step = 1, color = 0x888888) {
-  const size = 100; // metade do alcance, porque vamos de -size a +size
+  const size = 0; // metade do alcance, porque vamos de -size a +size
   const material = new THREE.LineBasicMaterial({ color: color });
   const vertices = [];
 
@@ -213,7 +213,7 @@ const gridGroup = new THREE.Group();
 scene.add(gridGroup);
 
 const gridStep = 1;       // distância entre linhas
-const gridLimit = 50;     // número de linhas para cada direção ao redor da câmera
+const gridLimit = 100;     // número de linhas para cada direção ao redor da câmera
 const gridColor = 0x888888;
 
 // Função para atualizar o grid baseado na posição da câmera
@@ -661,6 +661,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
