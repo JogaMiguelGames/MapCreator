@@ -216,32 +216,48 @@ const gridStep = 1;       // distância entre linhas
 const gridLimit = 500;     // número de linhas para cada direção ao redor da câmera
 const gridColor = 0x888888;
 
-function updateGridAroundCamera(camera) {
-  // Limpar linhas antigas
+function updateGridAroundCameraCircle(camera) {
   gridGroup.clear();
 
-  const camX = Math.round(camera.position.x);
-  const camZ = Math.round(camera.position.z);
+  const camX = camera.position.x;
+  const camZ = camera.position.z;
 
-  const halfLimit = gridLimit / 2;
+  const radius = 50;       // raio do círculo em unidades do Three.js
+  const step = 1;          // distância entre linhas
   const vertices = [];
 
+  // Limites de verificação para reduzir iterações
+  const minX = Math.floor(camX - radius);
+  const maxX = Math.ceil(camX + radius);
+  const minZ = Math.floor(camZ - radius);
+  const maxZ = Math.ceil(camZ + radius);
+
   // Linhas paralelas ao X (variando Z)
-  for (let z = camZ - halfLimit; z <= camZ + halfLimit; z += gridStep) {
-    if (z === 0) continue; // evita desenhar sobre eixo Z
-    vertices.push(camX - halfLimit, 0, z, camX + halfLimit, 0, z);
+  for (let z = minZ; z <= maxZ; z += step) {
+    if (z === 0) continue; // evita sobreposição com eixo Z
+    // Checa se está dentro do círculo
+    const dz = z - camZ;
+    if (Math.abs(dz) > radius) continue;
+
+    const deltaX = Math.sqrt(radius * radius - dz * dz);
+    vertices.push(camX - deltaX, 0, z, camX + deltaX, 0, z);
   }
 
   // Linhas paralelas ao Z (variando X)
-  for (let x = camX - halfLimit; x <= camX + halfLimit; x += gridStep) {
-    if (x === 0) continue; // evita desenhar sobre eixo X
-    vertices.push(x, 0, camZ - halfLimit, x, 0, camZ + halfLimit);
+  for (let x = minX; x <= maxX; x += step) {
+    if (x === 0) continue; // evita sobreposição com eixo X
+    // Checa se está dentro do círculo
+    const dx = x - camX;
+    if (Math.abs(dx) > radius) continue;
+
+    const deltaZ = Math.sqrt(radius * radius - dx * dx);
+    vertices.push(x, 0, camZ - deltaZ, x, 0, camZ + deltaZ);
   }
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
-  const material = new THREE.LineBasicMaterial({ color: gridColor });
+  const material = new THREE.LineBasicMaterial({ color: 0x888888 });
   const lines = new THREE.LineSegments(geometry, material);
   gridGroup.add(lines);
 }
@@ -661,6 +677,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
