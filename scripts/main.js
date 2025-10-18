@@ -184,7 +184,7 @@ addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000)
 addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
 
 function createHugeGrid(step = 1, color = 0x888888) {
-  const size = 9999; // metade do alcance, porque vamos de -size a +size
+  const size = 100; // metade do alcance, porque vamos de -size a +size
   const material = new THREE.LineBasicMaterial({ color: color });
   const vertices = [];
 
@@ -661,6 +661,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
