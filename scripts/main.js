@@ -222,7 +222,7 @@ function updateGridAroundCameraCircle(camera) {
   const camX = camera.position.x;
   const camZ = camera.position.z;
 
-  const radius = 50;       // raio do círculo em unidades do Three.js
+  const radius = 500;       // raio do círculo em unidades do Three.js
   const step = 1;          // distância entre linhas
   const vertices = [];
 
@@ -677,6 +677,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
