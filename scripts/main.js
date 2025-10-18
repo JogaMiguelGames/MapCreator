@@ -415,6 +415,10 @@ function updateCubeList() {
         icon.src = 'resources/images/ui/icons/sphere.png';
       } else if (type === 'CylinderGeometry') {
         icon.src = 'resources/images/ui/icons/cylinder.png';
+      } else if (type === 'ConeGeometry') {
+        icon.src = 'resources/images/ui/icons/cone.png';
+      } else if (type === 'PlaneGeometry') {
+        icon.src = 'resources/images/ui/icons/plane.png';
       } else {
         icon.src = 'resources/images/ui/icons/cube.png'; // padrão
       }
@@ -591,6 +595,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
