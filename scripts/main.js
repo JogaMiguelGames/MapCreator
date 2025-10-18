@@ -220,34 +220,34 @@ const gridStep = 1;       // distância entre linhas
 const gridLimit = 50;     // número de linhas para cada direção ao redor da câmera
 const gridColor = 0x888888;
 
-// Grid fixo que se move com a câmera
-const gridGeometry = new THREE.BufferGeometry();
-const positions = new Float32Array(gridLimit * 4 * 3); // 4 vertices por linha, 3 coords
-gridGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-const gridMaterial = new THREE.LineBasicMaterial({ color: gridColor });
-const movingGrid = new THREE.LineSegments(gridGeometry, gridMaterial);
-gridGroup.add(movingGrid);
-
+// Função para atualizar o grid baseado na posição da câmera
 function updateGridAroundCamera(camera) {
+  // Limpar linhas antigas
+  gridGroup.clear();
+
   const camX = Math.round(camera.position.x);
   const camZ = Math.round(camera.position.z);
+
   const halfLimit = gridLimit / 2;
 
-  let ptr = 0;
+  const vertices = [];
 
   // Linhas paralelas ao X
   for (let z = camZ - halfLimit; z <= camZ + halfLimit; z += gridStep) {
-    positions[ptr++] = camX - halfLimit; positions[ptr++] = 0; positions[ptr++] = z;
-    positions[ptr++] = camX + halfLimit; positions[ptr++] = 0; positions[ptr++] = z;
+    vertices.push(camX - halfLimit, 0, z, camX + halfLimit, 0, z);
   }
 
   // Linhas paralelas ao Z
   for (let x = camX - halfLimit; x <= camX + halfLimit; x += gridStep) {
-    positions[ptr++] = x; positions[ptr++] = 0; positions[ptr++] = camZ - halfLimit;
-    positions[ptr++] = x; positions[ptr++] = 0; positions[ptr++] = camZ + halfLimit;
+    vertices.push(x, 0, camZ - halfLimit, x, 0, camZ + halfLimit);
   }
 
-  gridGeometry.attributes.position.needsUpdate = true;
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+  const material = new THREE.LineBasicMaterial({ color: gridColor });
+  const lines = new THREE.LineSegments(geometry, material);
+  gridGroup.add(lines);
 }
 
 // --- Controle de câmera ---
@@ -665,6 +665,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
