@@ -183,40 +183,31 @@ addAxisLine(new THREE.Vector3(0,-9999,0), new THREE.Vector3(0,9999,0), 0x00ff00)
 addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000); // X
 addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
 
-function createGridXZ(size = 10, divisions = 10, color = 0x888888) {
-  const gridGroup = new THREE.Group();
-
-  const step = size / divisions;
-  const halfSize = size / 2;
-
+function createHugeGrid(step = 1, color = 0x888888) {
+  const size = 9999; // metade do alcance, porque vamos de -size a +size
   const material = new THREE.LineBasicMaterial({ color: color });
-
   const vertices = [];
 
-  // Linhas paralelas ao eixo X
-  for (let i = 0; i <= divisions; i++) {
-    const z = -halfSize + i * step;
-    vertices.push(-halfSize, 0, z, halfSize, 0, z); // de (x1, y1, z1) a (x2, y2, z2)
+  // Linhas paralelas ao eixo X (variando Z)
+  for (let z = -size; z <= size; z += step) {
+    vertices.push(-size, 0, z, size, 0, z); // linha de X = -size até X = +size
   }
 
-  // Linhas paralelas ao eixo Z
-  for (let i = 0; i <= divisions; i++) {
-    const x = -halfSize + i * step;
-    vertices.push(x, 0, -halfSize, x, 0, halfSize);
+  // Linhas paralelas ao eixo Z (variando X)
+  for (let x = -size; x <= size; x += step) {
+    vertices.push(x, 0, -size, x, 0, size); // linha de Z = -size até Z = +size
   }
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
   const lines = new THREE.LineSegments(geometry, material);
-  gridGroup.add(lines);
-
-  scene.add(gridGroup);
-  return gridGroup;
+  scene.add(lines);
+  return lines;
 }
 
-// --- Criar o grid ---
-const grid = createGridXZ(10, 10, 0x888888); // tamanho 10x10, divisões 10, cinza
+// --- Criar o grid gigante ---
+const hugeGrid = createHugeGrid(1, 0x888888); // passo 1, cinza
 
 // --- Controle de câmera ---
 camera.position.set(0, 1.6, 5);
@@ -630,6 +621,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
