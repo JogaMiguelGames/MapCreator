@@ -359,9 +359,35 @@ function updatePanelForCube(cube){
   });
 });
 
-function updateCubeList(){
+function updateCubeList() {
   cubeListDiv.innerHTML = '';
-  
+
+  // --- Pasta Project ---
+  const projectDiv = document.createElement('div');
+  projectDiv.className = 'cubeListFolder';
+  projectDiv.style.display = 'flex';
+  projectDiv.style.alignItems = 'center';
+  projectDiv.style.padding = '4px 8px';
+  projectDiv.style.borderRadius = '3px';
+  projectDiv.style.cursor = 'pointer';
+  projectDiv.style.gap = '6px';
+  projectDiv.style.fontWeight = 'bold';
+
+  const folderIcon = document.createElement('img');
+  folderIcon.src = 'resources/images/ui/icons/folder.svg';
+  folderIcon.alt = 'Project Folder';
+  folderIcon.style.width = '20px';
+  folderIcon.style.height = '20px';
+  folderIcon.style.objectFit = 'contain';
+  projectDiv.appendChild(folderIcon);
+
+  const folderText = document.createElement('span');
+  folderText.textContent = 'Project';
+  projectDiv.appendChild(folderText);
+
+  cubeListDiv.appendChild(projectDiv);
+
+  // --- Cubos dentro da pasta (recuados) ---
   cubes.forEach(cube => {
     const name = cube.name || 'Unnamed';
 
@@ -373,6 +399,7 @@ function updateCubeList(){
     div.style.borderRadius = '3px';
     div.style.cursor = 'pointer';
     div.style.gap = '6px';
+    div.style.marginLeft = '24px'; // <<--- recuo dentro da pasta
 
     // Ícone do cubo
     const iconWrapper = document.createElement('div');
@@ -414,7 +441,7 @@ function updateCubeList(){
       div.style.color = 'white';
     }
 
-    // --- Clique simples e duplo clique ---
+    // Clique simples e duplo clique
     let clickTimer = null;
 
     div.addEventListener('click', () => {
@@ -423,7 +450,7 @@ function updateCubeList(){
         selectedCube = cube;
         updatePanelForCube(selectedCube);
         updateCubeList();
-        updateSpheresVisibility(); // <<< aqui também
+        updateSpheresVisibility();
         clickTimer = null;
       }, 250);
     });
@@ -437,23 +464,6 @@ function updateCubeList(){
     });
 
     cubeListDiv.appendChild(div);
-  });
-
-  // --- F2 para renomear cubo selecionado ---
-  document.addEventListener('keydown', (e) => {
-    const tag = document.activeElement.tagName;
-    const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
-
-    if (e.key === 'F2' && !isTyping && selectedCube) {
-      // Encontrar div correspondente
-      const divs = cubeListDiv.querySelectorAll('.cubeListItem');
-      const div = Array.from(divs).find(d => {
-        const span = d.querySelector('span');
-        return span && span.textContent === selectedCube.name;
-      });
-
-      if (div) renameCube(div, selectedCube);
-    }
   });
 }
 
