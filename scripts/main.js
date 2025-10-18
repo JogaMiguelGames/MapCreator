@@ -409,11 +409,17 @@ function updateCubeList() {
   
     const icon = document.createElement('img');
   
-    // --- VERIFICAÇÃO SE É UMA SPHERE ---
-    if (cube.geometry && cube.geometry.type === 'SphereGeometry') {
-      icon.src = 'resources/images/ui/icons/sphere.png';
+    if (cube.geometry) {
+      const type = cube.geometry.type;
+      if (type === 'SphereGeometry') {
+        icon.src = 'resources/images/ui/icons/sphere.png';
+      } else if (type === 'CylinderGeometry') {
+        icon.src = 'resources/images/ui/icons/cylinder.png';
+      } else {
+        icon.src = 'resources/images/ui/icons/cube.png'; // padrão
+      }
     } else {
-      icon.src = 'resources/images/ui/icons/cube.png';
+      icon.src = 'resources/images/ui/icons/cube.png'; // fallback
     }
   
     icon.alt = 'object icon';
@@ -585,6 +591,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
