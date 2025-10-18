@@ -667,7 +667,7 @@ function animate(time=0){
   lastTime = time;
   updateCamera(delta);
 
-  updateGridAroundCamera(camera);
+  updateGridAroundCameraCircle(camera);
   
   renderer.render(scene, camera);
 }
@@ -677,6 +677,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
