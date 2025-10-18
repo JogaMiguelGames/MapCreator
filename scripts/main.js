@@ -184,27 +184,34 @@ addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000)
 addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
 
 function createHugeGrid(step = 1, color = 0x888888) {
-  const size = 9999; // metade do alcance, porque vamos de -size a +size
-  const material = new THREE.LineBasicMaterial({ color: color });
+  const size = 9999;
   const vertices = [];
 
-  // Linhas paralelas ao eixo X (variando Z)
+  // Linhas paralelas ao X (variando Z)
   for (let z = -size; z <= size; z += step) {
-    vertices.push(-size, 0, z, size, 0, z); // linha de X = -size até X = +size
+    // Ignorar linhas na faixa Z = 0 até 9999
+    if (z >= 0 && z <= 9999) continue;
+    vertices.push(-size, 0, z, size, 0, z);
   }
 
-  // Linhas paralelas ao eixo Z (variando X)
+  // Linhas paralelas ao Z (variando X)
   for (let x = -size; x <= size; x += step) {
-    vertices.push(x, 0, -size, x, 0, size); // linha de Z = -size até Z = +size
+    // Ignorar linhas na faixa X = 0 até 9999
+    if (x >= 0 && x <= 9999) continue;
+    vertices.push(x, 0, -size, x, 0, size);
   }
 
   const geometry = new THREE.BufferGeometry();
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
 
+  const material = new THREE.LineBasicMaterial({ color: color });
   const lines = new THREE.LineSegments(geometry, material);
   scene.add(lines);
   return lines;
 }
+
+// --- Criar o grid ---
+const hugeGrid = createHugeGridAvoidPositiveAxes(1, 0x888888);
 
 const gridGroup = new THREE.Group();
 scene.add(gridGroup);
@@ -658,6 +665,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
