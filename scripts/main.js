@@ -216,7 +216,6 @@ const gridStep = 1;       // distância entre linhas
 const gridLimit = 100;     // número de linhas para cada direção ao redor da câmera
 const gridColor = 0x888888;
 
-// Função para atualizar o grid baseado na posição da câmera
 function updateGridAroundCamera(camera) {
   // Limpar linhas antigas
   gridGroup.clear();
@@ -225,16 +224,17 @@ function updateGridAroundCamera(camera) {
   const camZ = Math.round(camera.position.z);
 
   const halfLimit = gridLimit / 2;
-
   const vertices = [];
 
-  // Linhas paralelas ao X
+  // Linhas paralelas ao X (variando Z)
   for (let z = camZ - halfLimit; z <= camZ + halfLimit; z += gridStep) {
+    if (z === 0) continue; // evita desenhar sobre eixo Z
     vertices.push(camX - halfLimit, 0, z, camX + halfLimit, 0, z);
   }
 
-  // Linhas paralelas ao Z
+  // Linhas paralelas ao Z (variando X)
   for (let x = camX - halfLimit; x <= camX + halfLimit; x += gridStep) {
+    if (x === 0) continue; // evita desenhar sobre eixo X
     vertices.push(x, 0, camZ - halfLimit, x, 0, camZ + halfLimit);
   }
 
@@ -661,6 +661,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
