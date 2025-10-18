@@ -213,7 +213,7 @@ const gridGroup = new THREE.Group();
 scene.add(gridGroup);
 
 const gridStep = 1;       // distância entre linhas
-const gridLimit = 500;     // número de linhas para cada direção ao redor da câmera
+const gridLimit = 200;     // número de linhas para cada direção ao redor da câmera
 const gridColor = 0x888888;
 
 function updateGridAroundCameraCircle(camera) {
@@ -677,6 +677,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
