@@ -211,7 +211,7 @@ function createHugeGrid(step = 1, color = 0x888888) {
 }
 
 // --- Criar o grid ---
-const hugeGrid = createHugeGridAvoidPositiveAxes(1, 0x888888);
+const hugeGrid = createHugeGrid(1, 0x888888);
 
 const gridGroup = new THREE.Group();
 scene.add(gridGroup);
