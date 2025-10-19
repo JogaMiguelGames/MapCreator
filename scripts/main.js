@@ -456,7 +456,7 @@ function updateCubeList() {
   if (!cubeList) return;
   cubeList.innerHTML = '';
 
-  // ---------- Pasta principal "Project" ----------
+  // ---------- Project header ----------
   const projectDiv = document.createElement('div');
   projectDiv.className = 'cubeListProject';
   projectDiv.style.display = 'flex';
@@ -487,9 +487,10 @@ function updateCubeList() {
   projectText.style.marginLeft = '8px';
   projectDiv.appendChild(projectText);
 
-  // Botão de adicionar pasta
+  // Botão de adicionar pasta (com classe fixa)
   const addButton = document.createElement('button');
   addButton.textContent = '+';
+  addButton.className = 'cubeListAddBtn'; // importante
   addButton.style.marginLeft = 'auto';
   addButton.style.padding = '2px 6px';
   addButton.style.cursor = 'pointer';
@@ -518,7 +519,7 @@ function updateCubeList() {
     expandArrow.style.transform = expanded ? 'rotate(0deg)' : 'rotate(-90deg)';
   });
 
-  // Popup de criação de pasta
+  // ---------- popup criado apenas uma vez (global) ----------
   let popup = document.getElementById('cubeListPopup');
   if (!popup) {
     popup = document.createElement('div');
@@ -530,8 +531,9 @@ function updateCubeList() {
     popup.style.borderRadius = '6px';
     popup.style.display = 'none';
     popup.style.zIndex = '10000';
-    popup.style.minWidth = '120px';
+    popup.style.minWidth = '140px';
     popup.style.color = '#fff';
+    popup.style.boxShadow = '0 6px 18px rgba(0,0,0,0.4)';
 
     const createFolderOption = document.createElement('div');
     createFolderOption.textContent = 'Criar pasta';
@@ -540,29 +542,37 @@ function updateCubeList() {
     createFolderOption.addEventListener('mouseover', () => createFolderOption.style.background = '#3a3a3a');
     createFolderOption.addEventListener('mouseout', () => createFolderOption.style.background = 'transparent');
 
-    createFolderOption.addEventListener('click', () => {
+    createFolderOption.addEventListener('click', (e) => {
+      e.stopPropagation();
       popup.style.display = 'none';
-      createFolder();
+      createFolder(); // assume createFolder() está definido globalmente
     });
 
     popup.appendChild(createFolderOption);
     document.body.appendChild(popup);
 
+    // fechar se clicar fora (mas não se for no botão +)
     document.addEventListener('click', (ev) => {
-      if (!popup.contains(ev.target) && !ev.target.classList.contains('cubeListAddBtn')) {
-        popup.style.display = 'none';
-      }
+      if (!popup) return;
+      if (popup.contains(ev.target)) return;
+      // permitir clicks no botão de adicionar sem fechar antes
+      const isAddBtn = ev.target && (ev.target.classList && ev.target.classList.contains('cubeListAddBtn'));
+      if (isAddBtn) return;
+      popup.style.display = 'none';
     });
   }
 
+  // mostrar/ocultar popup ao clicar no botão + (prevenir propagação)
   addButton.addEventListener('click', (e) => {
+    e.stopPropagation(); // evita que o document.click esconda o popup na mesma ação
     const rect = addButton.getBoundingClientRect();
     popup.style.top = `${rect.bottom + 6}px`;
     popup.style.left = `${rect.left}px`;
-    popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+    popup.style.display = (popup.style.display === 'block') ? 'none' : 'block';
   });
 
-  // ---------- PASTAS PERSONALIZADAS ----------
+  // ---------- PASTAS PERSONALIZADAS (mesma indentação dos objetos) ----------
+  window.customFolders = window.customFolders || [];
   window.customFolders.forEach(folder => {
     const newFolderDiv = document.createElement('div');
     newFolderDiv.className = 'cubeListFolder';
@@ -574,7 +584,7 @@ function updateCubeList() {
     newFolderDiv.style.gap = '8px';
     newFolderDiv.style.color = '#fff';
     newFolderDiv.style.marginBottom = '4px';
-    newFolderDiv.style.marginLeft = '0px'; // <-- agora mesma posição que os cubos
+    newFolderDiv.style.marginLeft = '0px'; // mesma posição horizontal dos cubos
 
     const folderIcon = document.createElement('img');
     folderIcon.src = 'resources/images/ui/icons/folder.svg';
@@ -588,7 +598,7 @@ function updateCubeList() {
     folderText.textContent = folder.name;
     newFolderDiv.appendChild(folderText);
 
-    // Renomear com duplo clique
+    // Renomear com dblclick
     folderText.addEventListener('dblclick', (ev) => {
       ev.stopPropagation();
       const input = document.createElement('input');
@@ -603,20 +613,23 @@ function updateCubeList() {
       newFolderDiv.replaceChild(input, folderText);
       input.focus();
 
-      input.addEventListener('blur', () => {
-        folder.name = input.value.trim() || folder.name;
+      function finishRename() {
+        const v = input.value.trim();
+        if (v) folder.name = v;
         updateCubeList();
-      });
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') input.blur();
-        if (e.key === 'Escape') updateCubeList();
+      }
+
+      input.addEventListener('blur', finishRename);
+      input.addEventListener('keydown', (ke) => {
+        if (ke.key === 'Enter') input.blur();
+        if (ke.key === 'Escape') updateCubeList();
       });
     });
 
     projectContent.appendChild(newFolderDiv);
   });
 
-  // ---------- OBJETOS DA CENA ----------
+  // ---------- OBJETOS DA CENA (mesma indentação das pastas) ----------
   const listObjects = (typeof cubes !== 'undefined' && Array.isArray(cubes)) ? cubes : scene.children.filter(o => o.isMesh);
 
   listObjects.forEach((obj) => {
@@ -632,7 +645,7 @@ function updateCubeList() {
     item.style.color = '#ddd';
     item.style.gap = '8px';
     item.style.marginBottom = '2px';
-    item.style.marginLeft = '0px'; // <-- mesmo alinhamento que pastas
+    item.style.marginLeft = '0px'; // mesma horizontal das pastas
     item.style.transition = 'background 0.12s';
     item.addEventListener('mouseover', () => item.style.background = '#333');
     item.addEventListener('mouseout', () => item.style.background = 'transparent');
@@ -643,7 +656,7 @@ function updateCubeList() {
     icon.style.height = '18px';
     icon.style.objectFit = 'contain';
 
-    // Detecta tipo e define ícone
+    // Detectar geometria ou userData.createdBy para ícone
     let geomType = obj.geometry?.type || obj.userData?.createdBy || '';
     if (geomType === 'SphereGeometry' || geomType === 'createSphere') icon.src = 'resources/images/ui/icons/sphere.png';
     else if (geomType === 'CylinderGeometry' || geomType === 'createCylinder') icon.src = 'resources/images/ui/icons/cylinder.png';
@@ -657,7 +670,7 @@ function updateCubeList() {
     text.textContent = obj.name;
     item.appendChild(text);
 
-    // Renomear objeto com duplo clique
+    // Renomear objeto com dblclick
     text.addEventListener('dblclick', (ev) => {
       ev.stopPropagation();
       const input = document.createElement('input');
@@ -679,6 +692,14 @@ function updateCubeList() {
         if (e.key === 'Enter') input.blur();
         if (e.key === 'Escape') updateCubeList();
       });
+    });
+
+    // Selecionar objeto ao clicar
+    item.addEventListener('click', () => {
+      selectedCube = obj;
+      updatePanelForCube && updatePanelForCube(obj);
+      updateSpheresVisibility && updateSpheresVisibility();
+      updateCubeList(); // atualiza highlight
     });
 
     projectContent.appendChild(item);
@@ -799,6 +820,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
