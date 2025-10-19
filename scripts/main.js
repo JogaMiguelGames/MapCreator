@@ -451,13 +451,12 @@ function createFolder(name = 'New Folder') {
   return folder;
 }
 
-// updateCubeList completo e autocontido
 function updateCubeList() {
   const cubeList = document.getElementById('cubeList');
   if (!cubeList) return;
   cubeList.innerHTML = '';
 
-  // ---------- Project header ----------
+  // ---------- Pasta principal "Project" ----------
   const projectDiv = document.createElement('div');
   projectDiv.className = 'cubeListProject';
   projectDiv.style.display = 'flex';
@@ -488,9 +487,8 @@ function updateCubeList() {
   projectText.style.marginLeft = '8px';
   projectDiv.appendChild(projectText);
 
-  // botão +
+  // Botão de adicionar pasta
   const addButton = document.createElement('button');
-  addButton.className = 'cubeListAddBtn';
   addButton.textContent = '+';
   addButton.style.marginLeft = 'auto';
   addButton.style.padding = '2px 6px';
@@ -499,29 +497,28 @@ function updateCubeList() {
   addButton.style.borderRadius = '3px';
   addButton.style.background = '#444';
   addButton.style.color = '#fff';
-  addButton.title = 'Adicionar...';
+  addButton.title = 'Adicionar pasta';
   projectDiv.appendChild(addButton);
 
   cubeList.appendChild(projectDiv);
 
-  // container que guarda o conteúdo (pastas e objetos) com recuo
+  // Container interno do Project (onde ficam pastas e objetos)
   const projectContent = document.createElement('div');
   projectContent.className = 'projectContent';
-  projectContent.style.marginLeft = '24px';
+  projectContent.style.marginLeft = '20px'; // recuo apenas para conteúdo de Project
   projectContent.style.marginTop = '4px';
-  projectContent.style.display = 'block';
   cubeList.appendChild(projectContent);
 
-  // expand/collapse
+  // Toggle de expansão
   let expanded = true;
   projectDiv.addEventListener('click', (e) => {
-    if (e.target === addButton) return; // não toggle ao clicar no +
+    if (e.target === addButton) return;
     expanded = !expanded;
     projectContent.style.display = expanded ? 'block' : 'none';
     expandArrow.style.transform = expanded ? 'rotate(0deg)' : 'rotate(-90deg)';
   });
 
-  // ---------- popup (cria só um, se já existir usa o existente) ----------
+  // Popup de criação de pasta
   let popup = document.getElementById('cubeListPopup');
   if (!popup) {
     popup = document.createElement('div');
@@ -543,24 +540,21 @@ function updateCubeList() {
     createFolderOption.addEventListener('mouseover', () => createFolderOption.style.background = '#3a3a3a');
     createFolderOption.addEventListener('mouseout', () => createFolderOption.style.background = 'transparent');
 
-    createFolderOption.addEventListener('click', (e) => {
+    createFolderOption.addEventListener('click', () => {
       popup.style.display = 'none';
-      createFolder(); // cria com nome padrão e chama updateCubeList
+      createFolder();
     });
 
     popup.appendChild(createFolderOption);
     document.body.appendChild(popup);
 
-    // fechar se clicar fora
     document.addEventListener('click', (ev) => {
-      if (!popup) return;
       if (!popup.contains(ev.target) && !ev.target.classList.contains('cubeListAddBtn')) {
         popup.style.display = 'none';
       }
     });
   }
 
-  // mostrar popup ao clicar +
   addButton.addEventListener('click', (e) => {
     const rect = addButton.getBoundingClientRect();
     popup.style.top = `${rect.bottom + 6}px`;
@@ -568,7 +562,7 @@ function updateCubeList() {
     popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
   });
 
-  // ---------- renderizar pastas customizadas (persistentes) ----------
+  // ---------- PASTAS PERSONALIZADAS ----------
   window.customFolders.forEach(folder => {
     const newFolderDiv = document.createElement('div');
     newFolderDiv.className = 'cubeListFolder';
@@ -580,6 +574,7 @@ function updateCubeList() {
     newFolderDiv.style.gap = '8px';
     newFolderDiv.style.color = '#fff';
     newFolderDiv.style.marginBottom = '4px';
+    newFolderDiv.style.marginLeft = '0px'; // <-- agora mesma posição que os cubos
 
     const folderIcon = document.createElement('img');
     folderIcon.src = 'resources/images/ui/icons/folder.svg';
@@ -593,7 +588,7 @@ function updateCubeList() {
     folderText.textContent = folder.name;
     newFolderDiv.appendChild(folderText);
 
-    // renomear com dblclick — atualiza customFolders e re-render
+    // Renomear com duplo clique
     folderText.addEventListener('dblclick', (ev) => {
       ev.stopPropagation();
       const input = document.createElement('input');
@@ -605,39 +600,27 @@ function updateCubeList() {
       input.style.border = '1px solid #666';
       input.style.background = '#222';
       input.style.color = '#fff';
-
       newFolderDiv.replaceChild(input, folderText);
       input.focus();
 
-      function finishRename() {
-        const val = input.value.trim();
-        if (val) folder.name = val;
+      input.addEventListener('blur', () => {
+        folder.name = input.value.trim() || folder.name;
         updateCubeList();
-      }
-
-      input.addEventListener('blur', finishRename);
-      input.addEventListener('keydown', (ke) => {
-        if (ke.key === 'Enter') input.blur();
-        if (ke.key === 'Escape') {
-          updateCubeList();
-        }
+      });
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') input.blur();
+        if (e.key === 'Escape') updateCubeList();
       });
     });
 
-    // garantir recuo visual dentro da Project
-    newFolderDiv.style.marginLeft = '0px';
     projectContent.appendChild(newFolderDiv);
   });
 
-  // ---------- renderizar objetos da cena (recuados dentro do projectContent) ----------
-  // Recolher todos os meshes com nome (mantém ordem do array cubes se preferir)
-  // Usar seu array `cubes` se quiser preservar ordem/seleção; aqui uso `cubes` quando presente.
+  // ---------- OBJETOS DA CENA ----------
   const listObjects = (typeof cubes !== 'undefined' && Array.isArray(cubes)) ? cubes : scene.children.filter(o => o.isMesh);
 
   listObjects.forEach((obj) => {
-    if (!obj) return;
-    // aceitar apenas meshes com name (como seu fluxo atual)
-    if (!obj.isMesh || !obj.name) return;
+    if (!obj || !obj.isMesh || !obj.name) return;
 
     const item = document.createElement('div');
     item.className = 'cubeListItem';
@@ -649,9 +632,8 @@ function updateCubeList() {
     item.style.color = '#ddd';
     item.style.gap = '8px';
     item.style.marginBottom = '2px';
-    item.style.marginLeft = '18px'; // recuo dentro da Project for objects
+    item.style.marginLeft = '0px'; // <-- mesmo alinhamento que pastas
     item.style.transition = 'background 0.12s';
-
     item.addEventListener('mouseover', () => item.style.background = '#333');
     item.addEventListener('mouseout', () => item.style.background = 'transparent');
 
@@ -661,67 +643,42 @@ function updateCubeList() {
     icon.style.height = '18px';
     icon.style.objectFit = 'contain';
 
-    // escolhe o ícone com base na geometria.type quando disponível
-    let geomType = (obj.geometry && obj.geometry.type) ? obj.geometry.type : null;
-    // alguns objetos (como loaded models) não têm geometry; tentamos userData.createdBy como fallback
-    if (!geomType && obj.userData && obj.userData.createdBy) {
-      const cb = obj.userData.createdBy;
-      if (cb === 'createCube') geomType = 'BoxGeometry';
-      else if (cb === 'createSphere') geomType = 'SphereGeometry';
-      else if (cb === 'createCylinder') geomType = 'CylinderGeometry';
-      else if (cb === 'createCone') geomType = 'ConeGeometry';
-      else if (cb === 'createPlane') geomType = 'PlaneGeometry';
-    }
-
-    if (geomType === 'SphereGeometry') icon.src = 'resources/images/ui/icons/sphere.png';
-    else if (geomType === 'CylinderGeometry') icon.src = 'resources/images/ui/icons/cylinder.png';
-    else if (geomType === 'ConeGeometry') icon.src = 'resources/images/ui/icons/cone.png';
-    else if (geomType === 'PlaneGeometry') icon.src = 'resources/images/ui/icons/plane.png';
-    else if (geomType === 'BoxGeometry' || geomType === 'BoxBufferGeometry' || geomType === 'Box') icon.src = 'resources/images/ui/icons/cube.png';
-    else icon.src = 'resources/images/ui/icons/object.png'; // fallback ícone genérico
+    // Detecta tipo e define ícone
+    let geomType = obj.geometry?.type || obj.userData?.createdBy || '';
+    if (geomType === 'SphereGeometry' || geomType === 'createSphere') icon.src = 'resources/images/ui/icons/sphere.png';
+    else if (geomType === 'CylinderGeometry' || geomType === 'createCylinder') icon.src = 'resources/images/ui/icons/cylinder.png';
+    else if (geomType === 'ConeGeometry' || geomType === 'createCone') icon.src = 'resources/images/ui/icons/cone.png';
+    else if (geomType === 'PlaneGeometry' || geomType === 'createPlane') icon.src = 'resources/images/ui/icons/plane.png';
+    else icon.src = 'resources/images/ui/icons/cube.png';
 
     item.appendChild(icon);
 
-    // texto com renomear por dblclick (atualiza o objeto .name)
     const text = document.createElement('span');
     text.textContent = obj.name;
     item.appendChild(text);
 
+    // Renomear objeto com duplo clique
     text.addEventListener('dblclick', (ev) => {
       ev.stopPropagation();
       const input = document.createElement('input');
       input.type = 'text';
-      input.value = obj.name || '';
+      input.value = obj.name;
       input.style.minWidth = '120px';
       input.style.padding = '2px 4px';
       input.style.borderRadius = '3px';
       input.style.border = '1px solid #666';
       input.style.background = '#222';
       input.style.color = '#fff';
-
       item.replaceChild(input, text);
       input.focus();
-
-      function finishObjRename() {
-        const v = input.value.trim();
-        if (v) obj.name = v;
+      input.addEventListener('blur', () => {
+        obj.name = input.value.trim() || obj.name;
         updateCubeList();
-      }
-      input.addEventListener('blur', finishObjRename);
-      input.addEventListener('keydown', (ke) => {
-        if (ke.key === 'Enter') input.blur();
-        if (ke.key === 'Escape') updateCubeList();
       });
-    });
-
-    // clique simples seleciona o objeto (mantém comportamento anterior)
-    item.addEventListener('click', () => {
-      selectedCube = obj;
-      updatePanelForCube(obj);
-      updateSpheresVisibility && updateSpheresVisibility();
-      // re-render selection visual
-      // (não chamamos updateCubeList aqui para evitar perder foco no input se estiver editando)
-      updateCubeList();
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') input.blur();
+        if (e.key === 'Escape') updateCubeList();
+      });
     });
 
     projectContent.appendChild(item);
@@ -842,6 +799,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
