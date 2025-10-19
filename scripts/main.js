@@ -454,6 +454,12 @@ function updateCubeList() {
   projectDiv.style.color = "#fff";
   projectDiv.style.userSelect = "none";
 
+  const expandArrow = document.createElement("span");
+  expandArrow.textContent = "▼";
+  expandArrow.style.marginRight = "6px";
+  expandArrow.style.transition = "transform 0.2s";
+  projectDiv.appendChild(expandArrow);
+
   const projectIcon = document.createElement("img");
   projectIcon.src = "resources/images/ui/icons/folder.svg";
   projectIcon.alt = "Project";
@@ -467,20 +473,13 @@ function updateCubeList() {
   projectText.style.marginLeft = "8px";
   projectDiv.appendChild(projectText);
 
-  // Botão de expandir/colapsar
-  const expandArrow = document.createElement("span");
-  expandArrow.textContent = "▼";
-  expandArrow.style.marginLeft = "8px";
-  expandArrow.style.transition = "transform 0.2s";
-  projectDiv.insertBefore(expandArrow, projectIcon);
-
   // Botão "+"
   const addButton = document.createElement("button");
   addButton.textContent = "+";
   addButton.style.marginLeft = "auto";
   addButton.style.padding = "2px 6px";
   addButton.style.cursor = "pointer";
-  addButton.style.border = "1px solid #ccc";
+  addButton.style.border = "1px solid #666";
   addButton.style.borderRadius = "3px";
   addButton.style.background = "#444";
   addButton.style.color = "#fff";
@@ -489,10 +488,10 @@ function updateCubeList() {
 
   cubeList.appendChild(projectDiv);
 
-  // Container de objetos dentro de "Project"
+  // Container de conteúdo (cubos e pastas)
   const projectContent = document.createElement("div");
   projectContent.className = "projectContent";
-  projectContent.style.marginLeft = "22px";
+  projectContent.style.marginLeft = "24px"; // 🔹 recuo visual
   projectContent.style.marginTop = "4px";
   projectContent.style.display = "block";
   cubeList.appendChild(projectContent);
@@ -506,7 +505,7 @@ function updateCubeList() {
     expandArrow.style.transform = expanded ? "rotate(0deg)" : "rotate(-90deg)";
   });
 
-  // Popup simples
+  // --- Popup simples ---
   const popup = document.createElement("div");
   popup.style.position = "absolute";
   popup.style.background = "#2a2a2a";
@@ -554,7 +553,6 @@ function updateCubeList() {
     newFolderDiv.style.borderRadius = "3px";
     newFolderDiv.style.cursor = "pointer";
     newFolderDiv.style.gap = "6px";
-    newFolderDiv.style.marginLeft = "20px";
     newFolderDiv.style.color = "#fff";
 
     const folderIcon = document.createElement("img");
@@ -569,11 +567,35 @@ function updateCubeList() {
     folderText.textContent = `Nova pasta ${folderCount}`;
     newFolderDiv.appendChild(folderText);
 
+    // 🔹 Duplicar o comportamento de renomear dos cubes
+    folderText.addEventListener("dblclick", () => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = folderText.textContent;
+      input.style.width = "120px";
+      input.style.border = "1px solid #666";
+      input.style.borderRadius = "3px";
+      input.style.background = "#222";
+      input.style.color = "#fff";
+      input.style.padding = "2px 4px";
+      newFolderDiv.replaceChild(input, folderText);
+      input.focus();
+
+      input.addEventListener("blur", () => {
+        folderText.textContent = input.value.trim() || folderText.textContent;
+        newFolderDiv.replaceChild(folderText, input);
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") input.blur();
+      });
+    });
+
     projectContent.appendChild(newFolderDiv);
     popup.style.display = "none";
   });
 
-  // Adicionar objetos da cena dentro de "Project"
+  // --- Adicionar objetos da cena dentro da Project ---
   cubes.forEach((cube) => {
     const cubeItem = document.createElement("div");
     cubeItem.className = "cubeListItem";
@@ -584,6 +606,7 @@ function updateCubeList() {
     cubeItem.style.borderRadius = "3px";
     cubeItem.style.color = "#ddd";
     cubeItem.style.gap = "6px";
+    cubeItem.style.marginLeft = "18px"; // 🔹 recuo dentro da Project
     cubeItem.style.transition = "background 0.2s";
     cubeItem.addEventListener("mouseover", () => cubeItem.style.background = "#333");
     cubeItem.addEventListener("mouseout", () => cubeItem.style.background = "transparent");
@@ -594,7 +617,7 @@ function updateCubeList() {
     icon.style.height = "20px";
     icon.style.objectFit = "contain";
 
-    // 🔹 Define o ícone dependendo do tipo de geometria
+    // 🔹 Define o ícone dependendo da geometria
     if (cube.geometry instanceof THREE.BoxGeometry) {
       icon.src = "resources/images/ui/icons/cube.png";
     } else if (cube.geometry instanceof THREE.SphereGeometry) {
@@ -606,7 +629,7 @@ function updateCubeList() {
     } else if (cube.geometry instanceof THREE.PlaneGeometry) {
       icon.src = "resources/images/ui/icons/plane.png";
     } else {
-      icon.src = "resources/images/ui/icons/object.png"; // fallback
+      icon.src = "resources/images/ui/icons/object.png";
     }
 
     cubeItem.appendChild(icon);
@@ -615,9 +638,35 @@ function updateCubeList() {
     cubeText.textContent = cube.name;
     cubeItem.appendChild(cubeText);
 
+    // Duplicar comportamento de seleção
     cubeItem.addEventListener("click", () => {
       selectedCube = cube;
       updatePanelForCube(cube);
+    });
+
+    // Duplicar comportamento de renomear
+    cubeText.addEventListener("dblclick", () => {
+      const input = document.createElement("input");
+      input.type = "text";
+      input.value = cube.name;
+      input.style.width = "120px";
+      input.style.border = "1px solid #666";
+      input.style.borderRadius = "3px";
+      input.style.background = "#222";
+      input.style.color = "#fff";
+      input.style.padding = "2px 4px";
+      cubeItem.replaceChild(input, cubeText);
+      input.focus();
+
+      input.addEventListener("blur", () => {
+        cube.name = input.value.trim() || cube.name;
+        cubeText.textContent = cube.name;
+        cubeItem.replaceChild(cubeText, input);
+      });
+
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") input.blur();
+      });
     });
 
     projectContent.appendChild(cubeItem);
@@ -738,6 +787,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
