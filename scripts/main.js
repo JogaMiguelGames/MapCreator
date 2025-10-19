@@ -439,127 +439,188 @@ function updatePanelForCube(cube){
 });
 
 function updateCubeList() {
-  cubeListDiv.innerHTML = '';
+  const cubeList = document.getElementById("cubeList");
+  cubeList.innerHTML = "";
 
-  // --- Pasta Project ---
-  const projectDiv = document.createElement('div');
-  projectDiv.className = 'cubeListFolder';
-  projectDiv.style.display = 'flex';
-  projectDiv.style.alignItems = 'center';
-  projectDiv.style.padding = '4px 8px';
-  projectDiv.style.borderRadius = '3px';
-  projectDiv.style.cursor = 'pointer';
-  projectDiv.style.gap = '6px';
-  projectDiv.style.fontWeight = 'bold';
+  // Criar o container principal "Project"
+  const projectDiv = document.createElement("div");
+  projectDiv.className = "cubeListProject";
+  projectDiv.style.display = "flex";
+  projectDiv.style.alignItems = "center";
+  projectDiv.style.padding = "6px 8px";
+  projectDiv.style.borderRadius = "4px";
+  projectDiv.style.cursor = "pointer";
+  projectDiv.style.background = "#2a2a2a";
+  projectDiv.style.color = "#fff";
+  projectDiv.style.userSelect = "none";
 
-  const folderIcon = document.createElement('img');
-  folderIcon.src = 'resources/images/ui/icons/folder.svg';
-  folderIcon.alt = 'Project Folder';
-  folderIcon.style.width = '20px';
-  folderIcon.style.height = '20px';
-  folderIcon.style.objectFit = 'contain';
-  projectDiv.appendChild(folderIcon);
+  const projectIcon = document.createElement("img");
+  projectIcon.src = "resources/images/ui/icons/folder.svg";
+  projectIcon.alt = "Project";
+  projectIcon.style.width = "20px";
+  projectIcon.style.height = "20px";
+  projectIcon.style.objectFit = "contain";
+  projectDiv.appendChild(projectIcon);
 
-  const folderText = document.createElement('span');
-  folderText.textContent = 'Project';
-  projectDiv.appendChild(folderText);
+  const projectText = document.createElement("span");
+  projectText.textContent = "Project";
+  projectText.style.marginLeft = "8px";
+  projectDiv.appendChild(projectText);
 
-  cubeListDiv.appendChild(projectDiv);
+  // Botão de expandir/colapsar
+  const expandArrow = document.createElement("span");
+  expandArrow.textContent = "▼";
+  expandArrow.style.marginLeft = "8px";
+  expandArrow.style.transition = "transform 0.2s";
+  projectDiv.insertBefore(expandArrow, projectIcon);
 
-  // --- Cubos dentro da pasta (recuados) ---
-  cubes.forEach(cube => {
-    const name = cube.name || 'Unnamed';
-  
-    const div = document.createElement('div');
-    div.className = 'cubeListItem';
-    div.style.display = 'flex';
-    div.style.alignItems = 'center';
-    div.style.padding = '4px 8px';
-    div.style.borderRadius = '3px';
-    div.style.cursor = 'pointer';
-    div.style.gap = '6px';
-    div.style.marginLeft = '24px'; // recuo dentro da pasta
-  
-    // Ícone do cubo / esfera
-    const iconWrapper = document.createElement('div');
-    iconWrapper.style.position = 'relative';
-    iconWrapper.style.width = '20px';
-    iconWrapper.style.height = '20px';
-  
-    const icon = document.createElement('img');
-  
-    if (cube.geometry) {
-      const type = cube.geometry.type;
-      if (type === 'SphereGeometry') {
-        icon.src = 'resources/images/ui/icons/sphere.png';
-      } else if (type === 'CylinderGeometry') {
-        icon.src = 'resources/images/ui/icons/cylinder.png';
-      } else if (type === 'ConeGeometry') {
-        icon.src = 'resources/images/ui/icons/cone.png';
-      } else if (type === 'PlaneGeometry') {
-        icon.src = 'resources/images/ui/icons/plane.png';
-      } else {
-        icon.src = 'resources/images/ui/icons/cube.png'; // padrão
-      }
+  // Botão "+"
+  const addButton = document.createElement("button");
+  addButton.textContent = "+";
+  addButton.style.marginLeft = "auto";
+  addButton.style.padding = "2px 6px";
+  addButton.style.cursor = "pointer";
+  addButton.style.border = "1px solid #ccc";
+  addButton.style.borderRadius = "3px";
+  addButton.style.background = "#444";
+  addButton.style.color = "#fff";
+  addButton.title = "Adicionar...";
+  projectDiv.appendChild(addButton);
+
+  cubeList.appendChild(projectDiv);
+
+  // Container de objetos dentro de "Project"
+  const projectContent = document.createElement("div");
+  projectContent.className = "projectContent";
+  projectContent.style.marginLeft = "22px";
+  projectContent.style.marginTop = "4px";
+  projectContent.style.display = "block";
+  cubeList.appendChild(projectContent);
+
+  // Expand/Collapse lógica
+  let expanded = true;
+  projectDiv.addEventListener("click", (e) => {
+    if (e.target === addButton) return; // não fechar ao clicar no +
+    expanded = !expanded;
+    projectContent.style.display = expanded ? "block" : "none";
+    expandArrow.style.transform = expanded ? "rotate(0deg)" : "rotate(-90deg)";
+  });
+
+  // Popup simples
+  const popup = document.createElement("div");
+  popup.style.position = "absolute";
+  popup.style.background = "#2a2a2a";
+  popup.style.border = "1px solid #555";
+  popup.style.padding = "4px";
+  popup.style.borderRadius = "4px";
+  popup.style.display = "none";
+  popup.style.zIndex = "1000";
+  popup.style.color = "#fff";
+
+  const createFolderOption = document.createElement("div");
+  createFolderOption.textContent = "Criar pasta";
+  createFolderOption.style.padding = "4px 8px";
+  createFolderOption.style.cursor = "pointer";
+  createFolderOption.addEventListener("mouseover", () => createFolderOption.style.background = "#3a3a3a");
+  createFolderOption.addEventListener("mouseout", () => createFolderOption.style.background = "transparent");
+
+  popup.appendChild(createFolderOption);
+  document.body.appendChild(popup);
+
+  // Mostrar popup ao clicar no "+"
+  addButton.addEventListener("click", (e) => {
+    const rect = addButton.getBoundingClientRect();
+    popup.style.top = `${rect.bottom + 2}px`;
+    popup.style.left = `${rect.left}px`;
+    popup.style.display = "block";
+  });
+
+  // Esconder popup ao clicar fora
+  document.addEventListener("click", (e) => {
+    if (!popup.contains(e.target) && e.target !== addButton) {
+      popup.style.display = "none";
+    }
+  });
+
+  // Criar pasta dentro de Project
+  let folderCount = 0;
+  createFolderOption.addEventListener("click", () => {
+    folderCount++;
+    const newFolderDiv = document.createElement("div");
+    newFolderDiv.className = "cubeListFolder";
+    newFolderDiv.style.display = "flex";
+    newFolderDiv.style.alignItems = "center";
+    newFolderDiv.style.padding = "4px 8px";
+    newFolderDiv.style.borderRadius = "3px";
+    newFolderDiv.style.cursor = "pointer";
+    newFolderDiv.style.gap = "6px";
+    newFolderDiv.style.marginLeft = "20px";
+    newFolderDiv.style.color = "#fff";
+
+    const folderIcon = document.createElement("img");
+    folderIcon.src = "resources/images/ui/icons/folder.svg";
+    folderIcon.alt = "Folder";
+    folderIcon.style.width = "20px";
+    folderIcon.style.height = "20px";
+    folderIcon.style.objectFit = "contain";
+    newFolderDiv.appendChild(folderIcon);
+
+    const folderText = document.createElement("span");
+    folderText.textContent = `Nova pasta ${folderCount}`;
+    newFolderDiv.appendChild(folderText);
+
+    projectContent.appendChild(newFolderDiv);
+    popup.style.display = "none";
+  });
+
+  // Adicionar objetos da cena dentro de "Project"
+  cubes.forEach((cube) => {
+    const cubeItem = document.createElement("div");
+    cubeItem.className = "cubeListItem";
+    cubeItem.style.display = "flex";
+    cubeItem.style.alignItems = "center";
+    cubeItem.style.padding = "4px 8px";
+    cubeItem.style.cursor = "pointer";
+    cubeItem.style.borderRadius = "3px";
+    cubeItem.style.color = "#ddd";
+    cubeItem.style.gap = "6px";
+    cubeItem.style.transition = "background 0.2s";
+    cubeItem.addEventListener("mouseover", () => cubeItem.style.background = "#333");
+    cubeItem.addEventListener("mouseout", () => cubeItem.style.background = "transparent");
+
+    const icon = document.createElement("img");
+    icon.alt = cube.name;
+    icon.style.width = "20px";
+    icon.style.height = "20px";
+    icon.style.objectFit = "contain";
+
+    // 🔹 Define o ícone dependendo do tipo de geometria
+    if (cube.geometry instanceof THREE.BoxGeometry) {
+      icon.src = "resources/images/ui/icons/cube.png";
+    } else if (cube.geometry instanceof THREE.SphereGeometry) {
+      icon.src = "resources/images/ui/icons/sphere.png";
+    } else if (cube.geometry instanceof THREE.CylinderGeometry) {
+      icon.src = "resources/images/ui/icons/cylinder.png";
+    } else if (cube.geometry instanceof THREE.ConeGeometry) {
+      icon.src = "resources/images/ui/icons/cone.png";
+    } else if (cube.geometry instanceof THREE.PlaneGeometry) {
+      icon.src = "resources/images/ui/icons/plane.png";
     } else {
-      icon.src = 'resources/images/ui/icons/cube.png'; // fallback
-    }
-  
-    icon.alt = 'object icon';
-    icon.style.width = '100%';
-    icon.style.height = '100%';
-    icon.style.objectFit = 'contain';
-    iconWrapper.appendChild(icon);
-  
-    // Ícone de textura (se houver)
-    if (cube.hasTexture) {
-      const textureIcon = document.createElement('img');
-      textureIcon.src = 'resources/images/ui/icons/texture.png';
-      textureIcon.alt = 'texture icon';
-      textureIcon.style.width = '12px';
-      textureIcon.style.height = '12px';
-      textureIcon.style.position = 'absolute';
-      textureIcon.style.right = '-4px';
-      textureIcon.style.bottom = '-4px';
-      iconWrapper.appendChild(textureIcon);
-    }
-  
-    div.appendChild(iconWrapper);
-  
-    // Texto do cubo
-    const text = document.createElement('span');
-    text.textContent = name;
-    div.appendChild(text);
-  
-    // Destacar cubo selecionado
-    if(cube === selectedCube){
-      div.style.backgroundColor = '#3366ff';
-      div.style.color = 'white';
+      icon.src = "resources/images/ui/icons/object.png"; // fallback
     }
 
-    // Clique simples e duplo clique
-    let clickTimer = null;
+    cubeItem.appendChild(icon);
 
-    div.addEventListener('click', () => {
-      if (clickTimer) clearTimeout(clickTimer);
-      clickTimer = setTimeout(() => {
-        selectedCube = cube;
-        updatePanelForCube(selectedCube);
-        updateCubeList();
-        updateSpheresVisibility();
-        clickTimer = null;
-      }, 250);
+    const cubeText = document.createElement("span");
+    cubeText.textContent = cube.name;
+    cubeItem.appendChild(cubeText);
+
+    cubeItem.addEventListener("click", () => {
+      selectedCube = cube;
+      updatePanelForCube(cube);
     });
 
-    div.addEventListener('dblclick', () => {
-      if (clickTimer) {
-        clearTimeout(clickTimer);
-        clickTimer = null;
-      }
-      renameCube(div, cube);
-    });
-
-    cubeListDiv.appendChild(div);
+    projectContent.appendChild(cubeItem);
   });
 }
 
@@ -677,6 +738,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
