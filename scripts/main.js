@@ -486,6 +486,35 @@ function updateCubeList() {
   projectContent.style.marginLeft = '20px';
   cubeListDiv.appendChild(projectContent);
 
+  // === Botão de adicionar pastas ===
+  const addFolderBtn = document.createElement('button');
+  addFolderBtn.id = 'addFolderBtn';
+  addFolderBtn.title = 'Add Folder';
+  addFolderBtn.style.width = '32px';
+  addFolderBtn.style.height = '32px';
+  addFolderBtn.style.borderRadius = '50%';
+  addFolderBtn.style.border = 'none';
+  addFolderBtn.style.backgroundColor = '#33cc33';
+  addFolderBtn.style.color = 'white';
+  addFolderBtn.style.fontSize = '24px';
+  addFolderBtn.style.cursor = 'pointer';
+  addFolderBtn.style.display = 'flex';
+  addFolderBtn.style.alignItems = 'center';
+  addFolderBtn.style.justifyContent = 'center';
+  addFolderBtn.style.marginLeft = '10px';
+  addFolderBtn.innerText = '+';
+  
+  // Adiciona dentro do Project
+  projectDiv.appendChild(addFolderBtn);
+  
+  // Ao clicar, cria nova pasta
+  addFolderBtn.addEventListener('click', () => {
+    const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
+    window.customFolders.push(newFolder);
+    selectedFolder = newFolder; // seleciona automaticamente a nova pasta
+    updateCubeList();
+  });
+
   // --- Pastas personalizadas dentro do Project ---
   window.customFolders = window.customFolders || [];
   window.customFolders.forEach(folder => {
@@ -744,6 +773,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
