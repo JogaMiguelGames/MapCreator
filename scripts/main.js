@@ -454,15 +454,28 @@ function createFolder(name = 'New Folder') {
 function updateCubeList() {
   cubeListDiv.innerHTML = '';
 
-  // --- Botão de adicionar pasta ---
+  // --- Botão de adicionar pasta com ícone circular ---
   const addFolderBtn = document.createElement('button');
-  addFolderBtn.textContent = 'Add Folder';
-  addFolderBtn.style.margin = '4px';
-  addFolderBtn.style.padding = '4px 8px';
-  addFolderBtn.style.cursor = 'pointer';
+    addFolderBtn.title = 'Add Folder';
+    addFolderBtn.style.width = '30px';
+    addFolderBtn.style.height = '30px';
+    addFolderBtn.style.borderRadius = '50%';
+    addFolderBtn.style.border = 'none';
+    addFolderBtn.style.backgroundColor = '#3366ff';
+    addFolderBtn.style.color = '#fff';
+    addFolderBtn.style.fontWeight = 'bold';
+    addFolderBtn.style.fontSize = '20px';
+    addFolderBtn.style.cursor = 'pointer';
+    addFolderBtn.style.display = 'flex';
+    addFolderBtn.style.alignItems = 'center';
+    addFolderBtn.style.justifyContent = 'center';
+    addFolderBtn.style.margin = '4px 0';
+    addFolderBtn.textContent = '+';
+  
   addFolderBtn.addEventListener('click', () => {
     createFolder(); // cria nova pasta com nome padrão
   });
+  
   cubeListDiv.appendChild(addFolderBtn);
 
   // --- Pasta Project ---
@@ -749,6 +762,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
