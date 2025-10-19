@@ -483,7 +483,7 @@ function updateCubeList() {
   const projectContent = document.createElement('div');
   projectContent.style.display = 'flex';
   projectContent.style.flexDirection = 'column';
-  projectContent.style.marginLeft = '100px'; // recuo de todos objetos da pasta Project
+  projectContent.style.marginLeft = '20px'; // recuo de todos objetos da pasta Project
   cubeListDiv.appendChild(projectContent);
 
   // --- Pastas personalizadas dentro do Project ---
@@ -499,7 +499,7 @@ function updateCubeList() {
     newFolderDiv.style.gap = '8px';
     newFolderDiv.style.color = '#fff';
     newFolderDiv.style.marginBottom = '4px';
-    newFolderDiv.style.marginLeft = '100px'; // recuo extra X
+    newFolderDiv.style.marginLeft = '20px'; // recuo extra X
 
     const folderIcon = document.createElement('img');
     folderIcon.src = 'resources/images/ui/icons/folder.svg';
@@ -551,7 +551,7 @@ function updateCubeList() {
     item.style.cursor = 'pointer';
     item.style.gap = '6px';
     item.style.marginBottom = '2px';
-    item.style.marginLeft = '100px'; // recuo extra X para objetos dentro do Project
+    item.style.marginLeft = '20px'; // recuo extra X para objetos dentro do Project
 
     // Ícone do cubo / esfera / cilindro / cone / plane
     const iconWrapper = document.createElement('div');
@@ -738,6 +738,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
