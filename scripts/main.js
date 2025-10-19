@@ -309,7 +309,7 @@ function onMouseMove(e){
 window.addEventListener('keydown', e => keys[e.code] = true);
 window.addEventListener('keyup', e => keys[e.code] = false);
 
-function updateCamera(delta){f
+function updateCamera(delta){
   camera.rotation.order = 'YXZ';
   camera.rotation.y = yaw;
   camera.rotation.x = pitch;
@@ -744,6 +744,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
