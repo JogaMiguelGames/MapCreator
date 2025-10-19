@@ -309,7 +309,7 @@ function onMouseMove(e){
 window.addEventListener('keydown', e => keys[e.code] = true);
 window.addEventListener('keyup', e => keys[e.code] = false);
 
-function updateCamera(delta){
+function updateCamera(delta){f
   camera.rotation.order = 'YXZ';
   camera.rotation.y = yaw;
   camera.rotation.x = pitch;
@@ -454,30 +454,6 @@ function createFolder(name = 'New Folder') {
 function updateCubeList() {
   cubeListDiv.innerHTML = '';
 
-  // --- Botão de adicionar pasta com ícone circular ---
-  const addFolderBtn = document.createElement('button');
-    addFolderBtn.title = 'Add Folder';
-    addFolderBtn.style.width = '30px';
-    addFolderBtn.style.height = '30px';
-    addFolderBtn.style.borderRadius = '50%';
-    addFolderBtn.style.border = 'none';
-    addFolderBtn.style.backgroundColor = '#3366ff';
-    addFolderBtn.style.color = '#fff';
-    addFolderBtn.style.fontWeight = 'bold';
-    addFolderBtn.style.fontSize = '20px';
-    addFolderBtn.style.cursor = 'pointer';
-    addFolderBtn.style.display = 'flex';
-    addFolderBtn.style.alignItems = 'center';
-    addFolderBtn.style.justifyContent = 'center';
-    addFolderBtn.style.margin = '4px 0';
-    addFolderBtn.textContent = '+';
-  
-  addFolderBtn.addEventListener('click', () => {
-    createFolder(); // cria nova pasta com nome padrão
-  });
-  
-  cubeListDiv.appendChild(addFolderBtn);
-
   // --- Pasta Project ---
   const projectDiv = document.createElement('div');
   projectDiv.className = 'cubeListFolder';
@@ -489,28 +465,28 @@ function updateCubeList() {
   projectDiv.style.gap = '6px';
   projectDiv.style.fontWeight = 'bold';
 
-  const projectIcon = document.createElement('img');
-  projectIcon.src = 'resources/images/ui/icons/folder.svg';
-  projectIcon.alt = 'Project Folder';
-  projectIcon.style.width = '20px';
-  projectIcon.style.height = '20px';
-  projectIcon.style.objectFit = 'contain';
-  projectDiv.appendChild(projectIcon);
+  const folderIcon = document.createElement('img');
+  folderIcon.src = 'resources/images/ui/icons/folder.svg';
+  folderIcon.alt = 'Project Folder';
+  folderIcon.style.width = '20px';
+  folderIcon.style.height = '20px';
+  folderIcon.style.objectFit = 'contain';
+  projectDiv.appendChild(folderIcon);
 
-  const projectText = document.createElement('span');
-  projectText.textContent = 'Project';
-  projectDiv.appendChild(projectText);
+  const folderText = document.createElement('span');
+  folderText.textContent = 'Project';
+  projectDiv.appendChild(folderText);
 
   cubeListDiv.appendChild(projectDiv);
 
-  // Container para objetos e pastas dentro do Project
+  // Container para objetos dentro do Project
   const projectContent = document.createElement('div');
   projectContent.style.display = 'flex';
   projectContent.style.flexDirection = 'column';
-  projectContent.style.marginLeft = '20px'; // recuo de 20px
+  projectContent.style.marginLeft = '20px';
   cubeListDiv.appendChild(projectContent);
 
-  // --- Pastas personalizadas ---
+  // --- Pastas personalizadas dentro do Project ---
   window.customFolders = window.customFolders || [];
   window.customFolders.forEach(folder => {
     const folderDiv = document.createElement('div');
@@ -518,12 +494,12 @@ function updateCubeList() {
     folderDiv.style.display = 'flex';
     folderDiv.style.alignItems = 'center';
     folderDiv.style.padding = '4px 8px';
-    folderDiv.style.borderRadius = '3px';
+    folderDiv.style.borderRadius = '4px';
     folderDiv.style.cursor = 'pointer';
-    folderDiv.style.gap = '6px';
+    folderDiv.style.gap = '8px';
     folderDiv.style.color = '#fff';
     folderDiv.style.marginBottom = '4px';
-    folderDiv.style.marginLeft = '20px'; // recuo extra
+    folderDiv.style.marginLeft = '20px'; // recuo extra X
 
     const folderIcon = document.createElement('img');
     folderIcon.src = 'resources/images/ui/icons/folder.svg';
@@ -537,6 +513,14 @@ function updateCubeList() {
     folderText.textContent = folder.name;
     folderDiv.appendChild(folderText);
 
+    // Seleção de pasta
+    folderDiv.addEventListener('click', () => {
+      selectedCube = null;        // deseleciona cubos
+      selectedFolder = folder;    // seleciona a pasta
+      updateCubeList();           // refresca destaque
+      updateSpheresVisibility();  // esconde esferas
+    });
+
     // Duplo clique para renomear pasta
     folderText.addEventListener('dblclick', () => {
       const input = document.createElement('input');
@@ -546,7 +530,6 @@ function updateCubeList() {
       input.style.padding = '2px';
       input.style.border = '1px solid #ccc';
       input.style.borderRadius = '3px';
-
       folderDiv.replaceChild(input, folderText);
       input.focus();
 
@@ -559,13 +542,18 @@ function updateCubeList() {
       input.addEventListener('keydown', e => { if(e.key==='Enter') saveName(); });
     });
 
+    // Destaque se selecionada
+    if (selectedFolder === folder) {
+      folderDiv.style.backgroundColor = '#ff9933';
+      folderDiv.style.color = 'white';
+    }
+
     projectContent.appendChild(folderDiv);
   });
 
-  // --- Objetos 3D ---
+  // --- Cubos ---
   cubes.forEach(cube => {
     const name = cube.name || 'Unnamed';
-
     const item = document.createElement('div');
     item.className = 'cubeListItem';
     item.style.display = 'flex';
@@ -575,33 +563,29 @@ function updateCubeList() {
     item.style.cursor = 'pointer';
     item.style.gap = '6px';
     item.style.marginBottom = '2px';
-    item.style.marginLeft = '20px'; // recuo extra para objetos dentro do Project
+    item.style.marginLeft = '20px';
 
-    // Ícone do cubo / esfera / cilindro / cone / plane
     const iconWrapper = document.createElement('div');
     iconWrapper.style.position = 'relative';
     iconWrapper.style.width = '20px';
     iconWrapper.style.height = '20px';
 
     const icon = document.createElement('img');
-    if(cube.geometry){
+    if (cube.geometry) {
       const type = cube.geometry.type;
-      if(type === 'SphereGeometry') icon.src = 'resources/images/ui/icons/sphere.png';
-      else if(type === 'CylinderGeometry') icon.src = 'resources/images/ui/icons/cylinder.png';
-      else if(type === 'ConeGeometry') icon.src = 'resources/images/ui/icons/cone.png';
-      else if(type === 'PlaneGeometry') icon.src = 'resources/images/ui/icons/plane.png';
+      if (type === 'SphereGeometry') icon.src = 'resources/images/ui/icons/sphere.png';
+      else if (type === 'CylinderGeometry') icon.src = 'resources/images/ui/icons/cylinder.png';
+      else if (type === 'ConeGeometry') icon.src = 'resources/images/ui/icons/cone.png';
+      else if (type === 'PlaneGeometry') icon.src = 'resources/images/ui/icons/plane.png';
       else icon.src = 'resources/images/ui/icons/cube.png';
-    } else {
-      icon.src = 'resources/images/ui/icons/cube.png';
-    }
+    } else icon.src = 'resources/images/ui/icons/cube.png';
     icon.alt = 'object icon';
     icon.style.width = '100%';
     icon.style.height = '100%';
     icon.style.objectFit = 'contain';
     iconWrapper.appendChild(icon);
 
-    // Ícone de textura se existir
-    if(cube.hasTexture){
+    if (cube.hasTexture) {
       const textureIcon = document.createElement('img');
       textureIcon.src = 'resources/images/ui/icons/texture.png';
       textureIcon.alt = 'texture icon';
@@ -614,23 +598,21 @@ function updateCubeList() {
     }
 
     item.appendChild(iconWrapper);
-
     const text = document.createElement('span');
     text.textContent = name;
     item.appendChild(text);
 
-    // Destacar cubo selecionado
-    if(cube === selectedCube){
+    if (selectedCube === cube) {
       item.style.backgroundColor = '#3366ff';
       item.style.color = 'white';
     }
 
-    // Clique simples e duplo clique
     let clickTimer = null;
     item.addEventListener('click', () => {
-      if(clickTimer) clearTimeout(clickTimer);
+      if (clickTimer) clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
         selectedCube = cube;
+        selectedFolder = null; // deseleciona pasta
         updatePanelForCube(selectedCube);
         updateCubeList();
         updateSpheresVisibility();
@@ -639,7 +621,7 @@ function updateCubeList() {
     });
 
     item.addEventListener('dblclick', () => {
-      if(clickTimer) clearTimeout(clickTimer);
+      if (clickTimer) clearTimeout(clickTimer);
       clickTimer = null;
       renameCube(item, cube);
     });
@@ -762,6 +744,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
