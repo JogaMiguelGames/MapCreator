@@ -438,96 +438,293 @@ function updatePanelForCube(cube){
   });
 });
 
-// =======================
-// Folder and Object List
-// =======================
+// manter persistência entre chamadas (não sobrescreve se já existir)
+window.customFolders = window.customFolders || [];
+window.folderCount = window.folderCount || 0;
 
-// Array para armazenar pastas criadas pelo usuário
-const customFolders = [];
-
-// Função para criar novas pastas
+// helper para criar pasta (usa o array persistente)
 function createFolder(name = 'New Folder') {
-  const folder = {
-    id: Date.now(),
-    name,
-  };
-  customFolders.push(folder);
+  window.folderCount = (window.folderCount || 0) + 1;
+  const folder = { id: Date.now() + Math.random(), name };
+  window.customFolders.push(folder);
   updateCubeList();
+  return folder;
 }
 
-// Função para atualizar a lista de objetos e pastas
+// updateCubeList completo e autocontido
 function updateCubeList() {
   const cubeList = document.getElementById('cubeList');
   if (!cubeList) return;
-
-  // Limpa lista
   cubeList.innerHTML = '';
 
-  // ========== Pasta principal "Project" ==========
-  const projectFolder = document.createElement('div');
-  projectFolder.className = 'folder';
-  projectFolder.textContent = 'Project';
-  cubeList.appendChild(projectFolder);
+  // ---------- Project header ----------
+  const projectDiv = document.createElement('div');
+  projectDiv.className = 'cubeListProject';
+  projectDiv.style.display = 'flex';
+  projectDiv.style.alignItems = 'center';
+  projectDiv.style.padding = '6px 8px';
+  projectDiv.style.borderRadius = '4px';
+  projectDiv.style.cursor = 'pointer';
+  projectDiv.style.background = '#2a2a2a';
+  projectDiv.style.color = '#fff';
+  projectDiv.style.userSelect = 'none';
 
-  // ========== Pastas criadas manualmente ==========
-  customFolders.forEach(folder => {
-    const folderDiv = document.createElement('div');
-    folderDiv.className = 'folder subfolder';
-    folderDiv.textContent = folder.name;
-    folderDiv.style.marginLeft = '20px';
-    folderDiv.dataset.folderId = folder.id;
+  const expandArrow = document.createElement('span');
+  expandArrow.textContent = '▼';
+  expandArrow.style.marginRight = '6px';
+  expandArrow.style.transition = 'transform 0.15s';
+  projectDiv.appendChild(expandArrow);
 
-    // Permitir renomear com duplo clique
-    folderDiv.addEventListener('dblclick', () => {
+  const projectIcon = document.createElement('img');
+  projectIcon.src = 'resources/images/ui/icons/folder.svg';
+  projectIcon.alt = 'Project';
+  projectIcon.style.width = '20px';
+  projectIcon.style.height = '20px';
+  projectIcon.style.objectFit = 'contain';
+  projectDiv.appendChild(projectIcon);
+
+  const projectText = document.createElement('span');
+  projectText.textContent = 'Project';
+  projectText.style.marginLeft = '8px';
+  projectDiv.appendChild(projectText);
+
+  // botão +
+  const addButton = document.createElement('button');
+  addButton.className = 'cubeListAddBtn';
+  addButton.textContent = '+';
+  addButton.style.marginLeft = 'auto';
+  addButton.style.padding = '2px 6px';
+  addButton.style.cursor = 'pointer';
+  addButton.style.border = '1px solid #666';
+  addButton.style.borderRadius = '3px';
+  addButton.style.background = '#444';
+  addButton.style.color = '#fff';
+  addButton.title = 'Adicionar...';
+  projectDiv.appendChild(addButton);
+
+  cubeList.appendChild(projectDiv);
+
+  // container que guarda o conteúdo (pastas e objetos) com recuo
+  const projectContent = document.createElement('div');
+  projectContent.className = 'projectContent';
+  projectContent.style.marginLeft = '24px';
+  projectContent.style.marginTop = '4px';
+  projectContent.style.display = 'block';
+  cubeList.appendChild(projectContent);
+
+  // expand/collapse
+  let expanded = true;
+  projectDiv.addEventListener('click', (e) => {
+    if (e.target === addButton) return; // não toggle ao clicar no +
+    expanded = !expanded;
+    projectContent.style.display = expanded ? 'block' : 'none';
+    expandArrow.style.transform = expanded ? 'rotate(0deg)' : 'rotate(-90deg)';
+  });
+
+  // ---------- popup (cria só um, se já existir usa o existente) ----------
+  let popup = document.getElementById('cubeListPopup');
+  if (!popup) {
+    popup = document.createElement('div');
+    popup.id = 'cubeListPopup';
+    popup.style.position = 'absolute';
+    popup.style.background = '#2a2a2a';
+    popup.style.border = '1px solid #555';
+    popup.style.padding = '6px';
+    popup.style.borderRadius = '6px';
+    popup.style.display = 'none';
+    popup.style.zIndex = '10000';
+    popup.style.minWidth = '120px';
+    popup.style.color = '#fff';
+
+    const createFolderOption = document.createElement('div');
+    createFolderOption.textContent = 'Criar pasta';
+    createFolderOption.style.padding = '6px';
+    createFolderOption.style.cursor = 'pointer';
+    createFolderOption.addEventListener('mouseover', () => createFolderOption.style.background = '#3a3a3a');
+    createFolderOption.addEventListener('mouseout', () => createFolderOption.style.background = 'transparent');
+
+    createFolderOption.addEventListener('click', (e) => {
+      popup.style.display = 'none';
+      createFolder(); // cria com nome padrão e chama updateCubeList
+    });
+
+    popup.appendChild(createFolderOption);
+    document.body.appendChild(popup);
+
+    // fechar se clicar fora
+    document.addEventListener('click', (ev) => {
+      if (!popup) return;
+      if (!popup.contains(ev.target) && !ev.target.classList.contains('cubeListAddBtn')) {
+        popup.style.display = 'none';
+      }
+    });
+  }
+
+  // mostrar popup ao clicar +
+  addButton.addEventListener('click', (e) => {
+    const rect = addButton.getBoundingClientRect();
+    popup.style.top = `${rect.bottom + 6}px`;
+    popup.style.left = `${rect.left}px`;
+    popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+  });
+
+  // ---------- renderizar pastas customizadas (persistentes) ----------
+  window.customFolders.forEach(folder => {
+    const newFolderDiv = document.createElement('div');
+    newFolderDiv.className = 'cubeListFolder';
+    newFolderDiv.style.display = 'flex';
+    newFolderDiv.style.alignItems = 'center';
+    newFolderDiv.style.padding = '4px 8px';
+    newFolderDiv.style.borderRadius = '4px';
+    newFolderDiv.style.cursor = 'pointer';
+    newFolderDiv.style.gap = '8px';
+    newFolderDiv.style.color = '#fff';
+    newFolderDiv.style.marginBottom = '4px';
+
+    const folderIcon = document.createElement('img');
+    folderIcon.src = 'resources/images/ui/icons/folder.svg';
+    folderIcon.alt = 'Folder';
+    folderIcon.style.width = '18px';
+    folderIcon.style.height = '18px';
+    folderIcon.style.objectFit = 'contain';
+    newFolderDiv.appendChild(folderIcon);
+
+    const folderText = document.createElement('span');
+    folderText.textContent = folder.name;
+    newFolderDiv.appendChild(folderText);
+
+    // renomear com dblclick — atualiza customFolders e re-render
+    folderText.addEventListener('dblclick', (ev) => {
+      ev.stopPropagation();
       const input = document.createElement('input');
       input.type = 'text';
       input.value = folder.name;
-      input.className = 'renameInput';
-      folderDiv.replaceWith(input);
+      input.style.minWidth = '120px';
+      input.style.padding = '2px 4px';
+      input.style.borderRadius = '3px';
+      input.style.border = '1px solid #666';
+      input.style.background = '#222';
+      input.style.color = '#fff';
+
+      newFolderDiv.replaceChild(input, folderText);
       input.focus();
 
-      input.addEventListener('blur', () => {
-        folder.name = input.value.trim() || folder.name;
+      function finishRename() {
+        const val = input.value.trim();
+        if (val) folder.name = val;
         updateCubeList();
-      });
+      }
 
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') input.blur();
+      input.addEventListener('blur', finishRename);
+      input.addEventListener('keydown', (ke) => {
+        if (ke.key === 'Enter') input.blur();
+        if (ke.key === 'Escape') {
+          updateCubeList();
+        }
       });
     });
 
-    cubeList.appendChild(folderDiv);
+    // garantir recuo visual dentro da Project
+    newFolderDiv.style.marginLeft = '0px';
+    projectContent.appendChild(newFolderDiv);
   });
 
-  // ========== Objetos da cena ==========
-  scene.traverse(obj => {
-    if (obj.isMesh && obj.name) {
-      const item = document.createElement('div');
-      item.className = 'cubeItem';
-      item.textContent = obj.name;
+  // ---------- renderizar objetos da cena (recuados dentro do projectContent) ----------
+  // Recolher todos os meshes com nome (mantém ordem do array cubes se preferir)
+  // Usar seu array `cubes` se quiser preservar ordem/seleção; aqui uso `cubes` quando presente.
+  const listObjects = (typeof cubes !== 'undefined' && Array.isArray(cubes)) ? cubes : scene.children.filter(o => o.isMesh);
 
-      // Define o ícone de acordo com o tipo de objeto
-      const icon = document.createElement('img');
-      icon.className = 'objectIcon';
+  listObjects.forEach((obj) => {
+    if (!obj) return;
+    // aceitar apenas meshes com name (como seu fluxo atual)
+    if (!obj.isMesh || !obj.name) return;
 
-      if (obj.userData.createdBy === 'createCube') {
-        icon.src = 'resources/images/ui/icons/cube.png';
-      } else if (obj.userData.createdBy === 'createCylinder') {
-        icon.src = 'resources/images/ui/icons/cylinder.png';
-      } else if (obj.userData.createdBy === 'createCone') {
-        icon.src = 'resources/images/ui/icons/cone.png';
-      } else if (obj.userData.createdBy === 'createPlane') {
-        icon.src = 'resources/images/ui/icons/plane.png';
-      } else {
-        icon.src = 'resources/images/ui/icons/default.png';
-      }
+    const item = document.createElement('div');
+    item.className = 'cubeListItem';
+    item.style.display = 'flex';
+    item.style.alignItems = 'center';
+    item.style.padding = '4px 8px';
+    item.style.cursor = 'pointer';
+    item.style.borderRadius = '3px';
+    item.style.color = '#ddd';
+    item.style.gap = '8px';
+    item.style.marginBottom = '2px';
+    item.style.marginLeft = '18px'; // recuo dentro da Project for objects
+    item.style.transition = 'background 0.12s';
 
-      item.prepend(icon);
+    item.addEventListener('mouseover', () => item.style.background = '#333');
+    item.addEventListener('mouseout', () => item.style.background = 'transparent');
 
-      // Alinhamento dentro das pastas
-      item.style.marginLeft = '40px';
-      cubeList.appendChild(item);
+    const icon = document.createElement('img');
+    icon.alt = obj.name;
+    icon.style.width = '18px';
+    icon.style.height = '18px';
+    icon.style.objectFit = 'contain';
+
+    // escolhe o ícone com base na geometria.type quando disponível
+    let geomType = (obj.geometry && obj.geometry.type) ? obj.geometry.type : null;
+    // alguns objetos (como loaded models) não têm geometry; tentamos userData.createdBy como fallback
+    if (!geomType && obj.userData && obj.userData.createdBy) {
+      const cb = obj.userData.createdBy;
+      if (cb === 'createCube') geomType = 'BoxGeometry';
+      else if (cb === 'createSphere') geomType = 'SphereGeometry';
+      else if (cb === 'createCylinder') geomType = 'CylinderGeometry';
+      else if (cb === 'createCone') geomType = 'ConeGeometry';
+      else if (cb === 'createPlane') geomType = 'PlaneGeometry';
     }
+
+    if (geomType === 'SphereGeometry') icon.src = 'resources/images/ui/icons/sphere.png';
+    else if (geomType === 'CylinderGeometry') icon.src = 'resources/images/ui/icons/cylinder.png';
+    else if (geomType === 'ConeGeometry') icon.src = 'resources/images/ui/icons/cone.png';
+    else if (geomType === 'PlaneGeometry') icon.src = 'resources/images/ui/icons/plane.png';
+    else if (geomType === 'BoxGeometry' || geomType === 'BoxBufferGeometry' || geomType === 'Box') icon.src = 'resources/images/ui/icons/cube.png';
+    else icon.src = 'resources/images/ui/icons/object.png'; // fallback ícone genérico
+
+    item.appendChild(icon);
+
+    // texto com renomear por dblclick (atualiza o objeto .name)
+    const text = document.createElement('span');
+    text.textContent = obj.name;
+    item.appendChild(text);
+
+    text.addEventListener('dblclick', (ev) => {
+      ev.stopPropagation();
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = obj.name || '';
+      input.style.minWidth = '120px';
+      input.style.padding = '2px 4px';
+      input.style.borderRadius = '3px';
+      input.style.border = '1px solid #666';
+      input.style.background = '#222';
+      input.style.color = '#fff';
+
+      item.replaceChild(input, text);
+      input.focus();
+
+      function finishObjRename() {
+        const v = input.value.trim();
+        if (v) obj.name = v;
+        updateCubeList();
+      }
+      input.addEventListener('blur', finishObjRename);
+      input.addEventListener('keydown', (ke) => {
+        if (ke.key === 'Enter') input.blur();
+        if (ke.key === 'Escape') updateCubeList();
+      });
+    });
+
+    // clique simples seleciona o objeto (mantém comportamento anterior)
+    item.addEventListener('click', () => {
+      selectedCube = obj;
+      updatePanelForCube(obj);
+      updateSpheresVisibility && updateSpheresVisibility();
+      // re-render selection visual
+      // (não chamamos updateCubeList aqui para evitar perder foco no input se estiver editando)
+      updateCubeList();
+    });
+
+    projectContent.appendChild(item);
   });
 }
 
