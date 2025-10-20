@@ -571,10 +571,12 @@ function updateCubeList() {
       input.addEventListener('keydown', e => { if(e.key==='Enter') saveName(); });
     });
 
-    // Destaque se selecionada
     if (selectedFolder === folder) {
-      folderDiv.style.backgroundColor = '#ff9933';
+      folderDiv.style.backgroundColor = '#3366ff'; // azul igual aos cubos
       folderDiv.style.color = 'white';
+    } else {
+      folderDiv.style.backgroundColor = ''; // reset
+      folderDiv.style.color = '#fff';
     }
 
     projectContent.appendChild(folderDiv);
@@ -713,15 +715,30 @@ document.addEventListener('keydown', e => {
   const tag = document.activeElement.tagName;
   const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
 
-  if ((e.key === 'Delete' || e.key === 'Backspace') && !isTyping && selectedCube) {
+  if ((e.key === 'Delete' || e.key === 'Backspace') && !isTyping) {
     e.preventDefault();
-    const idx = cubes.indexOf(selectedCube);
-    if (idx !== -1) {
-      scene.remove(selectedCube);
-      cubes.splice(idx, 1);
-      selectedCube = cubes[idx - 1] || cubes[0] || null;
-      updatePanelForCube(selectedCube);
-      updateCubeList();
+
+    // Deletar cubo
+    if (selectedCube) {
+      const idx = cubes.indexOf(selectedCube);
+      if (idx !== -1) {
+        scene.remove(selectedCube);
+        cubes.splice(idx, 1);
+        selectedCube = cubes[idx - 1] || cubes[0] || null;
+        updatePanelForCube(selectedCube);
+        updateCubeList();
+      }
+      return; // importante: não tentar deletar pasta ao mesmo tempo
+    }
+
+    // Deletar pasta
+    if (selectedFolder) {
+      const idx = window.customFolders.indexOf(selectedFolder);
+      if (idx !== -1) {
+        window.customFolders.splice(idx, 1);
+        selectedFolder = null;
+        updateCubeList();
+      }
     }
   }
 });
@@ -773,6 +790,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
