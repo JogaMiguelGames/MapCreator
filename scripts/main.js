@@ -544,14 +544,16 @@ function updateCubeList() {
 
     // Seleção de pasta
     folderDiv.addEventListener('click', () => {
-      selectedCube = null;        // deseleciona cubos
-      selectedFolder = folder;    // seleciona a pasta
-      updateCubeList();           // refresca destaque
-      updateSpheresVisibility();  // esconde esferas
+      if(folderDiv.dataset.editing === 'true') return; // não altera seleção se estiver editando
+      selectedCube = null;        
+      selectedFolder = folder;    
+      updateCubeList();           
+      updateSpheresVisibility();  
     });
 
     // Duplo clique para renomear pasta
-    folderText.addEventListener('dblclick', () => {
+    folderText.addEventListener('dblclick', (e) => {
+      e.stopPropagation(); // evita que o clique duplo selecione a pasta
       const input = document.createElement('input');
       input.type = 'text';
       input.value = folder.name;
@@ -559,14 +561,18 @@ function updateCubeList() {
       input.style.padding = '2px';
       input.style.border = '1px solid #ccc';
       input.style.borderRadius = '3px';
+    
       folderDiv.replaceChild(input, folderText);
       input.focus();
-
+    
+      folderDiv.dataset.editing = 'true'; // marca que está editando
+    
       function saveName() {
         folder.name = input.value.trim() || 'Unnamed Folder';
+        folderDiv.dataset.editing = 'false';
         updateCubeList();
       }
-
+    
       input.addEventListener('blur', saveName);
       input.addEventListener('keydown', e => { if(e.key==='Enter') saveName(); });
     });
@@ -790,6 +796,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
