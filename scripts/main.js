@@ -452,6 +452,9 @@ function createFolder(name = 'New Folder') {
 }
 
 function updateCubeList() {
+  // Se estiver renomeando uma pasta, não atualiza a lista
+  if (window.isRenamingFolder) return;
+
   cubeListDiv.innerHTML = '';
 
   // --- Pasta Project ---
@@ -486,7 +489,7 @@ function updateCubeList() {
   projectContent.style.marginLeft = '20px';
   cubeListDiv.appendChild(projectContent);
 
-  // === Botão de adicionar pastas ===
+  // --- Botão de adicionar pastas ---
   const addFolderBtn = document.createElement('button');
   addFolderBtn.id = 'addFolderBtn';
   addFolderBtn.title = 'Add Folder';
@@ -503,20 +506,17 @@ function updateCubeList() {
   addFolderBtn.style.justifyContent = 'center';
   addFolderBtn.style.marginLeft = '10px';
   addFolderBtn.innerText = '+';
-  
-  // Adiciona dentro do Project
+
   projectDiv.appendChild(addFolderBtn);
-  
-  // Ao clicar, cria nova pasta
+
   addFolderBtn.addEventListener('click', () => {
     const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
     window.customFolders.push(newFolder);
-    selectedFolder = newFolder; // seleciona automaticamente a nova pasta
+    selectedFolder = newFolder;
     updateCubeList();
   });
 
   // --- Pastas personalizadas dentro do Project ---
-  window.customFolders = window.customFolders || [];
   window.customFolders.forEach(folder => {
     const folderDiv = document.createElement('div');
     folderDiv.className = 'cubeListFolder';
@@ -528,7 +528,7 @@ function updateCubeList() {
     folderDiv.style.gap = '8px';
     folderDiv.style.color = '#fff';
     folderDiv.style.marginBottom = '4px';
-    folderDiv.style.marginLeft = '20px'; // recuo extra X
+    folderDiv.style.marginLeft = '20px';
 
     const folderIcon = document.createElement('img');
     folderIcon.src = 'resources/images/ui/icons/folder.svg';
@@ -544,16 +544,18 @@ function updateCubeList() {
 
     // Seleção de pasta
     folderDiv.addEventListener('click', () => {
-      if(folderDiv.dataset.editing === 'true') return; // não altera seleção se estiver editando
-      selectedCube = null;        
-      selectedFolder = folder;    
-      updateCubeList();           
-      updateSpheresVisibility();  
+      if(folderDiv.dataset.editing === 'true') return;
+      selectedCube = null;
+      selectedFolder = folder;
+      updateCubeList();
+      updateSpheresVisibility();
     });
 
     // Duplo clique para renomear pasta
     folderText.addEventListener('dblclick', (e) => {
-      e.stopPropagation(); // evita que o clique duplo selecione a pasta
+      e.stopPropagation();
+      window.isRenamingFolder = true;
+
       const input = document.createElement('input');
       input.type = 'text';
       input.value = folder.name;
@@ -561,27 +563,28 @@ function updateCubeList() {
       input.style.padding = '2px';
       input.style.border = '1px solid #ccc';
       input.style.borderRadius = '3px';
-    
+
       folderDiv.replaceChild(input, folderText);
       input.focus();
-    
-      folderDiv.dataset.editing = 'true'; // marca que está editando
-    
+
+      folderDiv.dataset.editing = 'true';
+
       function saveName() {
         folder.name = input.value.trim() || 'Unnamed Folder';
         folderDiv.dataset.editing = 'false';
+        window.isRenamingFolder = false;
         updateCubeList();
       }
-    
+
       input.addEventListener('blur', saveName);
       input.addEventListener('keydown', e => { if(e.key==='Enter') saveName(); });
     });
 
     if (selectedFolder === folder) {
-      folderDiv.style.backgroundColor = '#3366ff'; // azul igual aos cubos
+      folderDiv.style.backgroundColor = '#3366ff';
       folderDiv.style.color = 'white';
     } else {
-      folderDiv.style.backgroundColor = ''; // reset
+      folderDiv.style.backgroundColor = '';
       folderDiv.style.color = '#fff';
     }
 
@@ -635,6 +638,7 @@ function updateCubeList() {
     }
 
     item.appendChild(iconWrapper);
+
     const text = document.createElement('span');
     text.textContent = name;
     item.appendChild(text);
@@ -649,7 +653,7 @@ function updateCubeList() {
       if (clickTimer) clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
         selectedCube = cube;
-        selectedFolder = null; // deseleciona pasta
+        selectedFolder = null;
         updatePanelForCube(selectedCube);
         updateCubeList();
         updateSpheresVisibility();
@@ -796,6 +800,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
