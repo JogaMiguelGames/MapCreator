@@ -1,244 +1,231 @@
-const gconsole = { 
+// ===================== SCRIPTING.JS =====================
+
+const gconsole = {
   print: (text) => {
     const output = document.getElementById('scriptOutput');
     output.textContent += text + '\n';
     output.scrollTop = output.scrollHeight;
+  },
+  clear: () => {
+    const output = document.getElementById('scriptOutput');
+    output.textContent = '';
   }
 };
 
 const variables = {};
 const functions = {};
-let stopRequested = false; // ← controla a parada da execução
-
+let isRunning = false;
+let stopRequested = false;
 let audioContext = null;
 let globalVolume = 0.2;
 
 const noteFrequencies = {
-  'C4': 261.63, 'C#4': 277.18, 'Db4': 277.18, 'D4': 293.66, 'D#4': 311.13,
-  'Eb4': 311.13, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'Gb4': 369.99,
-  'G4': 392.00, 'G#4': 415.30, 'Ab4': 415.30, 'A4': 440.00, 'A#4': 466.16,
-  'Bb4': 466.16, 'B4': 493.88
+  'C4': 261.63, 'C#4': 277.18, 'Db4': 277.18,
+  'D4': 293.66, 'D#4': 311.13, 'Eb4': 311.13,
+  'E4': 329.63,
+  'F4': 349.23, 'F#4': 369.99, 'Gb4': 369.99,
+  'G4': 392.00, 'G#4': 415.30, 'Ab4': 415.30,
+  'A4': 440.00, 'A#4': 466.16, 'Bb4': 466.16,
+  'B4': 493.88
 };
 
-function safeMathEval(expr) {
-  const allowedFunctions = ['sin', 'cos', 'tan', 'sqrt', 'abs', 'log', 'pow', 'max', 'min', 'round', 'floor', 'ceil', 'random'];
-  if (!/^[0-9+\-*/%^()., \[\]a-zA-Z0-9_]+$/.test(expr)) throw new Error('Invalid expression');
-  const exprWithMath = expr.replace(/([a-zA-Z]+)\(/g, (m, f) => {
-    if (f === 'random') return `__custom_random__(`;
-    if (allowedFunctions.includes(f)) return `Math.${f}(`;
-    throw new Error('Function not allowed: ' + f);
-  });
-  const exprWithVars = exprWithMath.replace(/\b([a-zA-Z_]\w*(?:\[\d+\])?)\b/g, (match) => {
-    if (match.includes('[')) {
-      const varName = match.split('[')[0];
-      const index = parseInt(match.match(/\[(\d+)\]/)[1]) - 1;
-      if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
-        if (index < 0 || index >= variables[varName].length) throw new Error('Array index out of bounds: ' + match);
-        return variables[varName][index];
-      } else {
-        throw new Error('Invalid array access: ' + match);
-      }
-    } else if (variables.hasOwnProperty(match)) {
-      return variables[match];
-    } else {
-      return match;
-    }
-  });
-
-  const __custom_random__ = (a = 0, b = 1, decimals = 10) => {
-    if (typeof a !== 'number' || typeof b !== 'number' || typeof decimals !== 'number') throw new Error('Invalid arguments for random');
-    if (decimals < 0) decimals = 0;
-    const rand = Math.random() * (b - a) + a;
-    const factor = Math.pow(10, decimals);
-    return Math.round(rand * factor) / factor;
-  };
-
-  return Function('__custom_random__', '"use strict"; return (' + exprWithVars + ')')(__custom_random__);
-}
-
-async function playTone(freq, duration) {
-  if (stopRequested) return;
+function playTone(note, duration = 0.3) {
   if (!audioContext) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
-  if (freq <= 0 || duration <= 0) return;
-
-  const oscillator = audioContext.createOscillator();
+  const frequency = noteFrequencies[note];
+  if (!frequency) {
+    gconsole.print(`Invalid note: ${note}`);
+    return;
+  }
+  const osc = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
-
-  oscillator.type = 'square';
-  oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
-  gainNode.gain.setValueAtTime(globalVolume, audioContext.currentTime);
-
-  oscillator.connect(gainNode).connect(audioContext.destination);
-  oscillator.start();
-  oscillator.stop(audioContext.currentTime + duration);
-
-  await new Promise(resolve => { oscillator.onended = resolve; });
+  gainNode.gain.value = globalVolume;
+  osc.frequency.value = frequency;
+  osc.connect(gainNode);
+  gainNode.connect(audioContext.destination);
+  osc.start();
+  osc.stop(audioContext.currentTime + duration);
 }
 
-function setWireframeForAllObjects(enabled) {
-  scene.traverse(obj => {
-    if (obj.isMesh) {
-      const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
-      materials.forEach(mat => { if (mat && 'wireframe' in mat) mat.wireframe = enabled; });
-    }
-  });
-}
-
-async function runLines(lines) {
-  let i = 0;
-  while (i < lines.length) {
-    if (stopRequested) return;
-    const line = lines[i].trim();
-    if (line === '') { i++; continue; }
-
-    // Funções literais
-    if (line.startsWith('function ') && line.endsWith('()')) {
-      const funcName = line.match(/^function\s+(\w+)\(\)$/)[1];
-      const funcBody = [];
-      i++;
-      while (i < lines.length && lines[i].trim() !== 'end') { funcBody.push(lines[i]); i++; }
-      if (i >= lines.length) { gconsole.print('Error: function not terminated -> ' + funcName); return; }
-      functions[funcName] = funcBody;
-      i++;
-      continue;
-    }
-
-    // Chamada de função
-    if (line.startsWith('call.function(') && line.endsWith(')')) {
-      const funcName = line.slice(14, -1).trim();
-      if (functions[funcName]) await runLines(functions[funcName]);
-      else gconsole.print('Error: function not defined -> ' + funcName);
-      i++;
-      continue;
-    }
-
-    // Repetição
-    if (line.startsWith('repeat(') && line.endsWith(')')) {
-      const count = parseInt(line.slice(7, -1).trim());
-      const repeatBody = [];
-      i++;
-      while (i < lines.length && lines[i].trim() !== 'end') { repeatBody.push(lines[i]); i++; }
-      if (i >= lines.length) { gconsole.print('Error: repeat block not terminated'); return; }
-      for (let r = 0; r < count; r++) {
-        if (stopRequested) return;
-        await runLines([...repeatBody]);
-      }
-      i++;
-      continue;
-    }
-
-    // Loop infinito
-    if (line === 'loop') {
-      const loopBody = [];
-      i++;
-      while (i < lines.length && lines[i].trim() !== 'end') { loopBody.push(lines[i]); i++; }
-      if (i >= lines.length) { gconsole.print('Error: loop block not terminated'); return; }
-      while (!stopRequested) {
-        await runLines([...loopBody]);
-      }
-      return;
-    }
-
-    // Variável sendo chamada como função
-    if (/^[a-zA-Z_]\w*\(\)$/.test(line)) {
-      const varName = line.slice(0, -2);
-      if (variables.hasOwnProperty(varName) && typeof variables[varName] === 'function') {
-        try { variables[varName](); }
-        catch { gconsole.print('Error executing function variable -> ' + varName); }
-      } else gconsole.print('Error: invalid function call -> ' + varName);
-      i++;
-      continue;
-    }
-
-    // Atribuição
-    if (/^[a-zA-Z_]\w*\s*=/.test(line)) {
-      const [varName, ...rest] = line.split('=');
-      const valueRaw = rest.join('=').trim();
-      const name = varName.trim();
-      try {
-        if ((valueRaw.startsWith('"') && valueRaw.endsWith('"')) || (valueRaw.startsWith("'") && valueRaw.endsWith("'"))) {
-          variables[name] = valueRaw.slice(1, -1);
-        } else if (!isNaN(Number(valueRaw))) {
-          variables[name] = Number(valueRaw);
-        } else if (valueRaw.startsWith('[') && valueRaw.endsWith(']')) {
-          const arr = JSON.parse(valueRaw);
-          if (Array.isArray(arr)) variables[name] = arr;
-          else gconsole.print('Error: invalid array -> ' + valueRaw);
-        } else if (valueRaw.startsWith('create.new.')) {
-          const type = valueRaw.slice(11);
-          variables[name] = () => {
-            switch (type) {
-              case 'cube': if (typeof createCube === 'function') createCube(); else gconsole.print('Error: createCube not available'); break;
-              case 'sphere': if (typeof createSphere === 'function') createSphere(); else gconsole.print('Error: createSphere not available'); break;
-              case 'cylinder': if (typeof createCylinder === 'function') createCylinder(); else gconsole.print('Error: createCylinder not available'); break;
-              case 'cone': if (typeof createCone === 'function') createCone(); else gconsole.print('Error: createCone not available'); break;
-              case 'plane': if (typeof createPlane === 'function') createPlane(); else gconsole.print('Error: createPlane not available'); break;
-              default: gconsole.print('Error: unknown create type -> ' + type);
-            }
-          };
-        } else variables[name] = safeMathEval(valueRaw);
-      } catch { gconsole.print('Error: invalid value -> ' + valueRaw); }
-      i++;
-      continue;
-    }
-
-    // Print
-    if ((line.startsWith('gconsole.print(') || line.startsWith('console.print(')) && line.endsWith(')')) {
-      let param = line.slice(line.indexOf('(')+1, -1).trim();
-      if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) gconsole.print(param.slice(1,-1));
-      else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
-        const varName = param.split('[')[0]; const index = parseInt(param.match(/\[(\d+)\]/)[1])-1;
-        if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
-          if (index < 0 || index >= variables[varName].length) gconsole.print('Error: array index out of bounds -> ' + param);
-          else gconsole.print(String(variables[varName][index]));
-        } else gconsole.print('Error: list not defined -> ' + varName);
-      } else if (variables.hasOwnProperty(param)) gconsole.print(String(variables[param]));
-      else gconsole.print('Error: undefined variable -> ' + param);
-      i++;
-      continue;
-    }
-
-    // Wait
-    if(line.startsWith('wait(')&&line.endsWith(')')) {
-      const t=parseFloat(line.slice(5,-1).trim());
-      if(!isNaN(t)&&t>=0) await new Promise(r=>setTimeout(()=>{if(!stopRequested)r();},t*1000));
-      i++; continue;
-    }
-    if(line.startsWith('wait.ms(')&&line.endsWith(')')) {
-      const t=parseFloat(line.slice(8,-1).trim());
-      if(!isNaN(t)&&t>=0) await new Promise(r=>setTimeout(()=>{if(!stopRequested)r();},t));
-      i++; continue;
-    }
-
-    // Outros comandos (mantidos iguais)
-    i++;
+function stopAudio() {
+  if (audioContext) {
+    audioContext.close();
+    audioContext = null;
   }
 }
 
-async function runScript(code) {
-  stopRequested = false; // reset antes de rodar
-  document.getElementById('scriptOutput').textContent = '';
-  Object.keys(variables).forEach(k => delete variables[k]);
-  Object.keys(functions).forEach(k => delete functions[k]);
-  await runLines(code.split('\n'));
+async function executeScript(script) {
+  const lines = script.split('\n');
+  for (let i = 0; i < lines.length; i++) {
+    if (stopRequested) break;
+    const line = lines[i].trim();
+    if (line === '') continue;
+
+    if (line.startsWith('print ')) {
+      const text = line.slice(6);
+      gconsole.print(text.replace(/^"|"$/g, ''));
+    }
+
+    else if (line.startsWith('wait ')) {
+      const ms = parseFloat(line.slice(5));
+      await new Promise(r => setTimeout(r, ms));
+    }
+
+    else if (line.startsWith('define ')) {
+      const [_, name, ...valueParts] = line.split(' ');
+      const value = valueParts.join(' ');
+      variables[name] = evalExpression(value);
+    }
+
+    else if (line.startsWith('set ')) {
+      const [_, name, ...valueParts] = line.split(' ');
+      const value = valueParts.join(' ');
+      if (variables[name] !== undefined) {
+        variables[name] = evalExpression(value);
+      } else {
+        gconsole.print(`Variable not found: ${name}`);
+      }
+    }
+
+    else if (line.startsWith('if ')) {
+      const condition = line.slice(3);
+      const block = [];
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith('endif')) {
+        block.push(lines[i]);
+        i++;
+      }
+      if (evalCondition(condition)) {
+        await executeScript(block.join('\n'));
+      }
+    }
+
+    else if (line.startsWith('loop ')) {
+      const count = parseInt(line.split(' ')[1]);
+      const block = [];
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith('endloop')) {
+        block.push(lines[i]);
+        i++;
+      }
+      for (let n = 0; n < count; n++) {
+        if (stopRequested) break;
+        await executeScript(block.join('\n'));
+      }
+    }
+
+    else if (line.startsWith('function ')) {
+      const name = line.split(' ')[1];
+      const block = [];
+      i++;
+      while (i < lines.length && !lines[i].trim().startsWith('endfunction')) {
+        block.push(lines[i]);
+        i++;
+      }
+      functions[name] = block.join('\n');
+    }
+
+    else if (line.startsWith('call ')) {
+      const name = line.split(' ')[1];
+      if (functions[name]) {
+        await executeScript(functions[name]);
+      } else {
+        gconsole.print(`Function not found: ${name}`);
+      }
+    }
+
+    else if (line.startsWith('math ')) {
+      const [_, name, ...expr] = line.split(' ');
+      const value = evalExpression(expr.join(' '));
+      variables[name] = value;
+    }
+
+    else if (line.startsWith('play ')) {
+      const parts = line.split(' ');
+      const note = parts[1];
+      const duration = parseFloat(parts[2]) || 0.3;
+      playTone(note, duration);
+    }
+
+    else if (line.startsWith('create.new.cube')) {
+      gconsole.print('Creating cube...');
+      if (typeof createCube === 'function') {
+        createCube();
+      }
+    }
+
+    else if (line.startsWith('create.folder')) {
+      gconsole.print('Creating folder...');
+      if (typeof createFolder === 'function') {
+        createFolder();
+      }
+    }
+
+    else if (line.startsWith('delete.object')) {
+      gconsole.print('Deleting object...');
+      if (typeof deleteSelectedObject === 'function') {
+        deleteSelectedObject();
+      }
+    }
+
+    else if (line.startsWith('set.position')) {
+      const parts = line.split(' ');
+      const x = parseFloat(parts[1]);
+      const y = parseFloat(parts[2]);
+      const z = parseFloat(parts[3]);
+      if (typeof setSelectedObjectPosition === 'function') {
+        setSelectedObjectPosition(x, y, z);
+      }
+    }
+
+    else {
+      gconsole.print(`Unknown command: ${line}`);
+    }
+  }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  const runBtn = document.getElementById('runButton');
-  const stopBtn = document.getElementById('stopButton');
+function evalExpression(expr) {
+  const names = Object.keys(variables);
+  const values = Object.values(variables);
+  try {
+    return Function(...names, `return ${expr}`)(...values);
+  } catch {
+    return expr;
+  }
+}
 
-  runBtn.addEventListener('click', () => {
-    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const code = document.getElementById('scriptInput').value;
-    stopRequested = false;
-    runScript(code);
-    gconsole.print('Running script...');
-  });
+function evalCondition(cond) {
+  const names = Object.keys(variables);
+  const values = Object.values(variables);
+  try {
+    return Function(...names, `return (${cond})`)(...values);
+  } catch {
+    return false;
+  }
+}
 
-  stopBtn.addEventListener('click', () => {
-    stopRequested = true;
-    gconsole.print('Execution stopped.');
-  });
-});
+async function runUserScript() {
+  if (isRunning) return;
+  stopRequested = false;
+  isRunning = true;
+  gconsole.clear();
+  gconsole.print("Running script...");
+  await new Promise(requestAnimationFrame);
+  const script = document.getElementById('scriptInput').value.trim();
+  await executeScript(script);
+  isRunning = false;
+  if (!stopRequested) gconsole.print("Script finished.");
+}
+
+function stopUserScript() {
+  if (!isRunning) return;
+  stopRequested = true;
+  stopAudio();
+  gconsole.print("Script stopped.");
+}
+
+const runButton = document.getElementById('runButton');
+const stopButton = document.getElementById('stopButton');
+runButton.addEventListener('click', runUserScript);
+stopButton.addEventListener('click', stopUserScript);
