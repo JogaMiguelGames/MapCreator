@@ -1,5 +1,3 @@
-// ===================== SCRIPTING.JS =====================
-
 const gconsole = {
   print: (text) => {
     const output = document.getElementById('scriptOutput');
@@ -29,29 +27,51 @@ const noteFrequencies = {
   'B4': 493.88
 };
 
-function playTone(note, duration = 0.3) {
-  if (!audioContext) {
-    audioContext = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  const frequency = noteFrequencies[note];
-  if (!frequency) {
-    gconsole.print(`Invalid note: ${note}`);
-    return;
-  }
-  const osc = audioContext.createOscillator();
+async function playTone(freq, duration) {
+  if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  if (freq <= 0 || duration <= 0) return;
+
+  const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
-  gainNode.gain.value = globalVolume;
-  osc.frequency.value = frequency;
-  osc.connect(gainNode);
-  gainNode.connect(audioContext.destination);
-  osc.start();
-  osc.stop(audioContext.currentTime + duration);
+
+  oscillator.type = 'square';
+  oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
+  gainNode.gain.setValueAtTime(globalVolume, audioContext.currentTime);
+
+  oscillator.connect(gainNode).connect(audioContext.destination);
+  oscillator.start();
+  oscillator.stop(audioContext.currentTime + duration);
+
+  await new Promise(resolve => { oscillator.onended = resolve; });
 }
 
-function stopAudio() {
-  if (audioContext) {
-    audioContext.close();
-    audioContext = null;
+function setWireframeForAllObjects(enabled) {
+  if (typeof scene === 'undefined') return;
+  scene.traverse(obj => {
+    if (obj.isMesh) {
+      const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
+      materials.forEach(mat => { if (mat && 'wireframe' in mat) mat.wireframe = enabled; });
+    }
+  });
+}
+
+function evalExpression(expr) {
+  const names = Object.keys(variables);
+  const values = Object.values(variables);
+  try {
+    return Function(...names, `return (${expr});`)(...values);
+  } catch {
+    return expr;
+  }
+}
+
+function evalCondition(cond) {
+  const names = Object.keys(variables);
+  const values = Object.values(variables);
+  try {
+    return Function(...names, `return (${cond});`)(...values);
+  } catch {
+    return false;
   }
 }
 
@@ -62,170 +82,127 @@ async function executeScript(script) {
     const line = lines[i].trim();
     if (line === '') continue;
 
-    if (line.startsWith('print ')) {
-      const text = line.slice(6);
-      gconsole.print(text.replace(/^"|"$/g, ''));
+    if (line.startsWith('console.print(') || line.startsWith('gconsole.print(')) {
+      try { eval(line); } catch { gconsole.print(`Error executing: ${line}`); }
     }
 
-    else if (line.startsWith('wait ')) {
-      const ms = parseFloat(line.slice(5));
-      await new Promise(r => setTimeout(r, ms));
-    }
-
-    else if (line.startsWith('define ')) {
-      const [_, name, ...valueParts] = line.split(' ');
-      const value = valueParts.join(' ');
-      variables[name] = evalExpression(value);
-    }
-
-    else if (line.startsWith('set ')) {
-      const [_, name, ...valueParts] = line.split(' ');
-      const value = valueParts.join(' ');
-      if (variables[name] !== undefined) {
-        variables[name] = evalExpression(value);
-      } else {
-        gconsole.print(`Variable not found: ${name}`);
+    else if (line.startsWith('create.new.')) {
+      const type = line.slice(11).replace('()', '');
+      switch(type) {
+        case 'cube': if (typeof createCube === 'function') createCube(); else gconsole.print('Error: createCube not available'); break;
+        case 'sphere': if (typeof createSphere === 'function') createSphere(); else gconsole.print('Error: createSphere not available'); break;
+        case 'cylinder': if (typeof createCylinder === 'function') createCylinder(); else gconsole.print('Error: createCylinder not available'); break;
+        case 'cone': if (typeof createCone === 'function') createCone(); else gconsole.print('Error: createCone not available'); break;
+        case 'plane': if (typeof createPlane === 'function') createPlane(); else gconsole.print('Error: createPlane not available'); break;
+        default: gconsole.print('Error: unknown create type -> ' + type);
       }
     }
 
-    else if (line.startsWith('if ')) {
-      const condition = line.slice(3);
-      const block = [];
-      i++;
-      while (i < lines.length && !lines[i].trim().startsWith('endif')) {
-        block.push(lines[i]);
+    else if (line.startsWith('wireframe.on()')) { setWireframeForAllObjects(true); gconsole.print("Wireframe enabled."); }
+    else if (line.startsWith('wireframe.off()')) { setWireframeForAllObjects(false); gconsole.print("Wireframe disabled."); }
+
+    else if (line.startsWith('wait(')) {
+      const t = parseFloat(line.slice(5, -1));
+      if (!isNaN(t)) await new Promise(r => setTimeout(r, t*1000));
+    }
+
+    else if (line.startsWith('wait.ms(')) {
+      const t = parseFloat(line.slice(8, -1));
+      if (!isNaN(t)) await new Promise(r => setTimeout(r, t));
+    }
+
+    else if (line.startsWith('play(')) {
+      const args = line.slice(5, -1).split(',').map(s => parseFloat(s.trim()));
+      if (args.length === 2) await playTone(args[0], args[1]);
+    }
+
+    else if (line.startsWith('note(')) {
+      let argsRaw = line.slice(5, -1).split(',');
+      if(argsRaw.length===2){
+        let note=argsRaw[0].trim().replace(/^['"]|['"]$/g,'');
+        let dur=parseFloat(argsRaw[1].trim());
+        const freq=noteFrequencies[note];
+        if(freq) await playTone(freq,dur);
+      }
+    }
+
+    else if (line.startsWith('if (') && line.endsWith(')')) {
+      const condition = line.slice(4,-1);
+      const ifBlock = [], elseBlock = []; let inElse=false; i++;
+      while(i<lines.length && lines[i].trim()!=='end') {
+        const inner = lines[i].trim();
+        if(inner==='else'){inElse=true; i++; continue;}
+        if(inElse) elseBlock.push(lines[i]); else ifBlock.push(lines[i]);
         i++;
       }
-      if (evalCondition(condition)) {
-        await executeScript(block.join('\n'));
-      }
+      if(evalCondition(condition)) await executeScript(ifBlock.join('\n'));
+      else await executeScript(elseBlock.join('\n'));
     }
 
-    else if (line.startsWith('loop ')) {
-      const count = parseInt(line.split(' ')[1]);
-      const block = [];
-      i++;
-      while (i < lines.length && !lines[i].trim().startsWith('endloop')) {
-        block.push(lines[i]);
-        i++;
-      }
-      for (let n = 0; n < count; n++) {
-        if (stopRequested) break;
-        await executeScript(block.join('\n'));
-      }
+    else if (line.startsWith('repeat(') && line.endsWith(')')) {
+      const count=parseInt(line.slice(7,-1));
+      const repeatBody=[]; i++;
+      while(i<lines.length && lines[i].trim()!=='end'){repeatBody.push(lines[i]); i++;}
+      for(let r=0;r<count;r++){ if(stopRequested) break; await executeScript(repeatBody.join('\n')); }
     }
 
-    else if (line.startsWith('function ')) {
-      const name = line.split(' ')[1];
-      const block = [];
-      i++;
-      while (i < lines.length && !lines[i].trim().startsWith('endfunction')) {
-        block.push(lines[i]);
-        i++;
-      }
-      functions[name] = block.join('\n');
+    else if (line.startsWith('loop') && line.endsWith('')) {
+      const loopBody=[]; i++;
+      while(i<lines.length && lines[i].trim()!=='end'){loopBody.push(lines[i]); i++;}
+      while(!stopRequested){ await executeScript(loopBody.join('\n')); }
     }
 
-    else if (line.startsWith('call ')) {
-      const name = line.split(' ')[1];
-      if (functions[name]) {
-        await executeScript(functions[name]);
-      } else {
-        gconsole.print(`Function not found: ${name}`);
-      }
+    else if (line.startsWith('function ') && line.endsWith('()')) {
+      const funcName = line.match(/^function\s+(\w+)\(\)$/)[1];
+      const funcBody=[]; i++;
+      while(i<lines.length && lines[i].trim()!=='end'){funcBody.push(lines[i]); i++;}
+      functions[funcName]=funcBody.join('\n');
     }
 
-    else if (line.startsWith('math ')) {
-      const [_, name, ...expr] = line.split(' ');
-      const value = evalExpression(expr.join(' '));
-      variables[name] = value;
+    else if(line.startsWith('call.function(') && line.endsWith(')')) {
+      const funcName = line.slice(14,-1).trim();
+      if(functions[funcName]) await executeScript(functions[funcName]);
     }
 
-    else if (line.startsWith('play ')) {
-      const parts = line.split(' ');
-      const note = parts[1];
-      const duration = parseFloat(parts[2]) || 0.3;
-      playTone(note, duration);
+    else if(/^[a-zA-Z_]\w*\(\)$/.test(line)) {
+      const varName=line.slice(0,-2);
+      if(variables.hasOwnProperty(varName) && typeof variables[varName]==='function'){ variables[varName](); }
     }
 
-    else if (line.startsWith('create.new.cube')) {
-      gconsole.print('Creating cube...');
-      if (typeof createCube === 'function') {
-        createCube();
-      }
-    }
-
-    else if (line.startsWith('create.folder')) {
-      gconsole.print('Creating folder...');
-      if (typeof createFolder === 'function') {
-        createFolder();
-      }
-    }
-
-    else if (line.startsWith('delete.object')) {
-      gconsole.print('Deleting object...');
-      if (typeof deleteSelectedObject === 'function') {
-        deleteSelectedObject();
-      }
-    }
-
-    else if (line.startsWith('set.position')) {
-      const parts = line.split(' ');
-      const x = parseFloat(parts[1]);
-      const y = parseFloat(parts[2]);
-      const z = parseFloat(parts[3]);
-      if (typeof setSelectedObjectPosition === 'function') {
-        setSelectedObjectPosition(x, y, z);
-      }
+    else if(/^[a-zA-Z_]\w*\s*=/.test(line)) {
+      const [varName,...rest]=line.split('=');
+      const valueRaw=rest.join('=').trim();
+      const name=varName.trim();
+      if((valueRaw.startsWith('"') && valueRaw.endsWith('"')) || (valueRaw.startsWith("'") && valueRaw.endsWith("'"))) variables[name]=valueRaw.slice(1,-1);
+      else if(!isNaN(Number(valueRaw))) variables[name]=Number(valueRaw);
+      else variables[name]=evalExpression(valueRaw);
     }
 
     else {
-      gconsole.print(`Unknown command: ${line}`);
+      try { eval(line); } catch { gconsole.print('Unknown command: '+line); }
     }
-  }
-}
-
-function evalExpression(expr) {
-  const names = Object.keys(variables);
-  const values = Object.values(variables);
-  try {
-    return Function(...names, `return ${expr}`)(...values);
-  } catch {
-    return expr;
-  }
-}
-
-function evalCondition(cond) {
-  const names = Object.keys(variables);
-  const values = Object.values(variables);
-  try {
-    return Function(...names, `return (${cond})`)(...values);
-  } catch {
-    return false;
   }
 }
 
 async function runUserScript() {
-  if (isRunning) return;
-  stopRequested = false;
-  isRunning = true;
+  if(isRunning) return;
+  stopRequested=false;
+  isRunning=true;
   gconsole.clear();
   gconsole.print("Running script...");
   await new Promise(requestAnimationFrame);
-  const script = document.getElementById('scriptInput').value.trim();
-  await executeScript(script);
-  isRunning = false;
-  if (!stopRequested) gconsole.print("Script finished.");
+  const code=document.getElementById('scriptInput').value;
+  await executeScript(code);
+  isRunning=false;
+  if(!stopRequested) gconsole.print("Script finished.");
 }
 
-function stopUserScript() {
-  if (!isRunning) return;
-  stopRequested = true;
-  stopAudio();
+function stopUserScript(){
+  if(!isRunning) return;
+  stopRequested=true;
+  if(audioContext){ audioContext.close(); audioContext=null; }
   gconsole.print("Script stopped.");
 }
 
-const runButton = document.getElementById('runButton');
-const stopButton = document.getElementById('stopButton');
-runButton.addEventListener('click', runUserScript);
-stopButton.addEventListener('click', stopUserScript);
+document.getElementById('runButton').addEventListener('click', runUserScript);
+document.getElementById('stopButton').addEventListener('click', stopUserScript);
