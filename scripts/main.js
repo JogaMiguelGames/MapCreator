@@ -464,7 +464,7 @@ function updateCubeList() {
   projectDiv.style.cursor = 'pointer';
   projectDiv.style.gap = '6px';
   projectDiv.style.fontWeight = 'bold';
-  projectDiv.style.position = 'relative'; // permite pop-up posicionado dentro
+  projectDiv.style.position = 'relative';
 
   const folderIcon = document.createElement('img');
   folderIcon.src = 'resources/images/ui/icons/folder.svg';
@@ -479,7 +479,7 @@ function updateCubeList() {
   projectDiv.appendChild(folderText);
   cubeListDiv.appendChild(projectDiv);
 
-  // Container para objetos dentro do Project
+  // Container de conteúdo
   const projectContent = document.createElement('div');
   projectContent.style.display = 'flex';
   projectContent.style.flexDirection = 'column';
@@ -509,7 +509,7 @@ function updateCubeList() {
   `;
   projectDiv.appendChild(popup);
 
-  // Opção de adicionar pasta
+  // Opção "Add Folder"
   const folderOption = document.createElement('div');
   folderOption.textContent = '📁 Add Folder';
   folderOption.style.cssText = `
@@ -519,28 +519,26 @@ function updateCubeList() {
   folderOption.addEventListener('mouseleave', () => folderOption.style.background = 'transparent');
   folderOption.addEventListener('click', () => {
     popup.style.display = 'none';
-    const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
+    const newFolder = { id: Date.now() + Math.random(), name: 'New Folder', cubes: [] };
     window.customFolders.push(newFolder);
     selectedFolder = newFolder;
     updateCubeList();
   });
   popup.appendChild(folderOption);
 
-  // Toggle pop-up
+  // Toggle popup
   addBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     popup.style.display = (popup.style.display === 'flex') ? 'none' : 'flex';
   });
 
-  // Fechar pop-up ao clicar fora
+  // Fecha popup clicando fora
   document.addEventListener('click', (e) => {
-    if (!popup.contains(e.target) && e.target !== addBtn) {
-      popup.style.display = 'none';
-    }
+    if (!popup.contains(e.target) && e.target !== addBtn) popup.style.display = 'none';
   });
 
-  // --- Pastas ---
-  window.customFolders.forEach(folder => {
+  // =============== Funções auxiliares ===============
+  function createFolderElement(folder) {
     const folderDiv = document.createElement('div');
     folderDiv.className = 'cubeListFolder';
     folderDiv.style.cssText = `
@@ -556,110 +554,130 @@ function updateCubeList() {
     icon.style.objectFit = 'contain';
     folderDiv.appendChild(icon);
 
-    if (folder.isEditing) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.value = folder.name;
-      input.style.flex = '1';
-      input.style.padding = '2px';
-      input.style.border = '1px solid #ccc';
-      input.style.borderRadius = '3px';
-      folderDiv.appendChild(input);
-      input.focus();
-
-      input.addEventListener('blur', () => {
-        folder.name = input.value.trim() || 'Unnamed Folder';
-        folder.isEditing = false;
-        updateCubeList();
-      });
-
-      input.addEventListener('keydown', e => {
-        if (e.key === 'Enter') {
-          folder.name = input.value.trim() || 'Unnamed Folder';
-          folder.isEditing = false;
-          updateCubeList();
-        }
-      });
-    } else {
-      const span = document.createElement('span');
-      span.textContent = folder.name;
-      folderDiv.appendChild(span);
-
-      folderDiv.addEventListener('click', () => {
-        selectedCube = null;
-        selectedFolder = folder;
-        updateCubeList();
-        updateSpheresVisibility();
-      });
-
-      span.addEventListener('dblclick', e => {
-        e.stopPropagation();
-        folder.isEditing = true;
-        updateCubeList();
-      });
-    }
+    const span = document.createElement('span');
+    span.textContent = folder.name;
+    folderDiv.appendChild(span);
 
     if (selectedFolder === folder) {
       folderDiv.style.backgroundColor = '#3366ff';
       folderDiv.style.color = 'white';
     }
 
-    projectContent.appendChild(folderDiv);
-  });
+    // --- Drag Over / Drop ---
+    folderDiv.addEventListener('dragover', e => {
+      e.preventDefault();
+      folderDiv.style.backgroundColor = '#444';
+    });
+    folderDiv.addEventListener('dragleave', () => {
+      folderDiv.style.backgroundColor = selectedFolder === folder ? '#3366ff' : 'transparent';
+    });
+    folderDiv.addEventListener('drop', e => {
+      e.preventDefault();
+      folderDiv.style.backgroundColor = selectedFolder === folder ? '#3366ff' : 'transparent';
+      const cubeId = e.dataTransfer.getData('text/plain');
+      const draggedCube = cubes.find(c => c.id == cubeId);
+      if (draggedCube) {
+        // Remove de pasta anterior, se tiver
+        window.customFolders.forEach(f => {
+          f.cubes = f.cubes.filter(c => c !== draggedCube);
+        });
+        draggedCube.parentFolder = folder;
+        folder.cubes.push(draggedCube);
+        updateCubeList();
+      }
+    });
 
-  // --- Cubos ---
-  cubes.forEach(cube => {
+    projectContent.appendChild(folderDiv);
+
+    // === Cubos dentro da pasta ===
+    folder.cubes.forEach(cube => {
+      const item = createCubeItem(cube, 40); // +20px deslocamento visual
+      projectContent.appendChild(item);
+    });
+  }
+
+  function createCubeItem(cube, offset = 20) {
     const item = document.createElement('div');
     item.className = 'cubeListItem';
     item.style.cssText = `
       display:flex; align-items:center; padding:4px 8px; border-radius:3px;
-      cursor:pointer; gap:6px; margin-bottom:2px; margin-left:20px;
+      cursor:pointer; gap:6px; margin-bottom:2px; margin-left:${offset}px;
     `;
 
-    const iconWrapper = document.createElement('div');
-    iconWrapper.style.position = 'relative';
-    iconWrapper.style.width = '20px';
-    iconWrapper.style.height = '20px';
     const icon = document.createElement('img');
     icon.src = 'resources/images/ui/icons/cube.png';
-    icon.alt = 'object icon';
-    icon.style.width = '100%';
-    icon.style.height = '100%';
+    icon.alt = 'Cube';
+    icon.style.width = '18px';
+    icon.style.height = '18px';
     icon.style.objectFit = 'contain';
-    iconWrapper.appendChild(icon);
-
-    item.appendChild(iconWrapper);
+    item.appendChild(icon);
 
     const text = document.createElement('span');
     text.textContent = cube.name || 'Unnamed';
     item.appendChild(text);
-
-    // Seleção de cubo
-    let clickTimer = null;
-    item.addEventListener('click', () => {
-      if (clickTimer) clearTimeout(clickTimer);
-      clickTimer = setTimeout(() => {
-        selectedCube = cube;
-        selectedFolder = null;
-        updatePanelForCube(selectedCube);
-        updateCubeList();
-        updateSpheresVisibility();
-        clickTimer = null;
-      }, 250);
-    });
-
-    item.addEventListener('dblclick', () => {
-      if (clickTimer) clearTimeout(clickTimer);
-      clickTimer = null;
-      renameCube(item, cube);
-    });
 
     if (selectedCube === cube) {
       item.style.backgroundColor = '#3366ff';
       item.style.color = 'white';
     }
 
-    projectContent.appendChild(item);
+    // --- Drag / Drop ---
+    item.draggable = true;
+    item.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('text/plain', cube.id);
+      item.style.opacity = '0.5';
+    });
+    item.addEventListener('dragend', () => {
+      item.style.opacity = '1';
+    });
+
+    // Clique simples seleciona
+    item.addEventListener('click', () => {
+      selectedCube = cube;
+      selectedFolder = null;
+      updatePanelForCube(selectedCube);
+      updateCubeList();
+      updateSpheresVisibility();
+    });
+
+    return item;
+  }
+
+  // ================= Renderização =================
+
+  // 1️⃣ Cubos soltos (sem pasta)
+  cubes.forEach(cube => {
+    if (!cube.parentFolder) {
+      const item = createCubeItem(cube, 20);
+      projectContent.appendChild(item);
+    }
+  });
+
+  // 2️⃣ Pastas e seus cubos
+  window.customFolders.forEach(folder => {
+    createFolderElement(folder);
+  });
+
+  // --- Drop na área principal ("Project") ---
+  projectDiv.addEventListener('dragover', e => {
+    e.preventDefault();
+    projectDiv.style.backgroundColor = '#333';
+  });
+  projectDiv.addEventListener('dragleave', () => {
+    projectDiv.style.backgroundColor = 'transparent';
+  });
+  projectDiv.addEventListener('drop', e => {
+    e.preventDefault();
+    projectDiv.style.backgroundColor = 'transparent';
+    const cubeId = e.dataTransfer.getData('text/plain');
+    const draggedCube = cubes.find(c => c.id == cubeId);
+    if (draggedCube) {
+      window.customFolders.forEach(f => {
+        f.cubes = f.cubes.filter(c => c !== draggedCube);
+      });
+      draggedCube.parentFolder = null;
+      updateCubeList();
+    }
   });
 }
 
@@ -792,6 +810,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
