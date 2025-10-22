@@ -1,4 +1,5 @@
-// === Cube principal === 
+// === Map Creator - Main.js ===
+
 const mainCube = new THREE.Mesh(box_geometry, white_material);
 mainCube.position.set(0, 0, 0);
 mainCube.name = 'Cube 1';
@@ -19,7 +20,6 @@ const offsets = [
   { pos: new THREE.Vector3( 0,  0, -0.4), axis: 'z', color: 0x0000ff }
 ];
 
-// --- Esferas de manipulação para qualquer objeto ---
 function addManipulationSpheres(obj) {
   const objSpheres = [];
 
@@ -40,7 +40,6 @@ function addManipulationSpheres(obj) {
   obj.userData.spheres = objSpheres;
 }
 
-// Torna acessível para todos os scripts (como add.js)
 window.addManipulationSpheres = addManipulationSpheres;
 window.offsets = offsets;
 window.sphereGeometrySmall = sphereGeometrySmall;
@@ -70,7 +69,6 @@ function updateSpheresVisibility() {
   });
 }
 
-// === Drag Controls ===
 let selectedSphere = null;
 const plane = new THREE.Plane();
 const offset = new THREE.Vector3();
@@ -152,12 +150,12 @@ renderer.domElement.addEventListener('pointerdown', onPointerDown);
 renderer.domElement.addEventListener('pointermove', onPointerMove);
 renderer.domElement.addEventListener('pointerup', onPointerUp);
 renderer.domElement.addEventListener('pointerleave', onPointerUp);
-// -- Luzes
-const ambientLight = new THREE.AmbientLight(0xffffff, 0.1); // luz ambiente suave
+
+const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(ambientLight);
 
 const sunLight = new THREE.DirectionalLight(0xffffff, 1);
-sunLight.position.set(10, 10, 10); // luz tipo “sol”
+sunLight.position.set(10, 10, 10);
 sunLight.castShadow = true;
 sunLight.shadow.mapSize.width = 2048;
 sunLight.shadow.mapSize.height = 2048;
@@ -176,7 +174,7 @@ function addAxisLine(from, to, color){
     new THREE.LineBasicMaterial({color})
   );
   scene.add(line);
-  axisLines.push(line); // guarda a linha no array
+  axisLines.push(line);
 }
 
 addAxisLine(new THREE.Vector3(0,-9999,0), new THREE.Vector3(0,9999,0), 0x00ff00); // Y
@@ -184,18 +182,16 @@ addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000)
 addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
 
 function createHugeGrid(step = 1, color = 0x888888) {
-  const size = 0; // metade do alcance, porque vamos de -size a +size
+  const size = 0;
   const material = new THREE.LineBasicMaterial({ color: color });
   const vertices = [];
 
-  // Linhas paralelas ao eixo X (variando Z)
   for (let z = -size; z <= size; z += step) {
-    vertices.push(-size, 0, z, size, 0, z); // linha de X = -size até X = +size
+    vertices.push(-size, 0, z, size, 0, z);
   }
 
-  // Linhas paralelas ao eixo Z (variando X)
   for (let x = -size; x <= size; x += step) {
-    vertices.push(x, 0, -size, x, 0, size); // linha de Z = -size até Z = +size
+    vertices.push(x, 0, -size, x, 0, size);
   }
 
   const geometry = new THREE.BufferGeometry();
@@ -206,14 +202,13 @@ function createHugeGrid(step = 1, color = 0x888888) {
   return lines;
 }
 
-// --- Criar o grid gigante ---
-const hugeGrid = createHugeGrid(1, 0x888888); // passo 1, cinza
+const hugeGrid = createHugeGrid(1, 0x888888);
 
 const gridGroup = new THREE.Group();
 scene.add(gridGroup);
 
-const gridStep = 1;       // distância entre linhas
-const gridLimit = 200;     // número de linhas para cada direção ao redor da câmera
+const gridStep = 1;
+const gridLimit = 200;
 const gridColor = 0x888888;
 
 function updateGridAroundCameraCircle(camera) {
@@ -222,20 +217,18 @@ function updateGridAroundCameraCircle(camera) {
   const camX = camera.position.x;
   const camZ = camera.position.z;
 
-  const radius = 500;       // raio do círculo em unidades do Three.js
-  const step = 1;          // distância entre linhas
+  const radius = 500;
+  const step = 1;
   const vertices = [];
 
-  // Limites de verificação para reduzir iterações
   const minX = Math.floor(camX - radius);
   const maxX = Math.ceil(camX + radius);
   const minZ = Math.floor(camZ - radius);
   const maxZ = Math.ceil(camZ + radius);
 
-  // Linhas paralelas ao X (variando Z)
   for (let z = minZ; z <= maxZ; z += step) {
-    if (z === 0) continue; // evita sobreposição com eixo Z
-    // Checa se está dentro do círculo
+    if (z === 0) continue;
+
     const dz = z - camZ;
     if (Math.abs(dz) > radius) continue;
 
@@ -243,10 +236,9 @@ function updateGridAroundCameraCircle(camera) {
     vertices.push(camX - deltaX, 0, z, camX + deltaX, 0, z);
   }
 
-  // Linhas paralelas ao Z (variando X)
   for (let x = minX; x <= maxX; x += step) {
-    if (x === 0) continue; // evita sobreposição com eixo X
-    // Checa se está dentro do círculo
+    if (x === 0) continue;
+
     const dx = x - camX;
     if (Math.abs(dx) > radius) continue;
 
@@ -262,7 +254,6 @@ function updateGridAroundCameraCircle(camera) {
   gridGroup.add(lines);
 }
 
-// --- Controle de câmera ---
 camera.position.set(0, 1.6, 5);
 let yaw = 0, pitch = 0;
 const moveSpeed = 5;
@@ -271,10 +262,8 @@ const keys = {};
 const canvas = renderer.domElement;
 let isRightMouseDown = false;
 
-// Evita menu de contexto botão direito
 canvas.addEventListener('contextmenu', e => e.preventDefault());
 
-// Botão direito mouse para Pointer Lock
 canvas.addEventListener('mousedown', e => {
   if(e.button === 2){
     isRightMouseDown = true;
@@ -305,7 +294,6 @@ function onMouseMove(e){
   }
 }
 
-// Teclado
 window.addEventListener('keydown', e => keys[e.code] = true);
 window.addEventListener('keyup', e => keys[e.code] = false);
 
@@ -341,7 +329,6 @@ function updateCamera(delta){
   if(keys['KeyQ']) camera.position.y -= speed * delta;
 }
 
-// === UI & manipulação ===
 const scaleXInput = document.getElementById('scaleX');
 const scaleYInput = document.getElementById('scaleY');
 const scaleZInput = document.getElementById('scaleZ');
@@ -438,11 +425,9 @@ function updatePanelForCube(cube){
   });
 });
 
-// manter persistência entre chamadas (não sobrescreve se já existir)
 window.customFolders = window.customFolders || [];
 window.folderCount = window.folderCount || 0;
 
-// helper para criar pasta (usa o array persistente)
 function createFolder(name = 'New Folder') {
   window.folderCount = (window.folderCount || 0) + 1;
   const folder = { id: Date.now() + Math.random(), name };
@@ -454,7 +439,6 @@ function createFolder(name = 'New Folder') {
 function updateCubeList() {
   cubeListDiv.innerHTML = '';
 
-  // --- Pasta Project ---
   const projectDiv = document.createElement('div');
   projectDiv.className = 'cubeListFolder';
   projectDiv.style.display = 'flex';
@@ -478,14 +462,12 @@ function updateCubeList() {
   projectDiv.appendChild(folderText);
   cubeListDiv.appendChild(projectDiv);
 
-  // Container para objetos dentro do Project
   const projectContent = document.createElement('div');
   projectContent.style.display = 'flex';
   projectContent.style.flexDirection = 'column';
   projectContent.style.marginLeft = '20px';
   cubeListDiv.appendChild(projectContent);
 
-  // Botão de adicionar pastas
   const addFolderBtn = document.createElement('button');
   addFolderBtn.textContent = '+';
   addFolderBtn.title = 'Add Folder';
@@ -502,7 +484,6 @@ function updateCubeList() {
     updateCubeList();
   });
 
-  // --- Pastas ---
   window.customFolders.forEach(folder => {
     const folderDiv = document.createElement('div');
     folderDiv.className = 'cubeListFolder';
@@ -519,7 +500,6 @@ function updateCubeList() {
     icon.style.objectFit = 'contain';
     folderDiv.appendChild(icon);
 
-    // Verifica se está sendo renomeada
     if (folder.isEditing) {
       const input = document.createElement('input');
       input.type = 'text';
@@ -563,7 +543,6 @@ function updateCubeList() {
       });
     }
 
-    // Destaque se selecionado
     if (selectedFolder === folder) {
       folderDiv.style.backgroundColor = '#3366ff';
       folderDiv.style.color = 'white';
@@ -572,7 +551,6 @@ function updateCubeList() {
     projectContent.appendChild(folderDiv);
   });
 
-  // --- Cubos ---
   cubes.forEach(cube => {
     const item = document.createElement('div');
     item.className = 'cubeListItem';
@@ -599,7 +577,6 @@ function updateCubeList() {
     text.textContent = cube.name || 'Unnamed';
     item.appendChild(text);
 
-    // Seleção de cubo
     let clickTimer = null;
     item.addEventListener('click', () => {
       if (clickTimer) clearTimeout(clickTimer);
@@ -628,7 +605,6 @@ function updateCubeList() {
   });
 }
 
-// Função auxiliar para renomear cubo
 function renameCube(div, cube){
   const text = div.querySelector('span');
   const input = document.createElement('input');
@@ -665,7 +641,7 @@ function onClick(event){
     selectedCube = intersects[0].object;
     updatePanelForCube(selectedCube);
     updateCubeList();
-    updateSpheresVisibility(); // <<< garante atualização
+    updateSpheresVisibility();
   }
 }
 canvas.addEventListener('click', onClick);
@@ -685,7 +661,6 @@ document.addEventListener('keydown', e => {
   if ((e.key === 'Delete' || e.key === 'Backspace') && !isTyping) {
     e.preventDefault();
 
-    // Deletar cubo
     if (selectedCube) {
       const idx = cubes.indexOf(selectedCube);
       if (idx !== -1) {
@@ -695,10 +670,9 @@ document.addEventListener('keydown', e => {
         updatePanelForCube(selectedCube);
         updateCubeList();
       }
-      return; // importante: não tentar deletar pasta ao mesmo tempo
+      return;
     }
 
-    // Deletar pasta
     if (selectedFolder) {
       const idx = window.customFolders.indexOf(selectedFolder);
       if (idx !== -1) {
@@ -739,7 +713,6 @@ window.addEventListener('wheel', (event) => {
   }
 }, { passive: false });
 
-// Loop principal
 let lastTime = 0;
 function animate(time=0){
   requestAnimationFrame(animate);
@@ -753,7 +726,7 @@ function animate(time=0){
 }
 animate();
 
-// Inicializa UI
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
