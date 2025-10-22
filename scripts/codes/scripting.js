@@ -210,6 +210,17 @@ async function runLines(lines) {
       continue;
     }
 
+    if (line === 'create.new.cube') {
+      if (typeof createCube === 'function') {
+        createCube();
+        gconsole.print('Cube created.');
+      } else {
+        gconsole.print('Error: createCube function not available.');
+      }
+      i++;
+      continue;
+    }
+
     if (line.startsWith('if (') && line.endsWith(')')) {
       const condition = line.slice(4, -1).trim();
       const ifBlock = [];
@@ -428,6 +439,7 @@ document.addEventListener('DOMContentLoaded', () => {
     runScript(code);
   });
 });
+
 
 
 
