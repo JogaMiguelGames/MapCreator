@@ -64,7 +64,7 @@ async function playTone(freq, duration) {
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
 
-  oscillator.type = 'square'; // ou 'sine' para som mais suave
+  oscillator.type = 'square';
   oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
   gainNode.gain.setValueAtTime(globalVolume, audioContext.currentTime);
 
@@ -72,7 +72,6 @@ async function playTone(freq, duration) {
   oscillator.start();
   oscillator.stop(audioContext.currentTime + duration);
 
-  // resolve a promise quando o tom termina
   await new Promise(resolve => {
     oscillator.onended = resolve;
   });
@@ -112,9 +111,9 @@ async function runLines(lines) {
       i++;
       continue;
     }
-    
+
     if (line.startsWith('call.function(') && line.endsWith(')')) {
-      const funcName = line.slice(14, -1).trim(); // 14 = comprimento de "call.function("
+      const funcName = line.slice(14, -1).trim();
       if (functions[funcName]) {
         await runLines(functions[funcName]);
       } else {
@@ -175,6 +174,21 @@ async function runLines(lines) {
           } else {
             gconsole.print('Error: invalid array -> ' + valueRaw);
           }
+        } else if (valueRaw.startsWith('create.new.')) {
+          const objType = valueRaw.slice(11).trim();
+          let createFunc = null;
+          switch (objType) {
+            case 'cube': createFunc = createCube; break;
+            case 'sphere': createFunc = createSphere; break;
+            case 'cylinder': createFunc = createCylinder; break;
+            case 'cone': createFunc = createCone; break;
+            case 'plane': createFunc = createPlane; break;
+          }
+          if (createFunc) {
+            variables[name] = createFunc;
+          } else {
+            gconsole.print('Error: unknown create.new type -> ' + objType);
+          }
         } else {
           variables[name] = safeMathEval(valueRaw);
         }
@@ -210,56 +224,27 @@ async function runLines(lines) {
       continue;
     }
 
-    if (line === 'create.new.cube') {
-      if (typeof createCube === 'function') {
-        createCube();
+    // Criar objetos diretamente
+    if (line.startsWith('create.new.')) {
+      const objType = line.slice(11).trim();
+      let createFunc = null;
+      switch (objType) {
+        case 'cube': createFunc = createCube; break;
+        case 'sphere': createFunc = createSphere; break;
+        case 'cylinder': createFunc = createCylinder; break;
+        case 'cone': createFunc = createCone; break;
+        case 'plane': createFunc = createPlane; break;
+      }
+      if (createFunc) {
+        createFunc();
       } else {
-        gconsole.print('Error: createCube function not available.');
+        gconsole.print('Error: unknown create.new type -> ' + objType);
       }
       i++;
       continue;
     }
 
-    if (line === 'create.new.sphere') {
-      if (typeof createCube === 'function') {
-        createSphere()
-      } else {
-        gconsole.print('Error: createSphere function not available.');
-      }
-      i++;
-      continue;
-    }
-    
-    if (line === 'create.new.cylinder') {
-      if (typeof createCube === 'function') {
-        createCylinder()
-      } else {
-        gconsole.print('Error: createCylinder function not available.');
-      }
-      i++;
-      continue;
-    }
-
-    if (line === 'create.new.cone') {
-      if (typeof createCube === 'function') {
-        createCone()
-      } else {
-        gconsole.print('Error: createCone function not available.');
-      }
-      i++;
-      continue;
-    }
-
-    if (line === 'create.new.plane') {
-      if (typeof createCube === 'function') {
-        createPlane()
-      } else {
-        gconsole.print('Error: createPlane function not available.');
-      }
-      i++;
-      continue;
-    }
-
+    // Blocos if/else
     if (line.startsWith('if (') && line.endsWith(')')) {
       const condition = line.slice(4, -1).trim();
       const ifBlock = [];
@@ -298,6 +283,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Expressões matemáticas
     if (line.startsWith('calc(') && line.endsWith(')')) {
       const expr = line.slice(5, -1).trim();
       try {
@@ -310,6 +296,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Wait
     if (line.startsWith('wait(') && line.endsWith(')')) {
       const time = parseFloat(line.slice(5, -1).trim());
       if (!isNaN(time) && time >= 0) {
@@ -332,6 +319,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Volume
     if (line.startsWith('volume(') && line.endsWith(')')) {
       const raw = line.slice(7, -1).trim();
       let percent = parseFloat(raw.replace('%', ''));
@@ -345,6 +333,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Sky color
     if (line.startsWith('skycolor(') && line.endsWith(')')) {
       const hex = line.slice(9, -1).trim();
       if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)) {
@@ -361,6 +350,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Play tone
     if (line.startsWith('play(') && line.endsWith(')')) {
       const args = line.slice(5, -1).split(',').map(s => parseFloat(s.trim()));
       if (args.length === 2 && !isNaN(args[0]) && !isNaN(args[1])) {
@@ -372,6 +362,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Note
     if (line.startsWith('note(') && line.endsWith(')')) {
       let argsRaw = line.slice(5, -1).split(',');
       if (argsRaw.length === 2) {
@@ -397,6 +388,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Open URL
     if (line.startsWith('open.url(') && line.endsWith(')')) {
       let raw = line.slice(9, -1).trim();
       if ((raw.startsWith('"') && raw.endsWith('"')) || (raw.startsWith("'") && raw.endsWith("'"))) {
@@ -413,6 +405,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Console print
     if (line.startsWith('console.print(') && line.endsWith(')')) {
       let param = line.slice(14, -1).trim();
       if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) {
