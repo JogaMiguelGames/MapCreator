@@ -210,36 +210,26 @@ async function runLines(lines) {
       continue;
     }
 
-    if (/^[a-zA-Z_]\w*\s*=\s*create\.new\.(cube|sphere|cylinder|cone|plane)$/.test(line)) {
-      const [, varName, objType] = line.match(/^([a-zA-Z_]\w*)\s*=\s*create\.new\.(cube|sphere|cylinder|cone|plane)$/);
-      let obj = null;
+    const match = line.match(/^([a-zA-Z_]\w*)\s*=\s*create\.new\.(cube|sphere|cylinder|cone|plane)$/);
+    if (match) {
+        const varName = match[1];
+        const objType = match[2];
+        let obj = null;
     
-      switch(objType) {
-        case 'cube':
-          obj = createCube();
-          break;
-        case 'sphere':
-          obj = createSphere();
-          break;
-        case 'cylinder':
-          obj = createCylinder();
-          break;
-        case 'cone':
-          obj = createCone();
-          break;
-        case 'plane':
-          obj = createPlane();
-          break;
-      }
+        switch(objType) {
+            case 'cube': obj = window.createCube(); break;
+            case 'sphere': obj = window.createSphere(); break;
+            case 'cylinder': obj = window.createCylinder(); break;
+            case 'cone': obj = window.createCone(); break;
+            case 'plane': obj = window.createPlane(); break;
+        }
     
-      if(obj) {
-        variables[varName] = obj;
-        gconsole.print(`Variable '${varName}' created as ${objType}`);
-      } else {
-        gconsole.print(`Error: failed to create ${objType}`);
-      }
-      i++;
-      continue;
+        if(obj){
+            variables[varName] = obj;
+            gconsole.print(`Variable '${varName}' created as ${objType}`);
+        } else {
+            gconsole.print(`Error: failed to create ${objType}`);
+        }
     }
 
     if (/^[a-zA-Z_]\w*\.delete$/.test(line)) {
@@ -479,6 +469,7 @@ document.addEventListener('DOMContentLoaded', () => {
     runScript(code);
   });
 });
+
 
 
 
