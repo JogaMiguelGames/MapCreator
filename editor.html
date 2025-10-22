@@ -132,7 +132,6 @@
       </label>
     </section>
 
-    <!-- Lista de objetos -->
     <section id="cubeList" tabindex="0" aria-label="List of cubes"></section>
 
     <!-- Scripting -->
@@ -140,7 +139,6 @@
       <button id="exitScriptFocusBtn" style="display:none; margin-top:10px;">Back</button>
       <h2>Scripting</h2>
       <textarea id="scriptInput">console.print("Hello, World")</textarea>
-      <button id="runScriptBtn">Run Script</button>
       <div id="scriptOutput"></div>
     </section>
   </aside>
@@ -183,7 +181,6 @@
   <script src="scripts/services/lang.js"></script>
 
   <script>
-    // Script focus toggle
     const focusBtn = document.getElementById("focusScriptBtn");
     const exitBtn = document.getElementById("exitScriptFocusBtn");
     focusBtn.addEventListener("click", () => {
@@ -195,12 +192,10 @@
       exitBtn.style.display = "none";
     });
 
-    // Import Texture
     document.getElementById('importTextureBtn').addEventListener('click', () => {
       document.getElementById('importButton').click();
     });
 
-    // Mobile detection
     function isMobileOrTablet() {
       return /Mobi|Android|iPad|iPhone|iPod|Tablet/i.test(navigator.userAgent) || window.innerWidth < 1024;
     }
