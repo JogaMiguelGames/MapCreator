@@ -130,7 +130,6 @@ async function runLines(lines) {
       while (true) await runLines([...loopBody]);
     }
 
-    // Chamada de variável que é função
     if (/^[a-zA-Z_]\w*\(\)$/.test(line)) {
       const varName = line.slice(0, -2);
       if (variables.hasOwnProperty(varName) && typeof variables[varName] === 'function') {
@@ -141,7 +140,6 @@ async function runLines(lines) {
       continue;
     }
 
-    // Atribuição de variáveis
     if (/^[a-zA-Z_]\w*\s*=/.test(line)) {
       const [varName, ...rest] = line.split('=');
       const valueRaw = rest.join('=').trim();
@@ -173,7 +171,6 @@ async function runLines(lines) {
       continue;
     }
 
-    // gconsole.print
     if ((line.startsWith('gconsole.print(') || line.startsWith('console.print(')) && line.endsWith(')')) {
       let param = line.slice(line.indexOf('(')+1, -1).trim();
       if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) gconsole.print(param.slice(1,-1));
@@ -189,26 +186,52 @@ async function runLines(lines) {
       continue;
     }
 
-    else if (valueRaw.startsWith('create.new.')) {
-      const type = valueRaw.slice(11);
-      variables[name] = () => {
-        let obj = null;
-        switch (type) {
-          case 'cube': if (typeof createCube === 'function') obj = createCube(); else gconsole.print('Error: createCube not available'); break;
-          case 'sphere': if (typeof createSphere === 'function') obj = createSphere(); else gconsole.print('Error: createSphere not available'); break;
-          case 'cylinder': if (typeof createCylinder === 'function') obj = createCylinder(); else gconsole.print('Error: createCylinder not available'); break;
-          case 'cone': if (typeof createCone === 'function') obj = createCone(); else gconsole.print('Error: createCone not available'); break;
-          case 'plane': if (typeof createPlane === 'function') obj = createPlane(); else gconsole.print('Error: createPlane not available'); break;
-          default: gconsole.print('Error: unknown create type -> ' + type);
+    if (/^[a-zA-Z_]\w*\s*=/.test(line)) {
+      const [varName, ...rest] = line.split('=');
+      const valueRaw = rest.join('=').trim();
+      const name = varName.trim();
+      try {
+        if (valueRaw.startsWith('create.new.')) {
+          const type = valueRaw.slice(11).trim();
+          let createdObject = null;
+          variables[name] = () => {
+            if (!createdObject) {
+              switch (type) {
+                case 'cube': if (typeof createCube === 'function') createdObject = createCube(); break;
+                case 'sphere': if (typeof createSphere === 'function') createdObject = createSphere(); break;
+                case 'cylinder': if (typeof createCylinder === 'function') createdObject = createCylinder(); break;
+                case 'cone': if (typeof createCone === 'function') createdObject = createCone(); break;
+                case 'plane': if (typeof createPlane === 'function') createdObject = createPlane(); break;
+                default: gconsole.print('Error: unknown create type -> ' + type);
+              }
+              if (createdObject) {
+                createdObject.move = (x, y, z) => { createdObject.position.set(x, y, z); };
+                createdObject.rotate = (x, y, z) => { createdObject.rotation.set(x, y, z); };
+                createdObject.scaleObj = (x, y, z) => { createdObject.scale.set(x, y, z); };
+              }
+            }
+            return createdObject;
+          };
+        } else if ((valueRaw.startsWith('"') && valueRaw.endsWith('"')) || (valueRaw.startsWith("'") && valueRaw.endsWith("'"))) {
+          variables[name] = valueRaw.slice(1, -1);
+        } else if (!isNaN(Number(valueRaw))) {
+          variables[name] = Number(valueRaw);
+        } else if (valueRaw.startsWith('[') && valueRaw.endsWith(']')) {
+          const arr = JSON.parse(valueRaw);
+          if (Array.isArray(arr)) {
+            variables[name] = arr;
+          } else {
+            gconsole.print('Error: invalid array -> ' + valueRaw);
+          }
+        } else {
+          variables[name] = safeMathEval(valueRaw);
         }
-        if (obj) {
-          // Adiciona métodos para manipular o objeto
-          obj.move = (x, y, z) => { obj.position.set(x, y, z); };
-          obj.rotate = (x, y, z) => { obj.rotation.set(x, y, z); };
-          obj.scaleObj = (x, y, z) => { obj.scale.set(x, y, z); };
-        }
-        return obj;
-      };
+      } catch (e) {
+        gconsole.print('Error: invalid value -> ' + valueRaw);
+        console.error(e);
+      }
+      i++;
+      continue;
     }
 
     // wireframe
@@ -271,4 +294,5 @@ document.addEventListener('DOMContentLoaded', ()=>{
     runScript(code);
   });
 });
+
 
