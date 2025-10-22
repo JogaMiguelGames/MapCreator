@@ -464,6 +464,7 @@ function updateCubeList() {
   projectDiv.style.cursor = 'pointer';
   projectDiv.style.gap = '6px';
   projectDiv.style.fontWeight = 'bold';
+  projectDiv.style.position = 'relative'; // permite pop-up posicionado dentro
 
   const folderIcon = document.createElement('img');
   folderIcon.src = 'resources/images/ui/icons/folder.svg';
@@ -485,21 +486,57 @@ function updateCubeList() {
   projectContent.style.marginLeft = '20px';
   cubeListDiv.appendChild(projectContent);
 
-  // Botão de adicionar pastas
-  const addFolderBtn = document.createElement('button');
-  addFolderBtn.textContent = '+';
-  addFolderBtn.title = 'Add Folder';
-  addFolderBtn.style.cssText = `
-    width:32px; height:32px; border-radius:50%; border:none; background-color:#33cc33;
-    color:white; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-left:10px;
+  // === Botão verde “+” ===
+  const addBtn = document.createElement('button');
+  addBtn.textContent = '+';
+  addBtn.title = 'Add Item';
+  addBtn.style.cssText = `
+    width:32px; height:32px; border-radius:50%; border:none;
+    background-color:#33cc33; color:white; font-size:24px;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    margin-left:10px; transition:transform 0.15s ease;
   `;
-  projectDiv.appendChild(addFolderBtn);
+  addBtn.addEventListener('mouseenter',()=>addBtn.style.transform='scale(1.1)');
+  addBtn.addEventListener('mouseleave',()=>addBtn.style.transform='scale(1)');
+  projectDiv.appendChild(addBtn);
 
-  addFolderBtn.addEventListener('click', () => {
+  // === Pop-up de opções ===
+  const popup = document.createElement('div');
+  popup.style.cssText = `
+    position:absolute; top:40px; left:60px; background:#222; color:#fff;
+    border:1px solid #555; border-radius:6px; box-shadow:0 4px 8px rgba(0,0,0,0.3);
+    display:none; flex-direction:column; z-index:10; min-width:130px; padding:4px;
+  `;
+  projectDiv.appendChild(popup);
+
+  // Opção de adicionar pasta
+  const folderOption = document.createElement('div');
+  folderOption.textContent = '📁 Add Folder';
+  folderOption.style.cssText = `
+    padding:6px 10px; border-radius:4px; cursor:pointer; font-size:14px;
+  `;
+  folderOption.addEventListener('mouseenter', () => folderOption.style.background = '#444');
+  folderOption.addEventListener('mouseleave', () => folderOption.style.background = 'transparent');
+  folderOption.addEventListener('click', () => {
+    popup.style.display = 'none';
     const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
     window.customFolders.push(newFolder);
     selectedFolder = newFolder;
     updateCubeList();
+  });
+  popup.appendChild(folderOption);
+
+  // Toggle pop-up
+  addBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    popup.style.display = (popup.style.display === 'flex') ? 'none' : 'flex';
+  });
+
+  // Fechar pop-up ao clicar fora
+  document.addEventListener('click', (e) => {
+    if (!popup.contains(e.target) && e.target !== addBtn) {
+      popup.style.display = 'none';
+    }
   });
 
   // --- Pastas ---
@@ -519,7 +556,6 @@ function updateCubeList() {
     icon.style.objectFit = 'contain';
     folderDiv.appendChild(icon);
 
-    // Verifica se está sendo renomeada
     if (folder.isEditing) {
       const input = document.createElement('input');
       input.type = 'text';
@@ -563,7 +599,6 @@ function updateCubeList() {
       });
     }
 
-    // Destaque se selecionado
     if (selectedFolder === folder) {
       folderDiv.style.backgroundColor = '#3366ff';
       folderDiv.style.color = 'white';
@@ -757,6 +792,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
