@@ -3,50 +3,74 @@ const gconsole = {
     const output = document.getElementById('scriptOutput');
     output.textContent += text + '\n';
     output.scrollTop = output.scrollHeight;
-  },
-  clear: () => {
-    const output = document.getElementById('scriptOutput');
-    output.textContent = '';
   }
 };
 
 const variables = {};
 const functions = {};
-let isRunning = false;
-let stopRequested = false;
+
 let audioContext = null;
 let globalVolume = 0.2;
 
+// Execution state
+let isRunning = false;
+let isPaused = false;
+let stopRequested = false;
+
 const noteFrequencies = {
-  'C4': 261.63, 'C#4': 277.18, 'Db4': 277.18,
-  'D4': 293.66, 'D#4': 311.13, 'Eb4': 311.13,
-  'E4': 329.63,
-  'F4': 349.23, 'F#4': 369.99, 'Gb4': 369.99,
-  'G4': 392.00, 'G#4': 415.30, 'Ab4': 415.30,
-  'A4': 440.00, 'A#4': 466.16, 'Bb4': 466.16,
-  'B4': 493.88
+  'C4': 261.63, 'C#4': 277.18, 'Db4': 277.18, 'D4': 293.66, 'D#4': 311.13,
+  'Eb4': 311.13, 'E4': 329.63, 'F4': 349.23, 'F#4': 369.99, 'Gb4': 369.99,
+  'G4': 392.00, 'G#4': 415.30, 'Ab4': 415.30, 'A4': 440.00, 'A#4': 466.16,
+  'Bb4': 466.16, 'B4': 493.88
 };
+
+function safeMathEval(expr) {
+  const allowedFunctions = ['sin','cos','tan','sqrt','abs','log','pow','max','min','round','floor','ceil','random'];
+  if (!/^[0-9+\-*/%^()., \[\]a-zA-Z0-9_]+$/.test(expr)) throw new Error('Invalid expression');
+  const exprWithMath = expr.replace(/([a-zA-Z]+)\(/g, (m, f) => {
+    if (f === 'random') return `__custom_random__(`;
+    if (allowedFunctions.includes(f)) return `Math.${f}(`;
+    throw new Error('Function not allowed: ' + f);
+  });
+  const exprWithVars = exprWithMath.replace(/\b([a-zA-Z_]\w*(?:\[\d+\])?)\b/g, (match) => {
+    if (match.includes('[')) {
+      const varName = match.split('[')[0];
+      const index = parseInt(match.match(/\[(\d+)\]/)[1]) - 1;
+      if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
+        if (index < 0 || index >= variables[varName].length) throw new Error('Array index out of bounds: ' + match);
+        return variables[varName][index];
+      } else throw new Error('Invalid array access: ' + match);
+    } else if (variables.hasOwnProperty(match)) {
+      return variables[match];
+    } else return match;
+  });
+
+  const __custom_random__ = (a = 0, b = 1, decimals = 10) => {
+    if (typeof a !== 'number' || typeof b !== 'number' || typeof decimals !== 'number') throw new Error('Invalid arguments for random');
+    if (decimals < 0) decimals = 0;
+    const rand = Math.random() * (b - a) + a;
+    const factor = Math.pow(10, decimals);
+    return Math.round(rand * factor) / factor;
+  };
+
+  return Function('__custom_random__', '"use strict"; return (' + exprWithVars + ')')(__custom_random__);
+}
 
 async function playTone(freq, duration) {
   if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
   if (freq <= 0 || duration <= 0) return;
-
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
-
   oscillator.type = 'square';
   oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
   gainNode.gain.setValueAtTime(globalVolume, audioContext.currentTime);
-
   oscillator.connect(gainNode).connect(audioContext.destination);
   oscillator.start();
   oscillator.stop(audioContext.currentTime + duration);
-
   await new Promise(resolve => { oscillator.onended = resolve; });
 }
 
 function setWireframeForAllObjects(enabled) {
-  if (typeof scene === 'undefined') return;
   scene.traverse(obj => {
     if (obj.isMesh) {
       const materials = Array.isArray(obj.material) ? obj.material : [obj.material];
@@ -55,154 +79,181 @@ function setWireframeForAllObjects(enabled) {
   });
 }
 
-function evalExpression(expr) {
-  const names = Object.keys(variables);
-  const values = Object.values(variables);
-  try {
-    return Function(...names, `return (${expr});`)(...values);
-  } catch {
-    return expr;
+async function waitForUnpause() {
+  while (isPaused && !stopRequested) {
+    await new Promise(r => setTimeout(r, 100));
   }
 }
 
-function evalCondition(cond) {
-  const names = Object.keys(variables);
-  const values = Object.values(variables);
-  try {
-    return Function(...names, `return (${cond});`)(...values);
-  } catch {
-    return false;
-  }
-}
+async function runLines(lines) {
+  let i = 0;
+  while (i < lines.length) {
+    if (stopRequested) return;
+    await waitForUnpause();
 
-async function executeScript(script) {
-  const lines = script.split('\n');
-  for (let i = 0; i < lines.length; i++) {
-    if (stopRequested) break;
     const line = lines[i].trim();
-    if (line === '') continue;
+    if (line === '') { i++; continue; }
 
-    if (line.startsWith('console.print(') || line.startsWith('gconsole.print(')) {
-      try { eval(line); } catch { gconsole.print(`Error executing: ${line}`); }
-    }
-
-    else if (line.startsWith('create.new.')) {
-      const type = line.slice(11).replace('()', '');
-      switch(type) {
-        case 'cube': if (typeof createCube === 'function') createCube(); else gconsole.print('Error: createCube not available'); break;
-        case 'sphere': if (typeof createSphere === 'function') createSphere(); else gconsole.print('Error: createSphere not available'); break;
-        case 'cylinder': if (typeof createCylinder === 'function') createCylinder(); else gconsole.print('Error: createCylinder not available'); break;
-        case 'cone': if (typeof createCone === 'function') createCone(); else gconsole.print('Error: createCone not available'); break;
-        case 'plane': if (typeof createPlane === 'function') createPlane(); else gconsole.print('Error: createPlane not available'); break;
-        default: gconsole.print('Error: unknown create type -> ' + type);
-      }
-    }
-
-    else if (line.startsWith('wireframe.on()')) { setWireframeForAllObjects(true); gconsole.print("Wireframe enabled."); }
-    else if (line.startsWith('wireframe.off()')) { setWireframeForAllObjects(false); gconsole.print("Wireframe disabled."); }
-
-    else if (line.startsWith('wait(')) {
-      const t = parseFloat(line.slice(5, -1));
-      if (!isNaN(t)) await new Promise(r => setTimeout(r, t*1000));
-    }
-
-    else if (line.startsWith('wait.ms(')) {
-      const t = parseFloat(line.slice(8, -1));
-      if (!isNaN(t)) await new Promise(r => setTimeout(r, t));
-    }
-
-    else if (line.startsWith('play(')) {
-      const args = line.slice(5, -1).split(',').map(s => parseFloat(s.trim()));
-      if (args.length === 2) await playTone(args[0], args[1]);
-    }
-
-    else if (line.startsWith('note(')) {
-      let argsRaw = line.slice(5, -1).split(',');
-      if(argsRaw.length===2){
-        let note=argsRaw[0].trim().replace(/^['"]|['"]$/g,'');
-        let dur=parseFloat(argsRaw[1].trim());
-        const freq=noteFrequencies[note];
-        if(freq) await playTone(freq,dur);
-      }
-    }
-
-    else if (line.startsWith('if (') && line.endsWith(')')) {
-      const condition = line.slice(4,-1);
-      const ifBlock = [], elseBlock = []; let inElse=false; i++;
-      while(i<lines.length && lines[i].trim()!=='end') {
-        const inner = lines[i].trim();
-        if(inner==='else'){inElse=true; i++; continue;}
-        if(inElse) elseBlock.push(lines[i]); else ifBlock.push(lines[i]);
-        i++;
-      }
-      if(evalCondition(condition)) await executeScript(ifBlock.join('\n'));
-      else await executeScript(elseBlock.join('\n'));
-    }
-
-    else if (line.startsWith('repeat(') && line.endsWith(')')) {
-      const count=parseInt(line.slice(7,-1));
-      const repeatBody=[]; i++;
-      while(i<lines.length && lines[i].trim()!=='end'){repeatBody.push(lines[i]); i++;}
-      for(let r=0;r<count;r++){ if(stopRequested) break; await executeScript(repeatBody.join('\n')); }
-    }
-
-    else if (line.startsWith('loop') && line.endsWith('')) {
-      const loopBody=[]; i++;
-      while(i<lines.length && lines[i].trim()!=='end'){loopBody.push(lines[i]); i++;}
-      while(!stopRequested){ await executeScript(loopBody.join('\n')); }
-    }
-
-    else if (line.startsWith('function ') && line.endsWith('()')) {
+    if (line.startsWith('function ') && line.endsWith('()')) {
       const funcName = line.match(/^function\s+(\w+)\(\)$/)[1];
-      const funcBody=[]; i++;
-      while(i<lines.length && lines[i].trim()!=='end'){funcBody.push(lines[i]); i++;}
-      functions[funcName]=funcBody.join('\n');
+      const funcBody = [];
+      i++;
+      while (i < lines.length && lines[i].trim() !== 'end') { funcBody.push(lines[i]); i++; }
+      if (i >= lines.length) { gconsole.print('Error: function not terminated -> ' + funcName); return; }
+      functions[funcName] = funcBody;
+      i++;
+      continue;
     }
 
-    else if(line.startsWith('call.function(') && line.endsWith(')')) {
-      const funcName = line.slice(14,-1).trim();
-      if(functions[funcName]) await executeScript(functions[funcName]);
+    if (line.startsWith('call.function(') && line.endsWith(')')) {
+      const funcName = line.slice(14, -1).trim();
+      if (functions[funcName]) await runLines(functions[funcName]);
+      else gconsole.print('Error: function not defined -> ' + funcName);
+      i++;
+      continue;
     }
 
-    else if(/^[a-zA-Z_]\w*\(\)$/.test(line)) {
-      const varName=line.slice(0,-2);
-      if(variables.hasOwnProperty(varName) && typeof variables[varName]==='function'){ variables[varName](); }
+    if (line.startsWith('repeat(') && line.endsWith(')')) {
+      const count = parseInt(line.slice(7, -1).trim());
+      const repeatBody = [];
+      i++;
+      while (i < lines.length && lines[i].trim() !== 'end') { repeatBody.push(lines[i]); i++; }
+      if (i >= lines.length) { gconsole.print('Error: repeat block not terminated'); return; }
+      for (let r = 0; r < count; r++) {
+        if (stopRequested) return;
+        await runLines([...repeatBody]);
+      }
+      i++;
+      continue;
     }
 
-    else if(/^[a-zA-Z_]\w*\s*=/.test(line)) {
-      const [varName,...rest]=line.split('=');
-      const valueRaw=rest.join('=').trim();
-      const name=varName.trim();
-      if((valueRaw.startsWith('"') && valueRaw.endsWith('"')) || (valueRaw.startsWith("'") && valueRaw.endsWith("'"))) variables[name]=valueRaw.slice(1,-1);
-      else if(!isNaN(Number(valueRaw))) variables[name]=Number(valueRaw);
-      else variables[name]=evalExpression(valueRaw);
+    if (line === 'loop') {
+      const loopBody = [];
+      i++;
+      while (i < lines.length && lines[i].trim() !== 'end') { loopBody.push(lines[i]); i++; }
+      if (i >= lines.length) { gconsole.print('Error: loop block not terminated'); return; }
+      while (!stopRequested) await runLines([...loopBody]);
+      continue;
     }
 
-    else {
-      try { eval(line); } catch { gconsole.print('Unknown command: '+line); }
+    if (/^[a-zA-Z_]\w*\(\)$/.test(line)) {
+      const varName = line.slice(0, -2);
+      if (variables.hasOwnProperty(varName) && typeof variables[varName] === 'function') {
+        try { variables[varName](); }
+        catch { gconsole.print('Error executing function variable -> ' + varName); }
+      } else gconsole.print('Error: invalid function call -> ' + varName);
+      i++;
+      continue;
     }
+
+    if (/^[a-zA-Z_]\w*\s*=/.test(line)) {
+      const [varName, ...rest] = line.split('=');
+      const valueRaw = rest.join('=').trim();
+      const name = varName.trim();
+      try {
+        if ((valueRaw.startsWith('"') && valueRaw.endsWith('"')) || (valueRaw.startsWith("'") && valueRaw.endsWith("'"))) {
+          variables[name] = valueRaw.slice(1, -1);
+        } else if (!isNaN(Number(valueRaw))) {
+          variables[name] = Number(valueRaw);
+        } else if (valueRaw.startsWith('[') && valueRaw.endsWith(']')) {
+          const arr = JSON.parse(valueRaw);
+          if (Array.isArray(arr)) variables[name] = arr;
+          else gconsole.print('Error: invalid array -> ' + valueRaw);
+        } else if (valueRaw.startsWith('create.new.')) {
+          const type = valueRaw.slice(11);
+          variables[name] = () => {
+            switch (type) {
+              case 'cube': if (typeof createCube === 'function') createCube(); else gconsole.print('Error: createCube not available'); break;
+              case 'sphere': if (typeof createSphere === 'function') createSphere(); else gconsole.print('Error: createSphere not available'); break;
+              case 'cylinder': if (typeof createCylinder === 'function') createCylinder(); else gconsole.print('Error: createCylinder not available'); break;
+              case 'cone': if (typeof createCone === 'function') createCone(); else gconsole.print('Error: createCone not available'); break;
+              case 'plane': if (typeof createPlane === 'function') createPlane(); else gconsole.print('Error: createPlane not available'); break;
+              default: gconsole.print('Error: unknown create type -> ' + type);
+            }
+          };
+        } else variables[name] = safeMathEval(valueRaw);
+      } catch { gconsole.print('Error: invalid value -> ' + valueRaw); }
+      i++;
+      continue;
+    }
+
+    if ((line.startsWith('gconsole.print(') || line.startsWith('console.print(')) && line.endsWith(')')) {
+      let param = line.slice(line.indexOf('(')+1, -1).trim();
+      if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) gconsole.print(param.slice(1,-1));
+      else if (/^[a-zA-Z_]\w*\[\d+\]$/.test(param)) {
+        const varName = param.split('[')[0]; const index = parseInt(param.match(/\[(\d+)\]/)[1])-1;
+        if (variables.hasOwnProperty(varName) && Array.isArray(variables[varName])) {
+          if (index < 0 || index >= variables[varName].length) gconsole.print('Error: array index out of bounds -> ' + param);
+          else gconsole.print(String(variables[varName][index]));
+        } else gconsole.print('Error: list not defined -> ' + varName);
+      } else if (variables.hasOwnProperty(param)) gconsole.print(String(variables[param]));
+      else gconsole.print('Error: undefined variable -> ' + param);
+      i++;
+      continue;
+    }
+
+    if (line.startsWith('wait(') && line.endsWith(')')) {
+      const t = parseFloat(line.slice(5, -1).trim());
+      if (!isNaN(t) && t >= 0) {
+        const start = Date.now();
+        while (Date.now() - start < t * 1000) {
+          if (stopRequested) return;
+          await waitForUnpause();
+          await new Promise(r => setTimeout(r, 10));
+        }
+      } else gconsole.print('Error: invalid wait time');
+      i++;
+      continue;
+    }
+
+    gconsole.print('Error: invalid command -> ' + line);
+    i++;
   }
 }
 
-async function runUserScript() {
-  if(isRunning) return;
-  stopRequested=false;
-  isRunning=true;
-  gconsole.clear();
-  gconsole.print("Running script...");
-  await new Promise(requestAnimationFrame);
-  const code=document.getElementById('scriptInput').value;
-  await executeScript(code);
-  isRunning=false;
-  if(!stopRequested) gconsole.print("Script finished.");
+async function runScript(code) {
+  document.getElementById('scriptOutput').textContent = '';
+  Object.keys(variables).forEach(k => delete variables[k]);
+  Object.keys(functions).forEach(k => delete functions[k]);
+  isRunning = true;
+  stopRequested = false;
+  await runLines(code.split('\n'));
+  isRunning = false;
+  gconsole.print('Script finished.');
 }
 
-function stopUserScript(){
-  if(!isRunning) return;
-  stopRequested=true;
-  if(audioContext){ audioContext.close(); audioContext=null; }
-  gconsole.print("Script stopped.");
-}
+// Button bindings
+document.addEventListener('DOMContentLoaded', () => {
+  const runButton = document.getElementById('runButton');
+  const pauseButton = document.getElementById('pauseButton');
+  const stopButton = document.getElementById('stopButton');
 
-document.getElementById('runButton').addEventListener('click', runUserScript);
-document.getElementById('stopButton').addEventListener('click', stopUserScript);
+  runButton.addEventListener('click', async () => {
+    if (isRunning) {
+      if (isPaused) {
+        isPaused = false;
+        gconsole.print('Resumed.');
+      }
+      return;
+    }
+    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const code = document.getElementById('scriptInput').value;
+    gconsole.print('Running script...');
+    runScript(code);
+  });
+
+  pauseButton.addEventListener('click', () => {
+    if (isRunning) {
+      isPaused = !isPaused;
+      gconsole.print(isPaused ? 'Paused.' : 'Resumed.');
+    }
+  });
+
+  stopButton.addEventListener('click', () => {
+    if (isRunning) {
+      stopRequested = true;
+      isPaused = false;
+      gconsole.print('Stopped.');
+    }
+  });
+});
