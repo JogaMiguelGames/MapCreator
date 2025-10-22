@@ -210,50 +210,56 @@ async function runLines(lines) {
       continue;
     }
 
-    const createMatch = line.match(/^([a-zA-Z_]\w*)\s*=\s*create\.new\.(cube|sphere|cylinder|cone|plane|camera)$/i);
-    if (createMatch) {
-        const varName = createMatch[1];
-        const objType = createMatch[2].toLowerCase();
-        let obj = null;
-    
-        switch(objType){
-            case 'cube': obj = createCube(); break;
-            case 'sphere': obj = createSphere(); break;
-            case 'cylinder': obj = createCylinder(); break;
-            case 'cone': obj = createCone(); break;
-            case 'plane': obj = createPlane(); break;
-            case 'camera': obj = createCamera(); break;
-        }
-    
-        if(obj){
-            variables[varName] = obj;
-            gconsole.print(`Variable '${varName}' created as ${objType}`);
-        } else {
-            gconsole.print(`Error: failed to create ${objType}`);
-        }
-        i++;
-        continue;
-    }
-    
-    if (/^[a-zA-Z_]\w*\.delete$/.test(line)) {
-      const varName = line.split('.')[0];
-      if(variables[varName]) {
-        const obj = variables[varName];
-        if(obj.parent) obj.parent.remove(obj);
-        const idx = cubes.indexOf(obj);
-        if(idx !== -1) cubes.splice(idx,1);
-        gconsole.print(`Variable '${varName}' deleted`);
-        delete variables[varName];
-        selectedCube = cubes[0] || null;
-        updatePanelForCube(selectedCube);
-        updateCubeList();
+    if (line === 'create.new.cube') {
+      if (typeof createCube === 'function') {
+        createCube();
       } else {
-        gconsole.print(`Error: variable not found -> ${varName}`);
+        gconsole.print('Error: createCube function not available.');
+      }
+      i++;
+      continue;
+    }
+
+    if (line === 'create.new.sphere') {
+      if (typeof createCube === 'function') {
+        createSphere()
+      } else {
+        gconsole.print('Error: createSphere function not available.');
       }
       i++;
       continue;
     }
     
+    if (line === 'create.new.cylinder') {
+      if (typeof createCube === 'function') {
+        createCylinder()
+      } else {
+        gconsole.print('Error: createCylinder function not available.');
+      }
+      i++;
+      continue;
+    }
+
+    if (line === 'create.new.cone') {
+      if (typeof createCube === 'function') {
+        createCone()
+      } else {
+        gconsole.print('Error: createCone function not available.');
+      }
+      i++;
+      continue;
+    }
+
+    if (line === 'create.new.plane') {
+      if (typeof createCube === 'function') {
+        createPlane()
+      } else {
+        gconsole.print('Error: createPlane function not available.');
+      }
+      i++;
+      continue;
+    }
+
     if (line.startsWith('if (') && line.endsWith(')')) {
       const condition = line.slice(4, -1).trim();
       const ifBlock = [];
@@ -472,14 +478,3 @@ document.addEventListener('DOMContentLoaded', () => {
     runScript(code);
   });
 });
-
-
-
-
-
-
-
-
-
-
-
