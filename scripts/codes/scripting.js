@@ -189,19 +189,26 @@ async function runLines(lines) {
       continue;
     }
 
-    // create.new literal (antigo)
-    if (line.startsWith('create.new.')) {
-      const type = line.slice(11);
-      switch(type){
-        case 'cube': if(typeof createCube==='function') createCube(); else gconsole.print('Error: createCube not available'); break;
-        case 'sphere': if(typeof createSphere==='function') createSphere(); else gconsole.print('Error: createSphere not available'); break;
-        case 'cylinder': if(typeof createCylinder==='function') createCylinder(); else gconsole.print('Error: createCylinder not available'); break;
-        case 'cone': if(typeof createCone==='function') createCone(); else gconsole.print('Error: createCone not available'); break;
-        case 'plane': if(typeof createPlane==='function') createPlane(); else gconsole.print('Error: createPlane not available'); break;
-        default: gconsole.print('Error: unknown create type -> ' + type);
-      }
-      i++;
-      continue;
+    else if (valueRaw.startsWith('create.new.')) {
+      const type = valueRaw.slice(11);
+      variables[name] = () => {
+        let obj = null;
+        switch (type) {
+          case 'cube': if (typeof createCube === 'function') obj = createCube(); else gconsole.print('Error: createCube not available'); break;
+          case 'sphere': if (typeof createSphere === 'function') obj = createSphere(); else gconsole.print('Error: createSphere not available'); break;
+          case 'cylinder': if (typeof createCylinder === 'function') obj = createCylinder(); else gconsole.print('Error: createCylinder not available'); break;
+          case 'cone': if (typeof createCone === 'function') obj = createCone(); else gconsole.print('Error: createCone not available'); break;
+          case 'plane': if (typeof createPlane === 'function') obj = createPlane(); else gconsole.print('Error: createPlane not available'); break;
+          default: gconsole.print('Error: unknown create type -> ' + type);
+        }
+        if (obj) {
+          // Adiciona métodos para manipular o objeto
+          obj.move = (x, y, z) => { obj.position.set(x, y, z); };
+          obj.rotate = (x, y, z) => { obj.rotation.set(x, y, z); };
+          obj.scaleObj = (x, y, z) => { obj.scale.set(x, y, z); };
+        }
+        return obj;
+      };
     }
 
     // wireframe
@@ -264,3 +271,4 @@ document.addEventListener('DOMContentLoaded', ()=>{
     runScript(code);
   });
 });
+
