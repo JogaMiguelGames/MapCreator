@@ -213,9 +213,48 @@ async function runLines(lines) {
     if (line === 'create.new.cube') {
       if (typeof createCube === 'function') {
         createCube();
-        gconsole.print('Cube created.');
       } else {
         gconsole.print('Error: createCube function not available.');
+      }
+      i++;
+      continue;
+    }
+
+    if (line === 'create.new.sphere') {
+      if (typeof createCube === 'function') {
+        createSphere()
+      } else {
+        gconsole.print('Error: createSphere function not available.');
+      }
+      i++;
+      continue;
+    }
+    
+    if (line === 'create.new.cylinder') {
+      if (typeof createCube === 'function') {
+        createCylinder()
+      } else {
+        gconsole.print('Error: createCylinder function not available.');
+      }
+      i++;
+      continue;
+    }
+
+    if (line === 'create.new.cone') {
+      if (typeof createCube === 'function') {
+        createCone()
+      } else {
+        gconsole.print('Error: createCone function not available.');
+      }
+      i++;
+      continue;
+    }
+
+    if (line === 'create.new.plane') {
+      if (typeof createCube === 'function') {
+        createPlane()
+      } else {
+        gconsole.print('Error: createPlane function not available.');
       }
       i++;
       continue;
@@ -439,6 +478,7 @@ document.addEventListener('DOMContentLoaded', () => {
     runScript(code);
   });
 });
+
 
 
 
