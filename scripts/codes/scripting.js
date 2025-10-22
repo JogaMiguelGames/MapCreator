@@ -64,14 +64,18 @@ async function playTone(freq, duration) {
   const oscillator = audioContext.createOscillator();
   const gainNode = audioContext.createGain();
 
-  oscillator.type = 'square';
+  oscillator.type = 'square'; // ou 'sine' para som mais suave
   oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
   gainNode.gain.setValueAtTime(globalVolume, audioContext.currentTime);
 
   oscillator.connect(gainNode).connect(audioContext.destination);
   oscillator.start();
   oscillator.stop(audioContext.currentTime + duration);
-  await new Promise(resolve => setTimeout(resolve, duration * 1000));
+
+  // resolve a promise quando o tom termina
+  await new Promise(resolve => {
+    oscillator.onended = resolve;
+  });
 }
 
 function setWireframeForAllObjects(enabled) {
@@ -424,6 +428,7 @@ document.addEventListener('DOMContentLoaded', () => {
     runScript(code);
   });
 });
+
 
 
 
