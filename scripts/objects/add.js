@@ -173,7 +173,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     else if (command.toLowerCase() === "create.new.sphere") {
       createSphere();
     }
-    else if (command.toLowerCase() === "create.new.sphere") {
+    else if (command.toLowerCase() === "create.new.cone") {
       createCone();
     }
     else if (command.toLowerCase() === "create.new.plane") {
@@ -186,6 +186,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 }); 
+
 
 
 
