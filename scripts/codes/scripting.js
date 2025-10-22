@@ -212,7 +212,9 @@ async function runLines(lines) {
 }
 
 async function runScript(code) {
-  document.getElementById('scriptOutput').textContent = '';
+  const output = document.getElementById('scriptOutput');
+  output.textContent = '';
+  gconsole.print('Running script...');
   Object.keys(variables).forEach(k => delete variables[k]);
   Object.keys(functions).forEach(k => delete functions[k]);
   isRunning = true;
@@ -222,7 +224,6 @@ async function runScript(code) {
   gconsole.print('Script finished.');
 }
 
-// Button bindings
 document.addEventListener('DOMContentLoaded', () => {
   const runButton = document.getElementById('runButton');
   const pauseButton = document.getElementById('pauseButton');
@@ -238,8 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const code = document.getElementById('scriptInput').value;
-    gconsole.print('Running script...');
-    runScript(code);
+    await runScript(code);
   });
 
   pauseButton.addEventListener('click', () => {
