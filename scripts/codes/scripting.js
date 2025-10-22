@@ -267,6 +267,17 @@ async function runLines(lines) {
       continue;
     }
 
+    if (line.startsWith('wait.ms(') && line.endsWith(')')) {
+      const timeMs = parseFloat(line.slice(8, -1).trim());
+      if (!isNaN(timeMs) && timeMs >= 0) {
+        await new Promise(resolve => setTimeout(resolve, timeMs));
+      } else {
+        gconsole.print('Error: invalid wait.ms time');
+      }
+      i++;
+      continue;
+    }
+
     if (line.startsWith('volume(') && line.endsWith(')')) {
       const raw = line.slice(7, -1).trim();
       let percent = parseFloat(raw.replace('%', ''));
@@ -413,6 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
     runScript(code);
   });
 });
+
 
 
 
