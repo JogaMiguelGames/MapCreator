@@ -537,7 +537,7 @@ function updateCubeList() {
     if (!popup.contains(e.target) && e.target !== addBtn) popup.style.display = 'none';
   });
 
-  // =============== Funções auxiliares ===============
+  // ================= Funções auxiliares ===============
   function createFolderElement(folder) {
     const folderDiv = document.createElement('div');
     folderDiv.className = 'cubeListFolder';
@@ -577,19 +577,24 @@ function updateCubeList() {
       const cubeId = e.dataTransfer.getData('text/plain');
       const draggedCube = cubes.find(c => c.id == cubeId);
       if (draggedCube) {
-        // Remove de pasta anterior, se tiver
-        window.customFolders.forEach(f => {
-          f.cubes = f.cubes.filter(c => c !== draggedCube);
-        });
+        window.customFolders.forEach(f => f.cubes = f.cubes.filter(c => c !== draggedCube));
         draggedCube.parentFolder = folder;
         folder.cubes.push(draggedCube);
         updateCubeList();
       }
     });
 
+    // Seleção e renomeação
+    folderDiv.addEventListener('click', () => {
+      selectedFolder = folder;
+      selectedCube = null;
+      updateCubeList();
+    });
+    span.addEventListener('dblclick', () => renameFolder(folderDiv, folder));
+
     projectContent.appendChild(folderDiv);
 
-    // === Cubos dentro da pasta ===
+    // --- Cubos dentro da pasta ---
     folder.cubes.forEach(cube => {
       const item = createCubeItem(cube, 40); // +20px deslocamento visual
       projectContent.appendChild(item);
@@ -627,11 +632,9 @@ function updateCubeList() {
       e.dataTransfer.setData('text/plain', cube.id);
       item.style.opacity = '0.5';
     });
-    item.addEventListener('dragend', () => {
-      item.style.opacity = '1';
-    });
+    item.addEventListener('dragend', () => item.style.opacity = '1');
 
-    // Clique simples seleciona
+    // Seleção e renomeação
     item.addEventListener('click', () => {
       selectedCube = cube;
       selectedFolder = null;
@@ -639,6 +642,7 @@ function updateCubeList() {
       updateCubeList();
       updateSpheresVisibility();
     });
+    item.addEventListener('dblclick', () => renameCube(item, cube));
 
     return item;
   }
@@ -672,13 +676,57 @@ function updateCubeList() {
     const cubeId = e.dataTransfer.getData('text/plain');
     const draggedCube = cubes.find(c => c.id == cubeId);
     if (draggedCube) {
-      window.customFolders.forEach(f => {
-        f.cubes = f.cubes.filter(c => c !== draggedCube);
-      });
+      window.customFolders.forEach(f => f.cubes = f.cubes.filter(c => c !== draggedCube));
       draggedCube.parentFolder = null;
       updateCubeList();
     }
   });
+}
+
+// Função auxiliar para renomear cubo
+function renameCube(div, cube){
+  const text = div.querySelector('span');
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = cube.name || 'Cube';
+  input.style.flex = '1';
+  input.style.padding = '2px';
+  input.style.border = '1px solid #ccc';
+  input.style.borderRadius = '3px';
+
+  div.replaceChild(input, text);
+  input.focus();
+
+  function saveName() {
+    cube.name = input.value.trim() || 'Unnamed';
+    updateCubeList();
+  }
+
+  input.addEventListener('blur', saveName);
+  input.addEventListener('keydown', e => { if (e.key === 'Enter') saveName(); });
+}
+
+// Função auxiliar para renomear pasta
+function renameFolder(div, folder){
+  const span = div.querySelector('span');
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.value = folder.name || 'New Folder';
+  input.style.flex = '1';
+  input.style.padding = '2px';
+  input.style.border = '1px solid #ccc';
+  input.style.borderRadius = '3px';
+
+  div.replaceChild(input, span);
+  input.focus();
+
+  function saveName() {
+    folder.name = input.value.trim() || 'Unnamed Folder';
+    updateCubeList();
+  }
+
+  input.addEventListener('blur', saveName);
+  input.addEventListener('keydown', e => { if(e.key==='Enter') saveName(); });
 }
 
 // Função auxiliar para renomear cubo
@@ -810,6 +858,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
