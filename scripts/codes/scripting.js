@@ -108,9 +108,9 @@ async function runLines(lines) {
       i++;
       continue;
     }
-
+    
     if (line.startsWith('call.function(') && line.endsWith(')')) {
-      const funcName = line.slice(5, -1).trim();
+      const funcName = line.slice(14, -1).trim(); // 14 = comprimento de "call.function("
       if (functions[funcName]) {
         await runLines(functions[funcName]);
       } else {
@@ -413,5 +413,6 @@ document.addEventListener('DOMContentLoaded', () => {
     runScript(code);
   });
 });
+
 
 
