@@ -258,9 +258,10 @@ async function runScript(code) {
 }
 
 document.addEventListener('DOMContentLoaded', ()=>{
-  document.getElementById('runScriptBtn').addEventListener('click', ()=>{
+  document.getElementById('runButton').addEventListener('click', ()=>{
     if(!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
     const code=document.getElementById('scriptInput').value;
     runScript(code);
   });
 });
+
