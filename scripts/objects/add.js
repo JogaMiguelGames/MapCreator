@@ -1,3 +1,6 @@
+// ===================== ADD.JS =====================
+
+// Cria um cubo
 function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
   const cube = new THREE.Mesh(box_geometry.clone(), material);
   cube.position.copy(position);
@@ -5,24 +8,22 @@ function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), materi
   cube.castShadow = true;
   cube.receiveShadow = true;
 
-  // Criar e adicionar esferas de manipulação a este cubo
+  // Criar e adicionar esferas de manipulação
   const cubeSpheres = [];
-
   offsets.forEach(o => {
     const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
     const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), sphereMaterial);
-    
+
     sphere.castShadow = false;
     sphere.receiveShadow = false;
     sphere.position.copy(o.pos.clone().multiplyScalar(2));
     sphere.userData.axis = o.axis;
     sphere.visible = false;
-    
+
     cube.add(sphere);
     cubeSpheres.push(sphere);
   });
 
-  // Guardar as esferas neste cubo
   cube.userData.spheres = cubeSpheres;
 
   scene.add(cube);
@@ -31,86 +32,83 @@ function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), materi
   return cube;
 }
 
+// Cria esfera
 function createSphere() {
-  const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-  const newSphere = new THREE.Mesh(sphere_geometry, newMaterial);
+  const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const sphere = new THREE.Mesh(sphere_geometry, material);
 
-  newSphere.position.set(0, 0, 0);
-  newSphere.name = `Sphere ${cubes.length}`;
-  newSphere.castShadow = true;
-  newSphere.receiveShadow = true;
+  sphere.position.set(0, 0, 0);
+  sphere.name = `Sphere ${cubes.length}`;
+  sphere.castShadow = true;
+  sphere.receiveShadow = true;
 
-  addManipulationSpheres(newSphere);
+  addManipulationSpheres(sphere);
 
-  scene.add(newSphere);
-  cubes.push(newSphere);
-
+  scene.add(sphere);
+  cubes.push(sphere);
   updateCubeList();
-  pushToHistory({ type: 'delete', object: newSphere });
+  pushToHistory({ type: 'delete', object: sphere });
 }
 
+// Cria cilindro
 function createCylinder() {
-  const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-  const newCylinder = new THREE.Mesh(cylinder_geometry, newMaterial);
-  
-  newCylinder.position.set(0, 0, 0);
-  newCylinder.scale.set(0.5, 0.5, 0.5);
-  newCylinder.name = `Cylinder ${cubes.length}`;
-  newCylinder.castShadow = true;
-  newCylinder.receiveShadow = true;
+  const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const cylinder = new THREE.Mesh(cylinder_geometry, material);
 
-  addManipulationSpheres(newCylinder); // <<< adiciona esferas
+  cylinder.position.set(0, 0, 0);
+  cylinder.scale.set(0.5, 0.5, 0.5);
+  cylinder.name = `Cylinder ${cubes.length}`;
+  cylinder.castShadow = true;
+  cylinder.receiveShadow = true;
 
-  scene.add(newCylinder);
-  cubes.push(newCylinder);
+  addManipulationSpheres(cylinder);
 
-
+  scene.add(cylinder);
+  cubes.push(cylinder);
   updateCubeList();
-  pushToHistory({ type: 'delete', object: newCylinder });
+  pushToHistory({ type: 'delete', object: cylinder });
 }
 
+// Cria cone
 function createCone() {
-  const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-  const newCone = new THREE.Mesh(cone_geometry, newMaterial);
+  const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const cone = new THREE.Mesh(cone_geometry, material);
 
-  newCone.position.set(0, 0, 0);
-  newCone.scale.set(0.5, 0.5, 0.5);
-  
-  newCone.name = `Cone ${cubes.length}`;
-  newCone.castShadow = true;
-  newCone.receiveShadow = true;
+  cone.position.set(0, 0, 0);
+  cone.scale.set(0.5, 0.5, 0.5);
+  cone.name = `Cone ${cubes.length}`;
+  cone.castShadow = true;
+  cone.receiveShadow = true;
 
-  addManipulationSpheres(newCone); // <<< adiciona esferas
+  addManipulationSpheres(cone);
 
-  scene.add(newCone);
-  cubes.push(newCone);
-
+  scene.add(cone);
+  cubes.push(cone);
   updateCubeList();
-  pushToHistory({ type: 'delete', object: newCone });
+  pushToHistory({ type: 'delete', object: cone });
 }
 
+// Cria plano
 function createPlane() {
-  const newMaterial = new THREE.MeshStandardMaterial({ color: 0xffffff });
-  const newPlane = new THREE.Mesh(plane_geometry, newMaterial);
+  const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
+  const plane = new THREE.Mesh(plane_geometry, material);
 
-  newPlane.position.set(0, 0, 0);
-  newPlane.rotation.x = -Math.PI / 2;
-  
-  newPlane.name = `Plane ${cubes.length}`;
-  newPlane.castShadow = true;
-  newPlane.receiveShadow = true;
+  plane.position.set(0, 0, 0);
+  plane.rotation.x = -Math.PI / 2;
+  plane.name = `Plane ${cubes.length}`;
+  plane.castShadow = true;
+  plane.receiveShadow = true;
 
-  addManipulationSpheres(newPlane); // <<< adiciona esferas
+  addManipulationSpheres(plane);
 
-  scene.add(newPlane);
-  cubes.push(newPlane);
-  
+  scene.add(plane);
+  cubes.push(plane);
   updateCubeList();
-  pushToHistory({ type: 'delete', object: newPlane });
+  pushToHistory({ type: 'delete', object: plane });
 }
 
+// Cria câmera
 function createCamera() {
-  // Check if a camera already exists in the scene
   const existingCamera = scene.getObjectByName("Camera");
   if (existingCamera) {
     console.warn("A camera already exists in the scene!");
@@ -119,20 +117,14 @@ function createCamera() {
 
   const objLoader = new THREE.OBJLoader();
   const textureLoader = new THREE.TextureLoader();
-
-  // Load the texture
   const texture = textureLoader.load("resources/models/editor/camera/texture.png");
 
   objLoader.load(
     "resources/models/editor/camera/camera.obj",
     (object) => {
-      // Apply textured material to all meshes
-      object.traverse((child) => {
+      object.traverse(child => {
         if (child.isMesh) {
-          child.material = new THREE.MeshStandardMaterial({
-            map: texture,   // apply texture
-            color: 0xffffff,
-          });
+          child.material = new THREE.MeshStandardMaterial({ map: texture, color: 0xffffff });
           child.castShadow = true;
           child.receiveShadow = true;
         }
@@ -151,44 +143,23 @@ function createCamera() {
 
       pushToHistory({ type: "delete", object: object });
     },
-    (xhr) => {
-      console.log(`Loading model: ${(xhr.loaded / xhr.total) * 100}% complete`);
-    },
-    (error) => {
-      console.error("Error loading OBJ model:", error);
-    }
+    (xhr) => console.log(`Loading model: ${(xhr.loaded / xhr.total) * 100}% complete`),
+    (error) => console.error("Error loading OBJ model:", error)
   );
 }
 
+// Comandos via linha de comando
 document.getElementById("commandLine").addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
-    const command = this.value.trim();
+    const command = this.value.trim().toLowerCase();
 
-    if (command.toLowerCase() === "create.new.cube") {
-      createCube();
-    }
-    else if (command.toLowerCase() === "create.new.cylinder") {
-      createCylinder();
-    }
-    else if (command.toLowerCase() === "create.new.sphere") {
-      createSphere();
-    }
-    else if (command.toLowerCase() === "create.new.cone") {
-      createCone();
-    }
-    else if (command.toLowerCase() === "create.new.plane") {
-      createPlane();
-    }
-    else if (command.toLowerCase() === "create.new.camera") {
-      createCamera();
-    }
-    
+    if (command === "create.new.cube") createCube();
+    else if (command === "create.new.sphere") createSphere();
+    else if (command === "create.new.cylinder") createCylinder();
+    else if (command === "create.new.cone") createCone();
+    else if (command === "create.new.plane") createPlane();
+    else if (command === "create.new.camera") createCamera();
+
     this.value = "";
   }
-}); 
-
-
-
-
-
-
+});
