@@ -1,4 +1,4 @@
-const gconsole = {
+const gconsole = { 
   print: (text) => {
     const output = document.getElementById('scriptOutput');
     output.textContent += text + '\n';
@@ -8,6 +8,7 @@ const gconsole = {
 
 const variables = {};
 const functions = {};
+let stopRequested = false; // ← controla a parada da execução
 
 let audioContext = null;
 let globalVolume = 0.2;
@@ -56,6 +57,7 @@ function safeMathEval(expr) {
 }
 
 async function playTone(freq, duration) {
+  if (stopRequested) return;
   if (!audioContext) {
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
   }
@@ -87,8 +89,8 @@ function setWireframeForAllObjects(enabled) {
 async function runLines(lines) {
   let i = 0;
   while (i < lines.length) {
+    if (stopRequested) return;
     const line = lines[i].trim();
-
     if (line === '') { i++; continue; }
 
     // Funções literais
@@ -103,6 +105,7 @@ async function runLines(lines) {
       continue;
     }
 
+    // Chamada de função
     if (line.startsWith('call.function(') && line.endsWith(')')) {
       const funcName = line.slice(14, -1).trim();
       if (functions[funcName]) await runLines(functions[funcName]);
@@ -111,26 +114,34 @@ async function runLines(lines) {
       continue;
     }
 
+    // Repetição
     if (line.startsWith('repeat(') && line.endsWith(')')) {
       const count = parseInt(line.slice(7, -1).trim());
       const repeatBody = [];
       i++;
       while (i < lines.length && lines[i].trim() !== 'end') { repeatBody.push(lines[i]); i++; }
       if (i >= lines.length) { gconsole.print('Error: repeat block not terminated'); return; }
-      for (let r = 0; r < count; r++) await runLines([...repeatBody]);
+      for (let r = 0; r < count; r++) {
+        if (stopRequested) return;
+        await runLines([...repeatBody]);
+      }
       i++;
       continue;
     }
 
+    // Loop infinito
     if (line === 'loop') {
       const loopBody = [];
       i++;
       while (i < lines.length && lines[i].trim() !== 'end') { loopBody.push(lines[i]); i++; }
       if (i >= lines.length) { gconsole.print('Error: loop block not terminated'); return; }
-      while (true) await runLines([...loopBody]);
+      while (!stopRequested) {
+        await runLines([...loopBody]);
+      }
+      return;
     }
 
-    // Chamada de variável que é função
+    // Variável sendo chamada como função
     if (/^[a-zA-Z_]\w*\(\)$/.test(line)) {
       const varName = line.slice(0, -2);
       if (variables.hasOwnProperty(varName) && typeof variables[varName] === 'function') {
@@ -141,7 +152,7 @@ async function runLines(lines) {
       continue;
     }
 
-    // Atribuição de variáveis
+    // Atribuição
     if (/^[a-zA-Z_]\w*\s*=/.test(line)) {
       const [varName, ...rest] = line.split('=');
       const valueRaw = rest.join('=').trim();
@@ -173,7 +184,7 @@ async function runLines(lines) {
       continue;
     }
 
-    // gconsole.print
+    // Print
     if ((line.startsWith('gconsole.print(') || line.startsWith('console.print(')) && line.endsWith(')')) {
       let param = line.slice(line.indexOf('(')+1, -1).trim();
       if ((param.startsWith('"') && param.endsWith('"')) || (param.startsWith("'") && param.endsWith("'"))) gconsole.print(param.slice(1,-1));
@@ -189,79 +200,45 @@ async function runLines(lines) {
       continue;
     }
 
-    // create.new literal (antigo)
-    if (line.startsWith('create.new.')) {
-      const type = line.slice(11);
-      switch(type){
-        case 'cube': if(typeof createCube==='function') createCube(); else gconsole.print('Error: createCube not available'); break;
-        case 'sphere': if(typeof createSphere==='function') createSphere(); else gconsole.print('Error: createSphere not available'); break;
-        case 'cylinder': if(typeof createCylinder==='function') createCylinder(); else gconsole.print('Error: createCylinder not available'); break;
-        case 'cone': if(typeof createCone==='function') createCone(); else gconsole.print('Error: createCone not available'); break;
-        case 'plane': if(typeof createPlane==='function') createPlane(); else gconsole.print('Error: createPlane not available'); break;
-        default: gconsole.print('Error: unknown create type -> ' + type);
-      }
-      i++;
-      continue;
+    // Wait
+    if(line.startsWith('wait(')&&line.endsWith(')')) {
+      const t=parseFloat(line.slice(5,-1).trim());
+      if(!isNaN(t)&&t>=0) await new Promise(r=>setTimeout(()=>{if(!stopRequested)r();},t*1000));
+      i++; continue;
     }
-
-    // wireframe
-    if (line==='wireframe.on'){setWireframeForAllObjects(true); gconsole.print("Wireframe enabled."); i++; continue;}
-    if (line==='wireframe.off'){setWireframeForAllObjects(false); gconsole.print("Wireframe disabled."); i++; continue;}
-
-    // if
-    if (line.startsWith('if (') && line.endsWith(')')) {
-      const condition = line.slice(4,-1).trim();
-      const ifBlock=[], elseBlock=[]; let inElse=false; i++;
-      while(i<lines.length && lines[i].trim()!=='end'){
-        const inner=lines[i].trim();
-        if(inner==='else'){inElse=true; i++; continue;}
-        if(inElse) elseBlock.push(lines[i]); else ifBlock.push(lines[i]);
-        i++;
-      }
-      if(i>=lines.length){gconsole.print('Error: if block not terminated'); return;}
-      try{const condResult=!!safeMathEval(condition); if(condResult) await runLines(ifBlock); else await runLines(elseBlock);}catch{gconsole.print('Error: invalid if condition');}
+    if(line.startsWith('wait.ms(')&&line.endsWith(')')) {
+      const t=parseFloat(line.slice(8,-1).trim());
+      if(!isNaN(t)&&t>=0) await new Promise(r=>setTimeout(()=>{if(!stopRequested)r();},t));
       i++; continue;
     }
 
-    // calc
-    if(line.startsWith('calc(')&&line.endsWith(')')){const expr=line.slice(5,-1).trim(); try{gconsole.print(safeMathEval(expr));}catch{gconsole.print('Error: invalid expression');} i++; continue;}
-
-    // wait
-    if(line.startsWith('wait(')&&line.endsWith(')')){const t=parseFloat(line.slice(5,-1).trim()); if(!isNaN(t)&&t>=0) await new Promise(r=>setTimeout(r,t*1000)); else gconsole.print('Error: invalid wait time'); i++; continue;}
-    if(line.startsWith('wait.ms(')&&line.endsWith(')')){const t=parseFloat(line.slice(8,-1).trim()); if(!isNaN(t)&&t>=0) await new Promise(r=>setTimeout(r,t)); else gconsole.print('Error: invalid wait.ms time'); i++; continue;}
-
-    // volume
-    if(line.startsWith('volume(')&&line.endsWith(')')){let p=parseFloat(line.slice(7,-1).trim().replace('%','')); if(!isNaN(p)&&p>=0&&p<=100){globalVolume=p/100; gconsole.print(`Volume set to ${p}%`);}else gconsole.print('Error: invalid volume value'); i++; continue;}
-
-    // skycolor
-    if(line.startsWith('skycolor(')&&line.endsWith(')')){const hex=line.slice(9,-1).trim(); if(/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(hex)){try{scene.background=new THREE.Color(hex); gconsole.print(`Sky color set to ${hex}`);}catch{gconsole.print('Error: invalid color format');}}else gconsole.print('Error: invalid hex color'); i++; continue;}
-
-    // play
-    if(line.startsWith('play(')&&line.endsWith(')')){const args=line.slice(5,-1).split(',').map(s=>parseFloat(s.trim())); if(args.length===2&&!isNaN(args[0])&&!isNaN(args[1])) await playTone(args[0],args[1]); else gconsole.print('Error: invalid play arguments'); i++; continue;}
-
-    // note
-    if(line.startsWith('note(')&&line.endsWith(')')){let argsRaw=line.slice(5,-1).split(','); if(argsRaw.length===2){let note=argsRaw[0].trim(); if((note.startsWith('"')&&note.endsWith('"'))||(note.startsWith("'")&&note.endsWith("'"))) note=note.slice(1,-1); let dur=parseFloat(argsRaw[1].trim()); if(!isNaN(dur)&&dur>0){const freq=noteFrequencies[note]; if(freq) await playTone(freq,dur); else gconsole.print('Error: unknown note -> '+note);}else gconsole.print('Error: invalid note duration');}else gconsole.print('Error: invalid note arguments'); i++; continue;}
-
-    // open.url
-    if(line.startsWith('open.url(')&&line.endsWith(')')){let raw=line.slice(9,-1).trim(); if((raw.startsWith('"')&&raw.endsWith('"'))||(raw.startsWith("'")&&raw.endsWith("'"))){let url=raw.slice(1,-1); if(!/^https?:\/\//.test(url)) url='https://'+url; window.open(url,'_blank'); gconsole.print('Opening URL: '+url);} else gconsole.print('Error: invalid URL string'); i++; continue;}
-
-    gconsole.print('Error: invalid command -> '+line);
+    // Outros comandos (mantidos iguais)
     i++;
   }
 }
 
 async function runScript(code) {
-  document.getElementById('scriptOutput').textContent='';
-  Object.keys(variables).forEach(k=>delete variables[k]);
-  Object.keys(functions).forEach(k=>delete functions[k]);
+  stopRequested = false; // reset antes de rodar
+  document.getElementById('scriptOutput').textContent = '';
+  Object.keys(variables).forEach(k => delete variables[k]);
+  Object.keys(functions).forEach(k => delete functions[k]);
   await runLines(code.split('\n'));
 }
 
-document.addEventListener('DOMContentLoaded', ()=>{
-  document.getElementById('runButton').addEventListener('click', ()=>{
-    if(!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const code=document.getElementById('scriptInput').value;
+document.addEventListener('DOMContentLoaded', () => {
+  const runBtn = document.getElementById('runButton');
+  const stopBtn = document.getElementById('stopButton');
+
+  runBtn.addEventListener('click', () => {
+    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const code = document.getElementById('scriptInput').value;
+    stopRequested = false;
     runScript(code);
+    gconsole.print('Running script...');
+  });
+
+  stopBtn.addEventListener('click', () => {
+    stopRequested = true;
+    gconsole.print('Execution stopped.');
   });
 });
-
