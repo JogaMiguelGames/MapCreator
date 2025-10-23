@@ -237,22 +237,29 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return;
     }
-    if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+    if (!audioContext)
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
     const code = document.getElementById('scriptInput').value;
     await runScript(code);
   });
 
   pauseButton.addEventListener('click', () => {
-    if (isRunning) {
-      isPaused = !isPaused;
-      gconsole.print(isPaused ? 'Paused.' : 'Resumed.');
-    }
+    if (!isRunning) return;
+
+    isPaused = !isPaused;
+
+    pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+
+    gconsole.print(isPaused ? 'Paused.' : 'Resumed.');
   });
 
   stopButton.addEventListener('click', () => {
     if (isRunning) {
       stopRequested = true;
       isPaused = false;
+      pauseButton.textContent = 'Pause';
       gconsole.print('Stopped.');
     }
   });
