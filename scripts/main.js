@@ -26,11 +26,12 @@ function addManipulationSpheres(obj) {
   offsets.forEach(o => {
     const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
     const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), sphereMaterial);
-    
+
     sphere.castShadow = false;
     sphere.receiveShadow = false;
     sphere.position.copy(o.pos.clone().multiplyScalar(2));
     sphere.userData.axis = o.axis;
+    sphere.userData.isManipulator = true;
     sphere.visible = false;
 
     obj.add(sphere);
@@ -729,4 +730,5 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
