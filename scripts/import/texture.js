@@ -24,7 +24,7 @@ document.getElementById('importButton').addEventListener('change', function(even
       texture.needsUpdate = true;
 
       selectedCube.traverse(child => {
-        if (child.isMesh) {
+        if (child.isMesh && !child.userData.isManipulator) {
           const scale = child.scale;
           texture.repeat.set(scale.x / repeatFactor, scale.z / repeatFactor);
           child.material = new THREE.MeshBasicMaterial({ map: texture });
@@ -44,3 +44,4 @@ document.getElementById('importButton').addEventListener('change', function(even
 
   reader.readAsDataURL(file);
 });
+
