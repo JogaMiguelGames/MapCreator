@@ -19,9 +19,12 @@ cubes.forEach(cube => {
 
 // Function to save the map
 function saveMap() {
+  const scriptInput = document.getElementById('scriptInput');
+  const scriptCode = scriptInput ? scriptInput.value : '';
+
   const mapData = {
     sceneColor: `#${scene.background.getHexString()}`,
-    customFolders: window.customFolders || [], // Save Cube List folders
+    customFolders: window.customFolders || [],
     cubes: cubes.map(obj => {
       let type = 'cube';
       let color = '#ffffff';
@@ -45,13 +48,11 @@ function saveMap() {
         color,
         texture: textureData
       };
-    })
+    }),
+    script: scriptCode  // <=== salva o conteúdo do script atual
   };
 
-  // Convert to formatted JSON
   const json = JSON.stringify(mapData, null, 2);
-
-  // Create automatic download
   const blob = new Blob([json], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
@@ -59,7 +60,6 @@ function saveMap() {
   a.click();
   URL.revokeObjectURL(a.href);
 
-  // Reset unsaved changes flag
   unsavedChanges = false;
 }
 
@@ -73,3 +73,4 @@ window.addEventListener('beforeunload', (e) => {
     e.returnValue = ''; // Shows the browser's default confirmation dialog
   }
 });
+
