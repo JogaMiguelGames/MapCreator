@@ -565,7 +565,8 @@ function updateCubeList() {
     iconWrapper.style.width = '20px';
     iconWrapper.style.height = '20px';
     const icon = document.createElement('img');
-    icon.src = 'resources/images/ui/icons/cube.png';
+    const iconName = (cube.userData.icon || "cube") + ".png";
+    icon.src = `resources/images/ui/icons/${iconName}`;
     icon.alt = 'object icon';
     icon.style.width = '100%';
     icon.style.height = '100%';
@@ -730,5 +731,6 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
