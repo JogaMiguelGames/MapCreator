@@ -129,6 +129,7 @@ function loadMapData(mapData) {
       sphere.receiveShadow = false;
       sphere.position.copy(o.pos.clone().multiplyScalar(2));
       sphere.userData.axis = o.axis;
+      sphere.userData.isManipulator = true;
       sphere.visible = false;
 
       obj.add(sphere);
