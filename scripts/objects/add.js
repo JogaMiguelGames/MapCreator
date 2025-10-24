@@ -8,7 +8,6 @@ function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), materi
   cube.castShadow = true;
   cube.receiveShadow = true;
 
-  // Criar e adicionar esferas de manipulação usando função do main.js
   addManipulationSpheres(cube);
 
   scene.add(cube);
@@ -133,6 +132,40 @@ function createCamera() {
   );
 }
 
+// 🟡 Cria uma luz do tipo PointLight com esfera visível
+function createLight() {
+  const lightColor = 0xffffff;
+  const lightIntensity = 2;
+  const lightDistance = 15;
+
+  const light = new THREE.PointLight(lightColor, lightIntensity, lightDistance);
+  light.castShadow = true;
+
+  // esfera visível representando a luz
+  const sphereMat = new THREE.MeshBasicMaterial({
+    color: lightColor,
+    emissive: lightColor,
+    emissiveIntensity: 1
+  });
+  const sphere = new THREE.Mesh(sphere_geometry.clone(), sphereMat);
+  sphere.scale.set(0.2, 0.2, 0.2);
+  sphere.name = `Light ${cubes.length}`;
+  sphere.position.set(0, 0, 0);
+
+  // hierarquia luz + esfera
+  light.add(sphere);
+
+  // para manipulação e seleção
+  addManipulationSpheres(sphere);
+
+  scene.add(light);
+  cubes.push(light);
+  updateCubeList();
+  pushToHistory({ type: 'delete', object: light });
+
+  return light;
+}
+
 // Comandos via linha de comando
 document.getElementById("commandLine").addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
@@ -144,6 +177,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     else if (command === "create.new.cone") createCone();
     else if (command === "create.new.plane") createPlane();
     else if (command === "create.new.camera") createCamera();
+    else if (command === "create.new.light") createLight();
 
     this.value = "";
   }
