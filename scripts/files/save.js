@@ -47,6 +47,7 @@ function saveMap() {
         rotation: { x: obj.rotation?.x || 0, y: obj.rotation?.y || 0, z: obj.rotation?.z || 0 },
         color,
         texture: textureData
+        icon: obj.userData.icon || "cube"
       };
     }),
     script: scriptCode  // <=== salva o conteúdo do script atual
@@ -73,4 +74,5 @@ window.addEventListener('beforeunload', (e) => {
     e.returnValue = ''; // Shows the browser's default confirmation dialog
   }
 });
+
 
