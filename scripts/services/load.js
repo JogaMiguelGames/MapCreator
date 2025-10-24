@@ -65,11 +65,16 @@ loadInput?.addEventListener('change', () => {
 function loadMapData(mapData) {
   const cubesData = mapData.cubes || [];
   const foldersData = mapData.customFolders || []; // recupera pastas salvas
+  const scriptInput = document.getElementById('scriptInput');
 
   // Restaura cor do fundo
   if (mapData.sceneColor) {
     scene.background.set(mapData.sceneColor);
     if (bgColorInput) bgColorInput.value = mapData.sceneColor;
+  }
+
+  if (scriptInput && typeof mapData.script === 'string') {
+    scriptInput.value = mapData.script;
   }
 
   // Remove objetos antigos
