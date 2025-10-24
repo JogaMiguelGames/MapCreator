@@ -8,6 +8,8 @@ function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), materi
   cube.castShadow = true;
   cube.receiveShadow = true;
 
+  plane.userData.icon = "cube";
+
   addManipulationSpheres(cube);
 
   scene.add(cube);
@@ -25,6 +27,8 @@ function createSphere() {
   sphere.name = `Sphere ${cubes.length}`;
   sphere.castShadow = true;
   sphere.receiveShadow = true;
+  
+  plane.userData.icon = "sphere";
 
   addManipulationSpheres(sphere);
 
@@ -45,6 +49,8 @@ function createCylinder() {
   cylinder.castShadow = true;
   cylinder.receiveShadow = true;
 
+  plane.userData.icon = "cylinder";
+
   addManipulationSpheres(cylinder);
 
   scene.add(cylinder);
@@ -64,6 +70,8 @@ function createCone() {
   cone.castShadow = true;
   cone.receiveShadow = true;
 
+  plane.userData.icon = "cone";
+
   addManipulationSpheres(cone);
 
   scene.add(cone);
@@ -82,6 +90,8 @@ function createPlane() {
   plane.name = `Plane ${cubes.length}`;
   plane.castShadow = true;
   plane.receiveShadow = true;
+
+  plane.userData.icon = "plane";
 
   addManipulationSpheres(plane);
 
@@ -182,3 +192,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
