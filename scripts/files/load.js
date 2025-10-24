@@ -100,6 +100,8 @@ function loadMapData(mapData) {
     const material = new THREE.MeshStandardMaterial({ color: data.color || '#ffffff' });
     const obj = new THREE.Mesh(geometry, material);
 
+    obj.userData.icon = data.icon || "cube";
+
     obj.name = data.name || 'Cube';
     obj.position.set(data.position.x, data.position.y, data.position.z);
     obj.scale.set(data.scale.x, data.scale.y, data.scale.z);
