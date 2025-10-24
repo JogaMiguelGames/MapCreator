@@ -44,4 +44,3 @@ document.getElementById('importButton').addEventListener('change', function(even
 
   reader.readAsDataURL(file);
 });
-
