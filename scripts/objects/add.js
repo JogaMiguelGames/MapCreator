@@ -8,23 +8,8 @@ function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), materi
   cube.castShadow = true;
   cube.receiveShadow = true;
 
-  // Criar e adicionar esferas de manipulação
-  const cubeSpheres = [];
-  offsets.forEach(o => {
-    const sphereMaterial = new THREE.MeshStandardMaterial({ color: o.color });
-    const sphere = new THREE.Mesh(sphereGeometrySmall.clone(), sphereMaterial);
-
-    sphere.castShadow = false;
-    sphere.receiveShadow = false;
-    sphere.position.copy(o.pos.clone().multiplyScalar(2));
-    sphere.userData.axis = o.axis;
-    sphere.visible = false;
-
-    cube.add(sphere);
-    cubeSpheres.push(sphere);
-  });
-
-  cube.userData.spheres = cubeSpheres;
+  // Criar e adicionar esferas de manipulação usando função do main.js
+  addManipulationSpheres(cube);
 
   scene.add(cube);
   cubes.push(cube);
