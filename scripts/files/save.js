@@ -46,7 +46,7 @@ function saveMap() {
         scale: { x: obj.scale?.x || 1, y: obj.scale?.y || 1, z: obj.scale?.z || 1 },
         rotation: { x: obj.rotation?.x || 0, y: obj.rotation?.y || 0, z: obj.rotation?.z || 0 },
         color,
-        texture: textureData
+        texture: textureData,
         icon: obj.userData.icon || "cube"
       };
     }),
@@ -74,5 +74,6 @@ window.addEventListener('beforeunload', (e) => {
     e.returnValue = ''; // Shows the browser's default confirmation dialog
   }
 });
+
 
 
