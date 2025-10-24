@@ -9,7 +9,6 @@ document.addEventListener("keydown", (event) => {
     const isHidden = document.body.classList.contains("ui-hidden");
 
     if (isHidden) {
-      // Restaura tudo
       bodyChildren.forEach(el => {
         if (el !== main && el !== canvas) {
           el.style.display = "";
@@ -19,7 +18,6 @@ document.addEventListener("keydown", (event) => {
       if (canvas) canvas.style.display = "";
       document.body.classList.remove("ui-hidden");
     } else {
-      // Esconde tudo, menos main e canvas
       bodyChildren.forEach(el => {
         if (el !== main && el !== canvas) {
           el.style.display = "none";
@@ -33,8 +31,12 @@ document.addEventListener("keydown", (event) => {
 });
 
 document.addEventListener('keydown', (e) => {
-  if(e.ctrlKey && e.shiftKey && e.code === 'KeyK'){
+  if (e.ctrlKey && e.shiftKey && e.code === 'KeyK') {
     linesVisible = !linesVisible;
+
     axisLines.forEach(line => line.visible = linesVisible);
+
+    if (hugeGrid) hugeGrid.visible = linesVisible;
+    if (gridGroup) gridGroup.visible = linesVisible;
   }
 });
