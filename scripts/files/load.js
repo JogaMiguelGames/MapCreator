@@ -88,12 +88,12 @@ function loadMapData(mapData) {
   const objLoader = new THREE.OBJLoader();
   const textureLoader = new THREE.TextureLoader();
 
-  // Recria os objetos
+  // Recria objetos
   cubesData.forEach(data => {
     if (!data.position || !data.scale || !data.rotation) return;
 
-    // --- CAMERA ESPECIAL ---
-    if (data.type === 'camera') {
+    // --- SE O OBJETO TEM ÍCONE DE CÂMERA ---
+    if (data.icon === "camera") {
       const texture = textureLoader.load("resources/models/editor/camera/texture.png");
       objLoader.load(
         "resources/models/editor/camera/camera.obj",
@@ -106,25 +106,30 @@ function loadMapData(mapData) {
             }
           });
 
+          // Posição, rotação e escala vindas do arquivo .map
           object.position.set(data.position.x, data.position.y, data.position.z);
-          object.scale.set(data.scale.x, data.scale.y, data.scale.z);
           object.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+          object.scale.set(data.scale.x, data.scale.y, data.scale.z);
           object.name = data.name || "Camera";
+
           object.userData.icon = "camera";
 
+          // Adiciona à cena
           scene.add(object);
           cubes.push(object);
 
+          // Adiciona esferas de manipulação e atualiza UI
           addManipulationSpheres(object);
           updateCubeList();
+          updatePanelForCube(object);
         },
         (xhr) => console.log(`Loading camera model: ${(xhr.loaded / xhr.total) * 100}% complete`),
         (error) => console.error("Error loading camera OBJ:", error)
       );
-      return;
+      return; // não criar cubo genérico
     }
 
-    // --- OBJETOS NORMAIS ---
+    // --- OUTROS OBJETOS NORMAIS ---
     let geometry;
     switch (data.type) {
       case 'sphere': geometry = sphere_geometry; break;
@@ -162,6 +167,7 @@ function loadMapData(mapData) {
     cubes.push(obj);
   });
 
+  // Atualiza seleção e UI
   selectedCube = cubes[0] || null;
   updatePanelForCube(selectedCube);
   updateCubeList();
