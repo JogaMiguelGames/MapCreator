@@ -123,6 +123,8 @@ function createCamera() {
       object.scale.set(0.3, 0.3, 0.3);
       object.name = "Camera";
 
+      object.userData.icon = "camera";
+
       scene.add(object);
       cubes.push(object);
 
@@ -186,5 +188,6 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
