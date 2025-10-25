@@ -20,7 +20,7 @@ if (mapName) {
       let mapData;
       try {
         mapData = JSON.parse(mapText);
-      } catch(e) {
+      } catch (e) {
         console.error("Arquivo não é JSON válido:", e);
         alert("Erro: mapa não está em formato JSON");
         return;
@@ -41,7 +41,7 @@ function openMap() {
   }
   loadInput.click();
 }
-window.openMap = openMap; // expõe para o menuStrip.js
+window.openMap = openMap;
 
 // Quando o usuário escolhe um arquivo
 loadInput?.addEventListener('change', () => {
@@ -64,7 +64,7 @@ loadInput?.addEventListener('change', () => {
 
 function loadMapData(mapData) {
   const cubesData = mapData.cubes || [];
-  const foldersData = mapData.customFolders || []; // recupera pastas salvas
+  const foldersData = mapData.customFolders || [];
   const scriptInput = document.getElementById('scriptInput');
 
   // Restaura cor do fundo
@@ -73,6 +73,7 @@ function loadMapData(mapData) {
     if (bgColorInput) bgColorInput.value = mapData.sceneColor;
   }
 
+  // Restaura script
   if (scriptInput && typeof mapData.script === 'string') {
     scriptInput.value = mapData.script;
   }
@@ -84,10 +85,46 @@ function loadMapData(mapData) {
   // Restaura pastas
   window.customFolders = foldersData.map(f => ({ ...f }));
 
-  // Cria cubes
+  const objLoader = new THREE.OBJLoader();
+  const textureLoader = new THREE.TextureLoader();
+
+  // Recria os objetos
   cubesData.forEach(data => {
     if (!data.position || !data.scale || !data.rotation) return;
 
+    // --- CAMERA ESPECIAL ---
+    if (data.type === 'camera') {
+      const texture = textureLoader.load("resources/models/editor/camera/texture.png");
+      objLoader.load(
+        "resources/models/editor/camera/camera.obj",
+        (object) => {
+          object.traverse(child => {
+            if (child.isMesh) {
+              child.material = new THREE.MeshStandardMaterial({ map: texture, color: 0xffffff });
+              child.castShadow = true;
+              child.receiveShadow = true;
+            }
+          });
+
+          object.position.set(data.position.x, data.position.y, data.position.z);
+          object.scale.set(data.scale.x, data.scale.y, data.scale.z);
+          object.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+          object.name = data.name || "Camera";
+          object.userData.icon = "camera";
+
+          scene.add(object);
+          cubes.push(object);
+
+          addManipulationSpheres(object);
+          updateCubeList();
+        },
+        (xhr) => console.log(`Loading camera model: ${(xhr.loaded / xhr.total) * 100}% complete`),
+        (error) => console.error("Error loading camera OBJ:", error)
+      );
+      return;
+    }
+
+    // --- OBJETOS NORMAIS ---
     let geometry;
     switch (data.type) {
       case 'sphere': geometry = sphere_geometry; break;
@@ -101,7 +138,6 @@ function loadMapData(mapData) {
     const obj = new THREE.Mesh(geometry, material);
 
     obj.userData.icon = data.icon || "cube";
-
     obj.name = data.name || 'Cube';
     obj.position.set(data.position.x, data.position.y, data.position.z);
     obj.scale.set(data.scale.x, data.scale.y, data.scale.z);
@@ -121,16 +157,13 @@ function loadMapData(mapData) {
       };
     }
 
-    // --- CRIA ESFERAS DE MANIPULAÇÃO USANDO FUNÇÃO DO main.js ---
     addManipulationSpheres(obj);
-
     scene.add(obj);
     cubes.push(obj);
   });
 
-  // Atualiza seleção e UI
   selectedCube = cubes[0] || null;
   updatePanelForCube(selectedCube);
-  updateCubeList();       // exibe pastas e objetos
-  updateSpheresVisibility(); // garante esferas visíveis apenas no selecionado
+  updateCubeList();
+  updateSpheresVisibility();
 }
