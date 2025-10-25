@@ -1,6 +1,5 @@
 // ===================== ADD.JS =====================
 
-// Cria um cubo
 function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
   const cube = new THREE.Mesh(box_geometry.clone(), material);
   cube.position.copy(position);
@@ -8,7 +7,7 @@ function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), materi
   cube.castShadow = true;
   cube.receiveShadow = true;
 
-  plane.userData.icon = "cube";
+  cube.userData.icon = "cube";
 
   addManipulationSpheres(cube);
 
@@ -18,7 +17,6 @@ function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), materi
   return cube;
 }
 
-// Cria esfera
 function createSphere() {
   const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const sphere = new THREE.Mesh(sphere_geometry, material);
@@ -28,7 +26,7 @@ function createSphere() {
   sphere.castShadow = true;
   sphere.receiveShadow = true;
   
-  plane.userData.icon = "sphere";
+  sphere.userData.icon = "sphere";
 
   addManipulationSpheres(sphere);
 
@@ -38,7 +36,6 @@ function createSphere() {
   pushToHistory({ type: 'delete', object: sphere });
 }
 
-// Cria cilindro
 function createCylinder() {
   const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const cylinder = new THREE.Mesh(cylinder_geometry, material);
@@ -49,7 +46,7 @@ function createCylinder() {
   cylinder.castShadow = true;
   cylinder.receiveShadow = true;
 
-  plane.userData.icon = "cylinder";
+  cylinder.userData.icon = "cylinder";
 
   addManipulationSpheres(cylinder);
 
@@ -59,7 +56,6 @@ function createCylinder() {
   pushToHistory({ type: 'delete', object: cylinder });
 }
 
-// Cria cone
 function createCone() {
   const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const cone = new THREE.Mesh(cone_geometry, material);
@@ -70,7 +66,7 @@ function createCone() {
   cone.castShadow = true;
   cone.receiveShadow = true;
 
-  plane.userData.icon = "cone";
+  cone.userData.icon = "cone";
 
   addManipulationSpheres(cone);
 
@@ -80,7 +76,6 @@ function createCone() {
   pushToHistory({ type: 'delete', object: cone });
 }
 
-// Cria plano
 function createPlane() {
   const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
   const plane = new THREE.Mesh(plane_geometry, material);
@@ -142,7 +137,6 @@ function createCamera() {
   );
 }
 
-// 🟡 Cria uma luz do tipo PointLight com esfera visível
 function createLight() {
   const lightColor = 0xffffff;
   const lightIntensity = 2;
@@ -192,4 +186,5 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
