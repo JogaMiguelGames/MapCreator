@@ -487,9 +487,9 @@ function updateCubeList() {
 
   addWindowBtn.addEventListener('click', () => {
     if (addWindow.style.display === 'none') {
-      addWindow.style.display = "block";
-    } else {
       addWindow.style.display = "none";
+    } else {
+      addWindow.style.display = "block";
     }
   });
 
@@ -746,6 +746,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
