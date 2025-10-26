@@ -439,6 +439,10 @@ function createFolder(name = 'New Folder') {
 }
 
 function updateCubeList() {
+  const popupOverlay = document.getElementById("popupOverlay");
+  const popupContent = document.getElementById("popupContent");
+  const closePopupBtn = document.getElementById("closePopupBtn");
+
   cubeListDiv.innerHTML = '';
 
   const projectDiv = document.createElement('div');
@@ -477,42 +481,7 @@ function updateCubeList() {
     width:32px; height:32px; border-radius:50%; border:none; background-color:#3366ff;
     color:white; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-left:10px;
   `;
-  projectDiv.appendChild(addWindowBtn);
-
-  const addWindow = document.createElement('div');
-  addWindow.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(17,17,17,0.95);
-    display: none; /* escondido por padrão */
-    justify-content: center;
-    align-items: center;
-    z-index: 2000;
-  `;
-  document.body.appendChild(addWindow);
-  
-  const addWindowContent = document.createElement('div');
-  addWindowContent.style.cssText = `
-    width: 800px;
-    height: 600px;
-    background: #1a1a1a;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 0 20px #000;
-    border: 1px solid #333;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  `;
-  
-  addWindow.appendChild(addWindowContent);
-  
-  addWindow.addEventListener('click', e => {
-    if (e.target === addWindow) addWindow.style.display = 'none';
-  });
+  projectDiv.appendChild(projectContent);
 
   const addFolderBtn = document.createElement('button');
   addFolderBtn.textContent = 'Add Folder';
@@ -521,7 +490,21 @@ function updateCubeList() {
     width:32px; height:32px; border-radius:10%; border:none; background-color:#33cc33;
     color:white; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-left:10px;
   `;
-  addFolderBtn.appendChild(addWindowContent);
+  addFolderBtn.appendChild(popupContent);
+
+  addWindowBtn.addEventListener("click", () => {
+    popupOverlay.style.display = "flex";
+  });
+  
+  closePopupBtn.addEventListener("click", () => {
+    popupOverlay.style.display = "none";
+  });
+  
+  popupOverlay.addEventListener("click", (e) => {
+    if (e.target === popupOverlay) {
+      popupOverlay.style.display = "none";
+    }
+  });
 
   addFolderBtn.addEventListener('click', () => {
     const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
