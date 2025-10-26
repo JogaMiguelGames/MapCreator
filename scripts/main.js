@@ -511,9 +511,7 @@ function updateCubeList() {
   addWindow.appendChild(addWindowContent);
   
   addWindow.addEventListener('click', e => {
-    if (e.target === addWindow) {
-      addWindow.style.display = 'none';
-    }
+    if (e.target === addWindow) addWindow.style.display = 'none';
   });
 
   const addFolderBtn = document.createElement('button');
@@ -778,6 +776,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
