@@ -1,4 +1,4 @@
-/* RESET */
+/* === style.css - Map Creator === */
 *,
 *::before,
 *::after {
@@ -10,7 +10,7 @@ body {
   font-family: system-ui, sans-serif;
   background-color: #111;
   color: #fff;
-  overflow-x: hidden; /* só corta no eixo horizontal */
+  overflow-x: hidden;
 }
 
 button {
@@ -40,11 +40,11 @@ canvas {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: nowrap; /* impede quebra de linha */
+  flex-wrap: nowrap;
 }
 
 .colorInputWrapper input[type="text"] {
-  flex: 0 0 auto; /* largura fixa */
+  flex: 0 0 auto;
   width: 80px;
   box-sizing: border-box;
   margin: 0;
@@ -60,10 +60,9 @@ canvas {
   border-radius: 50%;
   border: 2px solid #444;
   box-shadow: 0 0 2px #000;
-  background-color: #000; /* padrão */
+  background-color: #000;
 }
 
-/* TOPO */
 #topMenu {
   position: fixed;
   top: 0;
@@ -88,7 +87,7 @@ canvas {
 
 #leftButtons button,
 #rightButtons button {
-  width: 60px;              /* tamanho fixo compacto */
+  width: 60px;
   height: 60px;
   background: #333;
   border: none;
@@ -97,17 +96,16 @@ canvas {
   font-size: 12px;
   cursor: pointer;
   display: flex;
-  flex-direction: column;   /* ícone em cima, texto embaixo */
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 6px;
   transition: background-color 0.2s ease;
   text-align: center;
-  white-space: normal;      /* deixa o texto quebrar se precisar */
+  white-space: normal;
   line-height: 1.2;
 }
 
-/* Ícones ligeiramente maiores */
 #leftButtons img,
 #rightButtons img {
   width: 24px;
@@ -116,7 +114,6 @@ canvas {
   pointer-events: none;
 }
 
-/* texto agora centralizado abaixo */
 #leftButtons button span,
 #rightButtons button span {
   display: block;
@@ -136,7 +133,6 @@ canvas {
   outline: none;
 }
 
-/* Campo de texto para cor do céu */
 #rightButtons label {
   display: flex;
   align-items: center;
@@ -162,7 +158,6 @@ canvas {
   outline: none;
 }
 
-/* PAINEL LATERAL */
 #panel {
   position: fixed;
   top: 0;
@@ -182,14 +177,13 @@ canvas {
 #panel {
   display: flex;
   flex-direction: column;
-  gap: 12px; /* espaço entre cubeList e scripting */
+  gap: 12px;
   height: 100vh;
   padding: 15px;
   box-sizing: border-box;
-  overflow: hidden; /* Para controlar scroll interno dos filhos */
+  overflow: hidden;
 }
 
-/* Cube list com altura fixa */
 #cubeList {
   max-height: 200px;
   min-height: 200px;
@@ -251,7 +245,6 @@ canvas {
   border-radius: 4px;
 }
 
-/* Grupos de controles */
 .control-group {
   border-top: 1px solid #555;
   padding-top: 12px;
@@ -288,27 +281,23 @@ canvas {
   cursor: not-allowed;
 }
 
-/* Corrige o layout horizontal dos inputs com cor */
 .control-group label.colorInputWrapper {
-  flex-direction: row; /* coloca lado a lado */
-  align-items: center; /* alinha verticalmente */
-  gap: 8px; /* espaço entre input e círculo */
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
 }
 
-/* Centraliza a seção do color HEX */
 #panel .control-group.color-center {
   align-items: center;
   justify-content: center;
   text-align: center;
 }
 
-/* Ajusta o label horizontal */
 #panel .color-center label.colorInputWrapper {
   flex-direction: row;
   justify-content: center;
 }
 
-/* Lista de objetos */
 #cubeList {
   max-height: 200px;
   overflow-y: auto;
@@ -331,7 +320,6 @@ canvas {
   background: #333;
 }
 
-/* Acessibilidade: apenas leitura por leitores de tela */
 .sr-only {
   position: absolute !important;
   width: 1px !important;
@@ -344,7 +332,6 @@ canvas {
   border: 0 !important;
 }
 
-/* Modo tela cheia apenas para o scriptingSection */
 body.focusing-script {
   overflow: hidden;
 }
@@ -418,19 +405,18 @@ body.focusing-script #exitScriptFocusBtn {
   cursor: pointer;
 }
 
-/* Linha de comando abaixo do canvas */
 #commandLineWrapper {
   position: fixed;
   bottom: 0;
   left: 0;
-  right: 280px; /* espaço pro painel lateral */
+  right: 280px;
   height: 50px;
   background: #1a1a1a;
   border-top: 1px solid #333;
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 2000; /* garante que fica acima do canvas */
+  z-index: 2000;
 }
 
 #commandLineWrapper input {
@@ -453,7 +439,7 @@ body.focusing-script #exitScriptFocusBtn {
 
 .icon-wrapper {
   position: relative;
-  width: 24px;   /* mesmo tamanho do seu ícone base */
+  width: 24px;
   height: 24px;
 }
 
@@ -465,19 +451,18 @@ body.focusing-script #exitScriptFocusBtn {
 
 .overlay-icon {
   position: absolute;
-  bottom: -4px;   /* ajusta conforme preferir */
+  bottom: -4px;
   right: -4px;
   width: 14px;
   height: 14px;
-  pointer-events: none; /* não atrapalha o clique */
+  pointer-events: none;
 }
 
-/* ===== Menu fixo + top menu alinhado respeitando o painel à direita ===== */
 #menuBar {
   position: fixed;
   top: 0;
   left: 0;
-  right: 280px;            /* reserva espaço pro painel lateral */
+  right: 280px;
   height: 30px;
   background: #222;
   display: flex;
@@ -489,7 +474,6 @@ body.focusing-script #exitScriptFocusBtn {
   box-sizing: border-box;
 }
 
-/* item do menu */
 .menuItem {
   position: relative;
   padding: 6px 8px;
@@ -498,7 +482,6 @@ body.focusing-script #exitScriptFocusBtn {
   cursor: pointer;
 }
 
-/* dropdown escondido por padrão; aberto apenas quando .open */
 .menuItem .dropdown {
   display: none;
   position: absolute;
@@ -509,7 +492,7 @@ body.focusing-script #exitScriptFocusBtn {
   border: 1px solid #333;
   border-radius: 6px;
   min-width: 140px;
-  max-width: calc(100vw - 360px); /* evita invadir o painel */
+  max-width: calc(100vw - 360px);
   list-style: none;
   padding: 6px 0;
   z-index: 1250;
@@ -531,26 +514,24 @@ body.focusing-script #exitScriptFocusBtn {
   display: block;
 }
 
-/* Ícones nos dropdowns */
 .menuItem .dropdown li {
   display: flex;
   align-items: center;
-  gap: 8px;             /* espaço entre ícone e texto */
+  gap: 8px;
 }
 
 .menuItem .dropdown li .menu-icon {
   width: 16px;
   height: 16px;
   object-fit: contain;
-  pointer-events: none; /* não interfere no clique */
+  pointer-events: none;
 }
 
-/* topMenu agora fixo e respeitando o painel (substitui regras conflitantes) */
 #topMenu {
   position: fixed;
   top: 30px;
   left: 0;
-  right: 280px;           /* aqui também reserva o espaço do painel */
+  right: 280px;
   height: 70px;
   background: #333;
   display: flex;
@@ -563,7 +544,6 @@ body.focusing-script #exitScriptFocusBtn {
   overflow: visible;
 }
 
-/* left / right buttons: tornam-se flexíveis e roláveis se necessário */
 #leftButtons {
   display: flex;
   gap: 8px;
@@ -572,7 +552,7 @@ body.focusing-script #exitScriptFocusBtn {
   -webkit-overflow-scrolling: touch;
   padding-bottom: 4px;
   flex: 1 1 auto;
-  min-width: 0; /* permite que o container encolha e mostre scroll */
+  min-width: 0;
 }
 
 #rightButtons {
@@ -582,7 +562,6 @@ body.focusing-script #exitScriptFocusBtn {
   flex-shrink: 0;
 }
 
-/* adapta seu icon-wrapper para o novo tamanho */
 .icon-wrapper {
   width: 20px;
   height: 20px;
@@ -607,12 +586,51 @@ body.focusing-script #exitScriptFocusBtn {
   user-select: none;
 }
 
-/* não permitir que topMenu quebre linhas */
+#popupOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(17, 17, 17, 0.95);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+}
+
+#popupContent {
+  width: 800px;
+  height: 600px;
+  background: #1a1a1a;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 20px #000;
+  border: 1px solid #333;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#closePopupBtn {
+  align-self: flex-end;
+  background: #333;
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#closePopupBtn:hover {
+  background: #444;
+}
+
 #topMenu { flex-wrap: nowrap; }
 
-/* estilinho scrollbar para o leftButtons */
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
 
 
 
