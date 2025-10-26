@@ -439,10 +439,11 @@ function createFolder(name = 'New Folder') {
 }
 
 function updateCubeList() {
-  const popupOverlay = document.getElementById("popupOverlay");
-  const popupContent = document.getElementById("popupContent");
-  const closePopupBtn = document.getElementById("closePopupBtn");
+  const addWindow = document.getElementbyId('addWindow');
+  const addWindowContent = document.getElementbyId('addWindowContent');
 
+  const aW_CreateFolder = document.getElementbyId('aW_CreateFolder')
+  
   cubeListDiv.innerHTML = '';
 
   const projectDiv = document.createElement('div');
@@ -481,32 +482,13 @@ function updateCubeList() {
     width:32px; height:32px; border-radius:50%; border:none; background-color:#3366ff;
     color:white; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-left:10px;
   `;
-  projectDiv.appendChild(projectContent);
+  projectDiv.appendChild(addWindowBtn);
 
-  const addFolderBtn = document.createElement('button');
-  addFolderBtn.textContent = 'Add Folder';
-  addFolderBtn.title = 'Add Folder';
-  addFolderBtn.style.cssText = `
-    width:32px; height:32px; border-radius:10%; border:none; background-color:#33cc33;
-    color:white; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-left:10px;
-  `;
-  addFolderBtn.appendChild(popupContent);
-
-  addWindowBtn.addEventListener("click", () => {
-    popupOverlay.style.display = "flex";
-  });
-  
-  closePopupBtn.addEventListener("click", () => {
-    popupOverlay.style.display = "none";
-  });
-  
-  popupOverlay.addEventListener("click", (e) => {
-    if (e.target === popupOverlay) {
-      popupOverlay.style.display = "none";
-    }
+  addWindowBtn.addEventListener('click', () => {
+    addWindow.style.display = "flex";
   });
 
-  addFolderBtn.addEventListener('click', () => {
+  aW_CreateFolder.addEventListener('click', () => {
     const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
     window.customFolders.push(newFolder);
     selectedFolder = newFolder;
@@ -759,13 +741,3 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
-
-
-
-
-
-
-
-
-
-
