@@ -612,10 +612,16 @@ body.focusing-script #exitScriptFocusBtn {
   gap: 12px;
 }
 
+.centerPopUpOption {
+  border-radius: 10px;
+  border: 1px solid #000000;
+}
+
 #topMenu { flex-wrap: nowrap; }
 
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
 
 
 
