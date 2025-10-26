@@ -623,13 +623,14 @@ body.focusing-script #exitScriptFocusBtn {
 }
 
 .centerPopUpOption:hover {
-  background-color: #111111;
+  background-color: #222222;
 }
 
 #topMenu { flex-wrap: nowrap; }
 
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
 
 
 
