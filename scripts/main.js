@@ -486,6 +486,35 @@ function updateCubeList() {
     updateCubeList();
   });
 
+  const addWindow = document.createElement('div');
+  addWindow.style.cssText = `  
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(17, 17, 17, 0.95); /* mesmo estilo do Map Creator */
+    display: none; /* escondido por padrão */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;`;
+  addWindow.style.display = "none";
+
+  const addWindowContent = document.createElement('div');
+  addWindowContent.cssText = `
+    width: 800px;
+    height: 600px;
+    background: #1a1a1a;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 0 20px #000;
+    border: 1px solid #333;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;`;
+  
+  addWindowContent.appendChild(addWindow);
+
   window.customFolders.forEach(folder => {
     const folderDiv = document.createElement('div');
     folderDiv.className = 'cubeListFolder';
@@ -732,6 +761,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
