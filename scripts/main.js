@@ -479,10 +479,6 @@ function updateCubeList() {
   `;
   projectDiv.appendChild(addWindowBtn);
 
-  addWindowBtn.addEventListener('click', () => {
-    addWindow.style.display = "flex";
-  });
-
   const addWindow = document.createElement('div');
   addWindow.style.cssText = `  
     position: fixed;
@@ -511,6 +507,10 @@ function updateCubeList() {
     gap: 12px;`;
   
   addWindowContent.appendChild(addWindow);
+
+  addWindowBtn.addEventListener('click', () => {
+    addWindow.style.display = "flex";
+  });
 
   const addFolderBtn = document.createElement('button');
   addFolderBtn.textContent = 'Add Folder';
@@ -774,6 +774,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
