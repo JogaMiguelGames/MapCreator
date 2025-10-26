@@ -487,6 +487,8 @@ function updateCubeList() {
 
   addWindowBtn.addEventListener('click', () => {
     addWindow.style.display = "flex";
+  } else {
+    addWindow.style.display = "none";                            
   });
 
   aW_CreateFolder.addEventListener('click', () => {
@@ -742,6 +744,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
