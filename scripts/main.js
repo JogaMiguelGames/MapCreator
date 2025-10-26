@@ -485,14 +485,14 @@ function updateCubeList() {
   
   projectDiv.appendChild(addWindowBtn);
 
-  addWindowBtn.addEventListener('click', () => {
-    if (addWindow.style.display === 'block') {
-      addWindow.style.display = "none";
-    } else {
-      addWindow.style.display = "block";
-    }
+  addWindowBtn.addEventListener("click", () => {
+    addWindow.style.display = addWindow.style.display === "flex" ? "none" : "flex";
   });
 
+  addWindow.addEventListener("click", (e) => {
+    if (e.target === addWindow) addWindow.style.display = "none";
+  });
+  
   aW_CreateFolder.addEventListener('click', () => {
     const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
     window.customFolders.push(newFolder);
@@ -746,6 +746,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
