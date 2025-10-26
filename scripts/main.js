@@ -6,7 +6,7 @@ mainCube.name = 'Cube 1';
 mainCube.castShadow = true;
 mainCube.receiveShadow = true;
 scene.add(mainCube);
-mainCube.userData.icon = "cube"; // <-- adicione esta linha aqui
+mainCube.userData.icon = "cube";
 
 const cubes = [mainCube];
 
@@ -746,6 +746,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
