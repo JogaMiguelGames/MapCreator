@@ -115,7 +115,7 @@
     <section class="control-group" aria-labelledby="positionLabel">
       <h2 id="positionLabel" class="sr-only">Position Controls</h2>
       <label for="posX">Position X: <input type="number" id="posX" step="0.1" value="0" disabled /></label>
-      <label for="posY">Position Y: <input type="number" id="posY" step="0.1" value="0.5" disabled /></label>
+      <label for="posY">Position Y: <input type="number" id="posY" step="0.1" value="0" disabled /></label>
       <label for="posZ">Position Z: <input type="number" id="posZ" step="0.1" value="0" disabled /></label>
     </section>
 
@@ -147,7 +147,7 @@
 
   <div id="addWindow" class="centerPopUp">
     <div id="addWindowContent" class="centerPopUpContent">
-      <button id="aW_CreateFolder">
+      <button id="aW_CreateFolder" class="centerPopUpOption">
         Create Folder
       </button>
     </div>
@@ -175,7 +175,6 @@
   <script src="scripts/import/plugin.js"></script>
   <script src="scripts/import/texture.js"></script>
 
-  <script src="scripts/objects/color.js"></script>
   <script src="scripts/objects/add.js"></script>
   <script src="scripts/objects/wireframe.js"></script>
   <script src="scripts/objects/history.js"></script>
