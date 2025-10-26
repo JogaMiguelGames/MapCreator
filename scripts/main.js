@@ -440,9 +440,9 @@ function createFolder(name = 'New Folder') {
 
 function updateCubeList() {
   const addWindow = document.getElementById('addWindow');
-  const addWindowContent = document.getElementbyId('addWindowContent');
+  const addWindowContent = document.getElementById('addWindowContent');
 
-  const aW_CreateFolder = document.getElementbyId('aW_CreateFolder');
+  const aW_CreateFolder = document.getElementById('aW_CreateFolder');
   
   cubeListDiv.innerHTML = '';
 
@@ -742,6 +742,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
