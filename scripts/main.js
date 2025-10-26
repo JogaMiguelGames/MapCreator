@@ -439,10 +439,10 @@ function createFolder(name = 'New Folder') {
 }
 
 function updateCubeList() {
-  const addWindow = document.getElementbyId('addWindow');
-  const addWindowContent = document.getElementbyId('addWindowContent');
+  const addWindow = document.getElementbyID('addWindow');
+  const addWindowContent = document.getElementbyID('addWindowContent');
 
-  const aW_CreateFolder = document.getElementbyId('aW_CreateFolder')
+  const aW_CreateFolder = document.getElementbyID('aW_CreateFolder')
   
   cubeListDiv.innerHTML = '';
 
@@ -482,6 +482,7 @@ function updateCubeList() {
     width:32px; height:32px; border-radius:50%; border:none; background-color:#3366ff;
     color:white; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-left:10px;
   `;
+  
   projectDiv.appendChild(addWindowBtn);
 
   addWindowBtn.addEventListener('click', () => {
@@ -741,3 +742,4 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
