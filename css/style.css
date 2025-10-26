@@ -622,13 +622,12 @@ body.focusing-script #exitScriptFocusBtn {
   padding: 10px 20px;
   cursor: pointer;
   transition: background 0.2s ease;
+  text-align: left;
 }
 
 .centerPopUpOption img{
-  width: 64px;
-  height: 64px;
-
-  align: center;
+  width: 32px;
+  height: 32px;
 }
 
 .centerPopUpOption:hover {
@@ -639,6 +638,7 @@ body.focusing-script #exitScriptFocusBtn {
 
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
 
 
 
