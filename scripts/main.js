@@ -471,9 +471,9 @@ function updateCubeList() {
   cubeListDiv.appendChild(projectContent);
 
   const addWindowBtn = document.createElement('button');
-  addFolderBtn.textContent = '+';
-  addFolderBtn.title = 'Add a object';
-  addFolderBtn.style.cssText = `
+  addWindowBtn.textContent = '+';
+  addWindowBtn.title = 'Add a object';
+  addWindowBtn.style.cssText = `
     width:32px; height:32px; border-radius:50%; border:none; background-color:#3366ff;
     color:white; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-left:10px;
   `;
@@ -774,6 +774,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
