@@ -480,21 +480,22 @@ function updateCubeList() {
   projectDiv.appendChild(addWindowBtn);
 
   const addWindow = document.createElement('div');
-  addWindow.style.cssText = `  
+  addWindow.style.cssText = `
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(17, 17, 17, 0.95); /* mesmo estilo do Map Creator */
+    background: rgba(17,17,17,0.95);
     display: none; /* escondido por padrão */
     justify-content: center;
     align-items: center;
-    z-index: 2000;`;
-  addWindow.style.display = "none";
-
+    z-index: 2000;
+  `;
+  document.body.appendChild(addWindow);
+  
   const addWindowContent = document.createElement('div');
-  addWindowContent.cssText = `
+  addWindowContent.style.cssText = `
     width: 800px;
     height: 600px;
     background: #1a1a1a;
@@ -504,12 +505,15 @@ function updateCubeList() {
     border: 1px solid #333;
     display: flex;
     flex-direction: column;
-    gap: 12px;`;
+    gap: 12px;
+  `;
   
-  addWindowContent.appendChild(addWindow);
-
-  addWindowBtn.addEventListener('click', () => {
-    addWindow.style.display = "flex";
+  addWindow.appendChild(addWindowContent);
+  
+  addWindow.addEventListener('click', e => {
+    if (e.target === addWindow) {
+      addWindow.style.display = 'none';
+    }
   });
 
   const addFolderBtn = document.createElement('button');
@@ -774,6 +778,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
