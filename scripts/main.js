@@ -486,7 +486,7 @@ function updateCubeList() {
   projectDiv.appendChild(addWindowBtn);
 
   addWindowBtn.addEventListener('click', () => {
-    if (addWindow.style.display === 'none') {
+    if (addWindow.style.display === 'block') {
       addWindow.style.display = "none";
     } else {
       addWindow.style.display = "block";
@@ -746,6 +746,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
