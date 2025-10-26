@@ -470,20 +470,17 @@ function updateCubeList() {
   projectContent.style.marginLeft = '20px';
   cubeListDiv.appendChild(projectContent);
 
-  const addFolderBtn = document.createElement('button');
+  const addWindowBtn = document.createElement('button');
   addFolderBtn.textContent = '+';
-  addFolderBtn.title = 'Add Folder';
+  addFolderBtn.title = 'Add a object';
   addFolderBtn.style.cssText = `
-    width:32px; height:32px; border-radius:50%; border:none; background-color:#33cc33;
+    width:32px; height:32px; border-radius:50%; border:none; background-color:#3366ff;
     color:white; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-left:10px;
   `;
-  projectDiv.appendChild(addFolderBtn);
+  projectDiv.appendChild(addWindowBtn);
 
-  addFolderBtn.addEventListener('click', () => {
-    const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
-    window.customFolders.push(newFolder);
-    selectedFolder = newFolder;
-    updateCubeList();
+  addWindowBtn.addEventListener('click', () => {
+    addWindow.style.display = "flex";
   });
 
   const addWindow = document.createElement('div');
@@ -514,6 +511,22 @@ function updateCubeList() {
     gap: 12px;`;
   
   addWindowContent.appendChild(addWindow);
+
+  const addFolderBtn = document.createElement('button');
+  addFolderBtn.textContent = 'Add Folder';
+  addFolderBtn.title = 'Add Folder';
+  addFolderBtn.style.cssText = `
+    width:32px; height:32px; border-radius:10%; border:none; background-color:#33cc33;
+    color:white; font-size:24px; cursor:pointer; display:flex; align-items:center; justify-content:center; margin-left:10px;
+  `;
+  addFolderBtn.appendChild(addWindowContent);
+
+  addFolderBtn.addEventListener('click', () => {
+    const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
+    window.customFolders.push(newFolder);
+    selectedFolder = newFolder;
+    updateCubeList();
+  });
 
   window.customFolders.forEach(folder => {
     const folderDiv = document.createElement('div');
@@ -761,6 +774,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
