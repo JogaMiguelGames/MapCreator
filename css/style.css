@@ -622,6 +622,11 @@ body.focusing-script #exitScriptFocusBtn {
   transition: background 0.2s ease;
 }
 
+.centerPopUpOption img{
+  width: 64px;
+  height: 64px;
+}
+
 .centerPopUpOption:hover {
   background-color: #222222;
 }
@@ -630,8 +635,3 @@ body.focusing-script #exitScriptFocusBtn {
 
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
-
-
-
-
-
