@@ -1,23 +1,17 @@
-// ===================== SAVE.JS =====================
+// === save.js - Map Creator === 
 
-// Reference to the Save button
 const saveButton = document.getElementById('saveButton');
 
-// Track if there are unsaved changes
 let unsavedChanges = false;
 
-// Mark changes as unsaved whenever a cube is moved or changed
 function markUnsaved() {
   unsavedChanges = true;
 }
 
-// Example: attach markUnsaved to cube modifications
 cubes.forEach(cube => {
-  // You need to call this whenever a cube moves, rotates, scales, or changes
   cube.userData.onChange = markUnsaved;
 });
 
-// Function to save the map
 function saveMap() {
   const scriptInput = document.getElementById('scriptInput');
   const scriptCode = scriptInput ? scriptInput.value : '';
@@ -25,6 +19,7 @@ function saveMap() {
   const mapData = {
     sceneColor: `#${scene.background.getHexString()}`,
     customFolders: window.customFolders || [],
+    customScripts: window.customScripts || [],
     cubes: cubes.map(obj => {
       let type = 'cube';
       let color = '#ffffff';
@@ -50,7 +45,7 @@ function saveMap() {
         icon: obj.userData.icon || "cube"
       };
     }),
-    script: scriptCode  // <=== salva o conteúdo do script atual
+    script: scriptCode
   };
 
   const json = JSON.stringify(mapData, null, 2);
@@ -64,16 +59,15 @@ function saveMap() {
   unsavedChanges = false;
 }
 
-// Attach save function to the Save button
 saveButton?.addEventListener('click', saveMap);
 
-// Confirm before closing or reloading if there are unsaved changes
 window.addEventListener('beforeunload', (e) => {
   if (unsavedChanges) {
-    e.preventDefault(); // Necessary for Chrome
-    e.returnValue = ''; // Shows the browser's default confirmation dialog
+    e.preventDefault();
+    e.returnValue = '';
   }
 });
+
 
 
 
