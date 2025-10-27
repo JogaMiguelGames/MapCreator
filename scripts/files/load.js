@@ -1,10 +1,8 @@
-// ===================== LOAD.JS =====================
+// === LOAD.JS - Map Creator===
 
-// Referências aos botões e input hidden
 const loadButton = document.getElementById('loadButton');
 const loadInput = document.getElementById('loadInput');
 
-// Pega o parâmetro ?map=MapName
 const urlParams = new URLSearchParams(window.location.search);
 const mapName = urlParams.get('map');
 
@@ -33,7 +31,6 @@ if (mapName) {
     });
 }
 
-// Função que abre o seletor de arquivos
 function openMap() {
   if (!loadInput) {
     console.error("openMap: #loadInput não encontrado no DOM.");
@@ -43,7 +40,6 @@ function openMap() {
 }
 window.openMap = openMap;
 
-// Quando o usuário escolhe um arquivo
 loadInput?.addEventListener('change', () => {
   const file = loadInput.files[0];
   if (!file) return;
@@ -65,34 +61,30 @@ loadInput?.addEventListener('change', () => {
 function loadMapData(mapData) {
   const cubesData = mapData.cubes || [];
   const foldersData = mapData.customFolders || [];
+  const scriptsData = mapData.customScripts || [];
   const scriptInput = document.getElementById('scriptInput');
 
-  // Restaura cor do fundo
   if (mapData.sceneColor) {
     scene.background.set(mapData.sceneColor);
     if (bgColorInput) bgColorInput.value = mapData.sceneColor;
   }
 
-  // Restaura script
   if (scriptInput && typeof mapData.script === 'string') {
     scriptInput.value = mapData.script;
   }
 
-  // Remove objetos antigos
   cubes.forEach(c => scene.remove(c));
   cubes.length = 0;
 
-  // Restaura pastas
   window.customFolders = foldersData.map(f => ({ ...f }));
+  window.customScripts = scriptsData.map(f => ({ ...f }));
 
   const objLoader = new THREE.OBJLoader();
   const textureLoader = new THREE.TextureLoader();
 
-  // Recria objetos
   cubesData.forEach(data => {
     if (!data.position || !data.scale || !data.rotation) return;
 
-    // --- SE O OBJETO TEM ÍCONE DE CÂMERA ---
     if (data.icon === "camera") {
       const texture = textureLoader.load("resources/models/editor/camera/texture.png");
       objLoader.load(
@@ -106,7 +98,6 @@ function loadMapData(mapData) {
             }
           });
 
-          // Posição, rotação e escala vindas do arquivo .map
           object.position.set(data.position.x, data.position.y, data.position.z);
           object.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
           object.scale.set(data.scale.x, data.scale.y, data.scale.z);
@@ -114,11 +105,9 @@ function loadMapData(mapData) {
 
           object.userData.icon = "camera";
 
-          // Adiciona à cena
           scene.add(object);
           cubes.push(object);
 
-          // Adiciona esferas de manipulação e atualiza UI
           addManipulationSpheres(object);
           updateCubeList();
           updatePanelForCube(object);
@@ -126,10 +115,9 @@ function loadMapData(mapData) {
         (xhr) => console.log(`Loading camera model: ${(xhr.loaded / xhr.total) * 100}% complete`),
         (error) => console.error("Error loading camera OBJ:", error)
       );
-      return; // não criar cubo genérico
+      return;
     }
 
-    // --- OUTROS OBJETOS NORMAIS ---
     let geometry;
     switch (data.type) {
       case 'sphere': geometry = sphere_geometry; break;
@@ -150,7 +138,6 @@ function loadMapData(mapData) {
     obj.castShadow = true;
     obj.receiveShadow = true;
 
-    // Aplica textura se existir
     if (data.texture) {
       const img = new Image();
       img.src = data.texture;
@@ -167,7 +154,6 @@ function loadMapData(mapData) {
     cubes.push(obj);
   });
 
-  // Atualiza seleção e UI
   selectedCube = cubes[0] || null;
   updatePanelForCube(selectedCube);
   updateCubeList();
