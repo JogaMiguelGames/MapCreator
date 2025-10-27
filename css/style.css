@@ -9,8 +9,8 @@
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
-  background-color: #111;
-  color: #fff;
+  background-color: rgba(17, 17, 17, 1);
+  color: rgba(255, 255, 255, 1);
   overflow-x: hidden;
 }
 
@@ -26,7 +26,7 @@ button:hover {
 
 #scriptInput {
   border-radius: 4px;
-  border: 1px solid #333;
+  border: 1px solid rgba(51, 51, 51, 1);
 }
 
 #topMenu button {
@@ -59,9 +59,9 @@ canvas {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 2px solid #444;
-  box-shadow: 0 0 2px #000;
-  background-color: #000;
+  border: 2px solid rgba(68, 68, 68, 1);
+  box-shadow: 0 0 2px rgba(0, 0, 0, 1);
+  background-color: rgba(0, 0, 0, 1);
 }
 
 #topMenu {
@@ -70,8 +70,8 @@ canvas {
   left: 0;
   right: 280px;
   height: 70px;
-  background: #1a1a1a;
-  border-bottom: 1px solid #444;
+  background: rgba(26, 26, 26, 1);
+  border-bottom: 1px solid rgba(68, 68, 68, 1);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -90,7 +90,7 @@ canvas {
 #rightButtons button {
   width: 60px;
   height: 60px;
-  background: #333;
+  background: rgba(51, 51, 51, 1);
   border: none;
   border-radius: 6px;
   color: white;
@@ -130,7 +130,7 @@ canvas {
 #rightButtons button:hover,
 #leftButtons button:focus,
 #rightButtons button:focus {
-  background: #444;
+  background: rgba(68, 68, 68, 1);
   outline: none;
 }
 
@@ -147,7 +147,7 @@ canvas {
   padding: 6px 8px;
   border: none;
   border-radius: 4px;
-  background: #333;
+  background: rgba(51, 51, 51, 1);
   color: white;
   font-family: monospace;
   text-align: right;
@@ -155,7 +155,7 @@ canvas {
 }
 
 #rightButtons input[type="text"]:focus {
-  background: #444;
+  background: rgba(68, 68, 68, 1);
   outline: none;
 }
 
@@ -172,10 +172,10 @@ canvas {
   right: 0;
   width: 280px;
   height: 100vh;
-  background: #222;
+  background: rgba(34, 34, 34, 1);
   padding: 15px;
   overflow-y: auto;
-  border-left: 1px solid #444;
+  border-left: 1px solid rgba(68, 68, 68, 1);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -196,7 +196,7 @@ canvas {
   max-height: 200px;
   min-height: 200px;
   overflow-y: auto;
-  background: #1a1a1a;
+  background: rgba(26, 26, 26, 1);
   border-radius: 6px;
   padding: 8px;
   font-size: 14px;
@@ -207,7 +207,7 @@ canvas {
 }
 
 #scriptingSection {
-  background: #1a1a1a;
+  background: rgba(26, 26, 26, 1);
   border-radius: 6px;
   padding: 10px;
   margin-top: 8px;
@@ -218,8 +218,8 @@ canvas {
 #scriptInput {
   width: 100%;
   height: 120px;
-  background: #111;
-  color: #0f0;
+  background: rgba(17, 17, 17, 1);
+  color: rgba(0, 255, 0, 1);
   border: none;
   resize: vertical;
   padding: 8px;
@@ -229,7 +229,7 @@ canvas {
 
 #runScriptBtn {
   margin-top: 6px;
-  background: #333;
+  background: rgba(51, 51, 51, 1);
   color: white;
   border: none;
   padding: 6px 12px;
@@ -243,18 +243,18 @@ canvas {
 
 #scriptOutput {
   margin-top: 8px;
-  background: #111;
-  color: #0f0;
+  background: rgba(17, 17, 17, 1);
+  color: rgba(0, 255, 0, 1);
   padding: 6px;
   height: 100px;
   overflow-y: auto;
   white-space: pre-wrap;
-  border: 1px solid #333;
+  border: 1px solid rgba(51, 51, 51, 1);
   border-radius: 4px;
 }
 
 .control-group {
-  border-top: 1px solid #555;
+  border-top: 1px solid rgba(85, 85, 85, 1);
   padding-top: 12px;
   display: flex;
   flex-wrap: wrap;
@@ -266,7 +266,7 @@ canvas {
   flex: 1 1 calc(33% - 8px);
   display: flex;
   flex-direction: column;
-  color: #ddd;
+  color: rgb(221, 221, 221, 1);
   font-size: 13px;
 }
 
@@ -274,7 +274,7 @@ canvas {
   margin-top: 4px;
   padding: 6px 8px;
   width: 100%;
-  background: #333;
+  background: rgba(51, 51, 51, 1);
   color: white;
   font-family: monospace;
   font-size: 14px;
@@ -309,7 +309,7 @@ canvas {
 #cubeList {
   max-height: 200px;
   overflow-y: auto;
-  background: #1a1a1a;
+  background: rgba(26, 26, 26, 1);
   border-radius: 6px;
   padding: 8px;
   font-size: 14px;
@@ -325,7 +325,7 @@ canvas {
 }
 
 .cubeListItem:hover {
-  background: #333;
+  background: rgba(51, 51, 51, 1);
 }
 
 .sr-only {
@@ -370,33 +370,33 @@ body.focusing-script #panel > *:not(#scriptingSection) {
 body.focusing-script #scriptingSection {
   width: 800px;
   height: 600px;
-  background: #1a1a1a;
+  background: rgba(26, 26, 26, 1);
   border-radius: 8px;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 20px #000;
-  border: 1px solid #333;
+  box-shadow: 0 0 20px rgba(0, 0, 0);
+  border: 1px solid rgba(51, 51, 51, 1);
 }
 
 body.focusing-script #scriptInput {
   flex-grow: 1;
   resize: none;
   font-size: 16px;
-  background: #000;
-  color: #0f0;
+  background: rgba(0, 0, 0, 1);
+  color: rgba(0, 255, 0, 1);
   padding: 10px;
   border-radius: 4px;
-  border: 1px solid #333;
+  border: 1px solid rgba(51, 51, 51, 1);
 }
 
 body.focusing-script #scriptOutput {
   height: 120px;
-  background: #000;
-  color: #0f0;
+  background: rgba(0, 0, 0, 1);
+  color: rgba(0, 255, 0, 1);
   padding: 8px;
   border-radius: 4px;
-  border: 1px solid #333;
+  border: 1px solid rgba(51, 51, 51, 1);
   margin-top: 8px;
   overflow-y: auto;
 }
@@ -404,7 +404,7 @@ body.focusing-script #scriptOutput {
 body.focusing-script #exitScriptFocusBtn {
   display: block !important;
   margin-bottom: 10px;
-  background: #333;
+  background: rgba(51, 51, 51, 1);
   color: white;
   padding: 6px 10px;
   border: none;
@@ -419,8 +419,8 @@ body.focusing-script #exitScriptFocusBtn {
   left: 0;
   right: 280px;
   height: 50px;
-  background: #1a1a1a;
-  border-top: 1px solid #333;
+  background: rgba(26, 26, 26);
+  border-top: 1px solid rgba(51, 51, 51, 1);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -434,15 +434,15 @@ body.focusing-script #exitScriptFocusBtn {
   font-size: 14px;
   border: none;
   border-radius: 6px;
-  background: #111;
-  color: #0f0;
+  background: rgba(17, 17, 17, 1);
+  color: rgba(0, 255, 0, 1);
   outline: none;
   transition: background 0.2s ease;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 #commandLineWrapper input:focus {
-  background: #222;
+  background: rgba(34, 34, 34, 1);
 }
 
 .icon-wrapper {
@@ -472,7 +472,7 @@ body.focusing-script #exitScriptFocusBtn {
   left: 0;
   right: 280px;
   height: 30px;
-  background: #222;
+  background: rgba(34, 34, 34, 1);
   display: flex;
   align-items: center;
   padding: 0 8px;
@@ -485,7 +485,7 @@ body.focusing-script #exitScriptFocusBtn {
 .menuItem {
   position: relative;
   padding: 6px 8px;
-  color: #fff;
+  color: rgba(255, 255, 255, 1);
   font-size: 13px;
   cursor: pointer;
 }
@@ -496,15 +496,15 @@ body.focusing-script #exitScriptFocusBtn {
   top: 100%;
   left: 0;
   margin-top: 6px;
-  background: #1a1a1a;
-  border: 1px solid #333;
+  background: rgba(26, 26, 26, 1);
+  border: 1px solid rgba(51, 51, 51, 1);
   border-radius: 6px;
   min-width: 140px;
   max-width: calc(100vw - 360px);
   list-style: none;
   padding: 6px 0;
   z-index: 1250;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
 }
 
 .menuItem .dropdown li {
@@ -515,7 +515,7 @@ body.focusing-script #exitScriptFocusBtn {
 }
 .menuItem .dropdown li:hover {
   background: #333;
-  color: #fff;
+  color: rgba(255, 255, 255, 1);
 }
 
 .menuItem.open .dropdown {
@@ -541,7 +541,7 @@ body.focusing-script #exitScriptFocusBtn {
   left: 0;
   right: 280px;
   height: 70px;
-  background: #333;
+  background: rgba(51, 51, 51, 1);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -585,7 +585,7 @@ body.focusing-script #exitScriptFocusBtn {
   left: 8px;
   font-family: Consolas, monospace;
   font-size: 14px;
-  color: #0f0;
+  color: rgba(255, 255, 255, 1);
   background: rgba(0, 0, 0, 0.5);
   padding: 3px 6px;
   border-radius: 4px;
@@ -610,11 +610,11 @@ body.focusing-script #exitScriptFocusBtn {
 .centerPopUpContent {
   width: 800px;
   height: 600px;
-  background: #1a1a1a;
+  background: rgba(26 26 26, 1);
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 0 20px #000;
-  border: 1px solid #333;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 1);
+  border: 1px solid rgba(51, 51, 51, 1);
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -624,8 +624,8 @@ body.focusing-script #exitScriptFocusBtn {
   width: 64;
   height: 32;
   border-radius: 15px;
-  border: 1px solid #000000;
-  background-color: #333333;
+  border: 1px solid rgba(0, 0, 0, 1);
+  background-color: rgba(51, 51, 51, 1);
   color: white;
   padding: 6px 8px;
   cursor: pointer;
@@ -642,7 +642,7 @@ body.focusing-script #exitScriptFocusBtn {
 }
 
 .centerPopUpOption:hover {
-  background-color: #222222;
+  background-color: rgba(34, 34, 34, 1);
 }
 
 #topMenu { flex-wrap: nowrap; }
