@@ -438,11 +438,21 @@ function createFolder(name = 'New Folder') {
   return folder;
 }
 
+function createScript(name = 'New Script') {
+  window.scriptCount = (window.scriptCount || 0) + 1;
+  const script = { id: Date.now() + Math.random(), name };
+  window.customScripts.push(script);
+  updateCubeList();
+  return script;
+}
+
+
 function updateCubeList() {
   const addWindow = document.getElementById('addWindow');
   const addWindowContent = document.getElementById('addWindowContent');
 
   const aW_CreateFolder = document.getElementById('aW_CreateFolder');
+  const aW_CreateScript = document.getElementById('aW_CreateScript');
   
   cubeListDiv.innerHTML = '';
 
@@ -467,6 +477,19 @@ function updateCubeList() {
   const folderText = document.createElement('span');
   folderText.textContent = 'Project';
   projectDiv.appendChild(folderText);
+  cubeListDiv.appendChild(projectDiv);
+
+  const scriptIcon = document.createElement('img');
+  scriptIcon.src = 'resources/images/ui/icons/file.svg';
+  scriptIcon.alt = 'Project Script';
+  scriptIcon.style.width = '20px';
+  scriptIcon.style.height = '20px';
+  scriptIcon.style.objectFit = 'contain';
+  projectDiv.appendChild(scriptIcon);
+
+  const scriptText = document.createElement('span');
+  scriptText.textContent = 'Project';
+  projectDiv.appendChild(scriptText);
   cubeListDiv.appendChild(projectDiv);
 
   const projectContent = document.createElement('div');
@@ -497,6 +520,13 @@ function updateCubeList() {
     const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
     window.customFolders.push(newFolder);
     selectedFolder = newFolder;
+    updateCubeList();
+  });
+
+  aW_CreateScript.addEventListener('click', () => {
+    const newScript = { id: Date.now() + Math.random(), name: 'New Script' };
+    window.customFolders.push(newScript);
+    selectedScript = newScript;
     updateCubeList();
   });
 
@@ -565,6 +595,73 @@ function updateCubeList() {
     }
 
     projectContent.appendChild(folderDiv);
+  });
+
+  window.customScript.forEach(script => {
+    const scriptDiv = document.createElement('div');
+    scriptDiv.className = 'cubeListFolder';
+    scriptDiv.style.cssText = `
+      display:flex; align-items:center; padding:4px 8px; border-radius:4px;
+      cursor:pointer; gap:8px; color:#fff; margin-bottom:4px; margin-left:20px;
+    `;
+
+    const icon = document.createElement('img');
+    icon.src = 'resources/images/ui/icons/file.svg';
+    icon.alt = 'Script';
+    icon.style.width = '18px';
+    icon.style.height = '18px';
+    icon.style.objectFit = 'contain';
+    scriptDiv.appendChild(icon);
+
+    if (script.isEditing) {
+      const input = document.createElement('input');
+      input.type = 'text';
+      input.value = script.name;
+      input.style.flex = '1';
+      input.style.padding = '2px';
+      input.style.border = '1px solid #ccc';
+      input.style.borderRadius = '3px';
+      scriptDiv.appendChild(input);
+      input.focus();
+
+      input.addEventListener('blur', () => {
+        script.name = input.value.trim() || 'Unnamed Script';
+        script.isEditing = false;
+        updateCubeList();
+      });
+
+      input.addEventListener('keydown', e => {
+        if (e.key === 'Enter') {
+          script.name = input.value.trim() || 'Unnamed Script';
+          script.isEditing = false;
+          updateCubeList();
+        }
+      });
+    } else {
+      const span = document.createElement('span');
+      span.textContent = script.name;
+      scriptDiv.appendChild(span);
+
+      scriptDiv.addEventListener('click', () => {
+        selectedCube = null;
+        selectedScript = script;
+        updateCubeList();
+        updateSpheresVisibility();
+      });
+
+      span.addEventListener('dblclick', e => {
+        e.stopPropagation();
+        script.isEditing = true;
+        updateCubeList();
+      });
+    }
+
+    if (selectedScript === script) {
+      scriptDiv.style.backgroundColor = '#3366ff';
+      scriptDiv.style.color = 'white';
+    }
+
+    projectContent.appendChild(scriptDiv);
   });
 
   cubes.forEach(cube => {
@@ -698,6 +795,15 @@ document.addEventListener('keydown', e => {
         updateCubeList();
       }
     }
+
+    if (selectedScript) {
+      const idx = window.customFolders.indexOf(selectedScript);
+      if (idx !== -1) {
+        window.customFolders.splice(idx, 1);
+        selectedScript = null;
+        updateCubeList();
+      }
+    }
   }
 });
 
@@ -746,6 +852,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
