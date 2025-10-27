@@ -458,6 +458,20 @@ function updateCubeList() {
 
   const aW_CreateFolder = document.getElementById('aW_CreateFolder');
   const aW_CreateScript = document.getElementById('aW_CreateScript');
+
+  aW_CreateFolder.addEventListener('click', () => {
+    const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
+    window.customFolders.push(newFolder);
+    selectedFolder = newFolder;
+    updateCubeList();
+  });
+
+  aW_CreateScript.addEventListener('click', () => {
+    const newScript = { id: Date.now() + Math.random(), name: 'New Script' };
+    window.customScripts.push(newScript);
+    selectedScript = newScript;
+    updateCubeList();
+  });
   
   cubeListDiv.innerHTML = '';
 
@@ -519,20 +533,6 @@ function updateCubeList() {
 
   addWindow.addEventListener("click", (e) => {
     if (e.target === addWindow) addWindow.style.display = "none";
-  });
-  
-  aW_CreateFolder.addEventListener('click', () => {
-    const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
-    window.customFolders.push(newFolder);
-    selectedFolder = newFolder;
-    updateCubeList();
-  });
-
-  aW_CreateScript.addEventListener('click', () => {
-    const newScript = { id: Date.now() + Math.random(), name: 'New Script' };
-    window.customScripts.push(newScript);
-    selectedScript = newScript;
-    updateCubeList();
   });
 
   window.customFolders.forEach(folder => {
@@ -702,6 +702,7 @@ function updateCubeList() {
       clickTimer = setTimeout(() => {
         selectedCube = cube;
         selectedFolder = null;
+        selectedScript = null;
         updatePanelForCube(selectedCube);
         updateCubeList();
         updateSpheresVisibility();
@@ -857,3 +858,4 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
