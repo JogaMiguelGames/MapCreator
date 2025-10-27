@@ -353,8 +353,7 @@ bgColorInput.addEventListener('input', () => {
 });
 
 let selectedCube = mainCube;
-let selectedFolder = null;
-let selectedScript = null;
+let selectedObject = null;
 
 function updatePanelForCube(cube){
   if(!cube){
@@ -462,14 +461,14 @@ function updateCubeList() {
   aW_CreateFolder.addEventListener('click', () => {
     const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
     window.customFolders.push(newFolder);
-    selectedFolder = newFolder;
+    selectedObject = newFolder;
     updateCubeList();
   });
 
   aW_CreateScript.addEventListener('click', () => {
     const newScript = { id: Date.now() + Math.random(), name: 'New Script' };
     window.customScripts.push(newScript);
-    selectedScript = newScript;
+    selectedObject = newScript;
     updateCubeList();
   });
   
@@ -582,7 +581,7 @@ function updateCubeList() {
 
       folderDiv.addEventListener('click', () => {
         selectedCube = null;
-        selectedFolder = folder;
+        selectedObjects = folder;
         updateCubeList();
         updateSpheresVisibility();
       });
@@ -594,7 +593,7 @@ function updateCubeList() {
       });
     }
 
-    if (selectedFolder === folder) {
+    if (selectedObjects === folder) {
       folderDiv.style.backgroundColor = '#3366ff';
       folderDiv.style.color = 'white';
     }
@@ -649,7 +648,7 @@ function updateCubeList() {
 
       scriptDiv.addEventListener('click', () => {
         selectedCube = null;
-        selectedScript = script;
+        selectedObjects = script;
         updateCubeList();
         updateSpheresVisibility();
       });
@@ -661,7 +660,7 @@ function updateCubeList() {
       });
     }
 
-    if (selectedScript === script) {
+    if (selectedObjects === script) {
       scriptDiv.style.backgroundColor = '#3366ff';
       scriptDiv.style.color = 'white';
     }
@@ -701,8 +700,7 @@ function updateCubeList() {
       if (clickTimer) clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
         selectedCube = cube;
-        selectedFolder = null;
-        selectedScript = null;
+        selectedObjects = null;
         updatePanelForCube(selectedCube);
         updateCubeList();
         updateSpheresVisibility();
@@ -793,20 +791,20 @@ document.addEventListener('keydown', e => {
       return;
     }
 
-    if (selectedFolder) {
-      const idx = window.customFolders.indexOf(selectedFolder);
+    if (selectedObjects) {
+      const idx = window.customFolders.indexOf(selectedObjects);
       if (idx !== -1) {
         window.customFolders.splice(idx, 1);
-        selectedFolder = null;
+        selectedObjects = null;
         updateCubeList();
       }
     }
 
-    if (selectedScript) {
-      const idx = window.customScripts.indexOf(selectedScript);
+    if (selectedObjects) {
+      const idx = window.customScripts.indexOf(selectedObjects);
       if (idx !== -1) {
         window.customScripts.splice(idx, 1);
-        selectedScript = null;
+        selectedObjects = null;
         updateCubeList();
       }
     }
@@ -858,4 +856,5 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
