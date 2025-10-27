@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="64mm"
+   height="64mm"
+   viewBox="0 0 64 64"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.2 (f4327f4, 2025-05-13)"
+   sodipodi:docname="kerneliumScript_File.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#505050"
+     bordercolor="#eeeeee"
+     borderopacity="1"
+     inkscape:showpageshadow="0"
+     inkscape:pageopacity="0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#505050"
+     inkscape:document-units="mm"
+     inkscape:zoom="2.8756734"
+     inkscape:cx="112.66926"
+     inkscape:cy="123.62322"
+     inkscape:window-width="1920"
+     inkscape:window-height="1009"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1"
+     showguides="false" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Camada 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <g
+       id="g1"
+       inkscape:label="File">
+      <path
+         id="rect1"
+         style="fill:#ffffff;stroke:#333333;stroke-width:1.04063;stroke-linecap:square"
+         d="m 12.625174,2.5203147 26.92614,0.1840389 c 0.05861,0.089519 11.886064,9.9112914 11.889128,9.6764694 l -0.54389,48.992419 c -6.54e-4,0.05897 -0.04677,0.106448 -0.10486,0.106448 H 12.625174 c -0.05809,0 -0.104861,-0.04748 -0.104861,-0.106448 V 2.6267617 c 0,-0.058972 0.04677,-0.1068441 0.104861,-0.106447 z"
+         sodipodi:nodetypes="sccssssss"
+         inkscape:label="File" />
+      <path
+         style="fill:#ffffff;fill-opacity:0;stroke:#333333;stroke-width:0.990936;stroke-linecap:square"
+         d="m 39.717686,2.9395138 -0.18411,9.4814722 11.967287,0.0903"
+         id="path1"
+         sodipodi:nodetypes="ccc" />
+    </g>
+    <g
+       id="g14"
+       inkscape:label="Logo"
+       transform="translate(0,-2.9999956)">
+      <rect
+         style="fill:#333333;fill-opacity:1;stroke:#00ffff;stroke-width:1.20255;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none"
+         id="Logo"
+         width="28.797455"
+         height="28.797459"
+         x="17.601274"
+         y="20.601271"
+         ry="4.7995772"
+         inkscape:label="Logo"
+         inkscape:highlight-color="#00ffff">
+        <title
+           id="title13">Logo</title>
+      </rect>
+      <path
+         style="fill:#00ebeb;fill-opacity:0;stroke:#00ffff;stroke-width:1.60029;stroke-linecap:round;stroke-linejoin:round"
+         d="m 32.800126,41.699736 c 9.305931,-0.0157 7.614398,-3.569394 3.895011,-5.507573 -6.631646,-3.687369 -1.049215,-5.998751 3.254687,-5.220803"
+         id="path7"
+         sodipodi:nodetypes="ccc"
+         inkscape:label="S" />
+      <g
+         id="g13"
+         inkscape:label="K"
+         transform="matrix(0.62499893,0,0,0.62500017,12.000016,14.999998)">
+        <path
+           style="fill:#00ebeb;fill-opacity:0;stroke:#00ffff;stroke-width:2.19287;stroke-linecap:round;stroke-linejoin:round"
+           d="M 21.777722,42.903565 C 20.573356,35.463245 20.977297,28.272409 22.903571,25.096431"
+           id="path8"
+           sodipodi:nodetypes="cc" />
+        <path
+           style="fill:#00ebeb;fill-opacity:0;stroke:#00ffff;stroke-width:2.03191;stroke-linecap:round;stroke-linejoin:round"
+           d="m 21.015955,33.015951 c 4.761078,2.517944 5.968086,9.968102 5.968086,9.968102"
+           id="path10"
+           sodipodi:nodetypes="cc"
+           inkscape:label="path" />
+        <path
+           style="fill:#00ebeb;fill-opacity:0;stroke:#00ffff;stroke-width:2.09998;stroke-linecap:round;stroke-linejoin:round"
+           d="m 21.04999,34.950176 c 3.430494,-3.368789 9.295036,-10.119348 9.900021,-9.871363"
+           id="path9"
+           sodipodi:nodetypes="cc"
+           inkscape:label="path1" />
+      </g>
+      <ellipse
+         style="fill:#00ebeb;fill-opacity:1;stroke:#00ffff;stroke-width:1.2868;stroke-linecap:round;stroke-linejoin:round"
+         id="path11"
+         cx="21.999996"
+         cy="41.25"
+         rx="0.60659671"
+         ry="0.60659617"
+         inkscape:label="Point" />
+    </g>
+  </g>
+</svg>
