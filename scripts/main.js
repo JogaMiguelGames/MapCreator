@@ -497,7 +497,7 @@ function updateCubeList() {
   projectDiv.style.fontWeight = 'bold';
 
   const folderIcon = document.createElement('img');
-  folderIcon.src = folderSVGIcon;
+  folderIcon.src = folder_SVG_Icon;
   folderIcon.alt = 'Project Folder';
   folderIcon.style.width = '20px';
   folderIcon.style.height = '20px';
@@ -555,7 +555,7 @@ function updateCubeList() {
     `;
 
     const icon = document.createElement('img');
-    icon.src = folderSVGIcon;
+    icon.src = folder_SVG_Icon;
     icon.alt = 'Folder';
     icon.style.width = '18px';
     icon.style.height = '18px';
@@ -868,3 +868,4 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
