@@ -515,12 +515,10 @@ function updateCubeList() {
   scriptIcon.style.width = '20px';
   scriptIcon.style.height = '20px';
   scriptIcon.style.objectFit = 'contain';
-  projectDiv.appendChild(scriptIcon);
 
   const scriptText = document.createElement('span');
   scriptText.textContent = 'Project';
   projectDiv.appendChild(scriptText);
-  cubeListDiv.appendChild(projectDiv);
 
   const projectContent = document.createElement('div');
   projectContent.style.display = 'flex';
@@ -868,4 +866,5 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
