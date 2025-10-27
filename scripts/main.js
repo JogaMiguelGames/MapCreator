@@ -462,7 +462,7 @@ function updateCubeList() {
   cubeListDiv.innerHTML = '';
 
   const projectDiv = document.createElement('div');
-  projectDiv.className = 'cubeListFolder';
+  projectDiv.className = 'cubeListObjects';
   projectDiv.style.display = 'flex';
   projectDiv.style.alignItems = 'center';
   projectDiv.style.padding = '4px 8px';
@@ -530,14 +530,14 @@ function updateCubeList() {
 
   aW_CreateScript.addEventListener('click', () => {
     const newScript = { id: Date.now() + Math.random(), name: 'New Script' };
-    window.customFolders.push(newScript);
+    window.customScripts.push(newScript);
     selectedScript = newScript;
     updateCubeList();
   });
 
   window.customFolders.forEach(folder => {
     const folderDiv = document.createElement('div');
-    folderDiv.className = 'cubeListFolder';
+    folderDiv.className = 'cubeListObjects';
     folderDiv.style.cssText = `
       display:flex; align-items:center; padding:4px 8px; border-radius:4px;
       cursor:pointer; gap:8px; color:#fff; margin-bottom:4px; margin-left:20px;
@@ -604,7 +604,7 @@ function updateCubeList() {
 
   window.customScripts.forEach(script => {
     const scriptDiv = document.createElement('div');
-    scriptDiv.className = 'cubeListFolder';
+    scriptDiv.className = 'cubeListObjects';
     scriptDiv.style.cssText = `
       display:flex; align-items:center; padding:4px 8px; border-radius:4px;
       cursor:pointer; gap:8px; color:#fff; margin-bottom:4px; margin-left:20px;
@@ -802,9 +802,9 @@ document.addEventListener('keydown', e => {
     }
 
     if (selectedScript) {
-      const idx = window.customFolders.indexOf(selectedScript);
+      const idx = window.customScripts.indexOf(selectedScript);
       if (idx !== -1) {
-        window.customFolders.splice(idx, 1);
+        window.customScripts.splice(idx, 1);
         selectedScript = null;
         updateCubeList();
       }
@@ -857,5 +857,3 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
-
-
