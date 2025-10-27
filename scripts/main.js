@@ -353,6 +353,8 @@ bgColorInput.addEventListener('input', () => {
 });
 
 let selectedCube = mainCube;
+let selectedFolder = null;
+let selectedScript = null;
 
 function updatePanelForCube(cube){
   if(!cube){
@@ -855,4 +857,5 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
