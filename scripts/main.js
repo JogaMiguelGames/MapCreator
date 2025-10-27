@@ -450,28 +450,28 @@ function createScript(name = 'New Script') {
   return script;
 }
 
+const addWindow = document.getElementById('addWindow');
+const addWindowContent = document.getElementById('addWindowContent');
+
+const aW_CreateFolder = document.getElementById('aW_CreateFolder');
+const aW_CreateScript = document.getElementById('aW_CreateScript');
+
+aW_CreateFolder.addEventListener('click', () => {
+  const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
+  window.customFolders.push(newFolder);
+  selectedObject = newFolder;
+  updateCubeList();
+});
+
+aW_CreateScript.addEventListener('click', () => {
+  const newScript = { id: Date.now() + Math.random(), name: 'New Script' };
+  window.customScripts.push(newScript);
+  selectedObject = newScript;
+  updateCubeList();
+});
+
 
 function updateCubeList() {
-  const addWindow = document.getElementById('addWindow');
-  const addWindowContent = document.getElementById('addWindowContent');
-
-  const aW_CreateFolder = document.getElementById('aW_CreateFolder');
-  const aW_CreateScript = document.getElementById('aW_CreateScript');
-
-  aW_CreateFolder.addEventListener('click', () => {
-    const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
-    window.customFolders.push(newFolder);
-    selectedObject = newFolder;
-    updateCubeList();
-  });
-
-  aW_CreateScript.addEventListener('click', () => {
-    const newScript = { id: Date.now() + Math.random(), name: 'New Script' };
-    window.customScripts.push(newScript);
-    selectedObject = newScript;
-    updateCubeList();
-  });
-  
   cubeListDiv.innerHTML = '';
 
   const projectDiv = document.createElement('div');
@@ -856,6 +856,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
