@@ -600,7 +600,7 @@ function updateCubeList() {
     projectContent.appendChild(folderDiv);
   });
 
-  window.customScript.forEach(script => {
+  window.customScripts.forEach(script => {
     const scriptDiv = document.createElement('div');
     scriptDiv.className = 'cubeListFolder';
     scriptDiv.style.cssText = `
@@ -855,3 +855,4 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
