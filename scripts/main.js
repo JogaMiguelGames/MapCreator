@@ -581,7 +581,7 @@ function updateCubeList() {
 
       folderDiv.addEventListener('click', () => {
         selectedCube = null;
-        selectedObjects = folder;
+        selectedObject = folder;
         updateCubeList();
         updateSpheresVisibility();
       });
@@ -593,7 +593,7 @@ function updateCubeList() {
       });
     }
 
-    if (selectedObjects === folder) {
+    if (selectedObject === folder) {
       folderDiv.style.backgroundColor = '#3366ff';
       folderDiv.style.color = 'white';
     }
@@ -648,7 +648,7 @@ function updateCubeList() {
 
       scriptDiv.addEventListener('click', () => {
         selectedCube = null;
-        selectedObjects = script;
+        selectedObject = script;
         updateCubeList();
         updateSpheresVisibility();
       });
@@ -660,7 +660,7 @@ function updateCubeList() {
       });
     }
 
-    if (selectedObjects === script) {
+    if (selectedObject === script) {
       scriptDiv.style.backgroundColor = '#3366ff';
       scriptDiv.style.color = 'white';
     }
@@ -700,7 +700,7 @@ function updateCubeList() {
       if (clickTimer) clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
         selectedCube = cube;
-        selectedObjects = null;
+        selectedObject = null;
         updatePanelForCube(selectedCube);
         updateCubeList();
         updateSpheresVisibility();
@@ -791,20 +791,20 @@ document.addEventListener('keydown', e => {
       return;
     }
 
-    if (selectedObjects) {
-      const idx = window.customFolders.indexOf(selectedObjects);
+    if (selectedObject) {
+      const idx = window.customFolders.indexOf(selectedObject);
       if (idx !== -1) {
         window.customFolders.splice(idx, 1);
-        selectedObjects = null;
+        selectedObject = null;
         updateCubeList();
       }
     }
 
-    if (selectedObjects) {
-      const idx = window.customScripts.indexOf(selectedObjects);
+    if (selectedObject) {
+      const idx = window.customScripts.indexOf(selectedObject);
       if (idx !== -1) {
         window.customScripts.splice(idx, 1);
-        selectedObjects = null;
+        selectedObject = null;
         updateCubeList();
       }
     }
@@ -856,5 +856,6 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
