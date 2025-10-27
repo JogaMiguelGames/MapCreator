@@ -334,16 +334,23 @@ function updateCamera(delta){
 const scaleXInput = document.getElementById('scaleX');
 const scaleYInput = document.getElementById('scaleY');
 const scaleZInput = document.getElementById('scaleZ');
+
 const posXInput = document.getElementById('posX');
 const posYInput = document.getElementById('posY');
 const posZInput = document.getElementById('posZ');
+
 const rotXInput = document.getElementById('rotX');
 const rotYInput = document.getElementById('rotY');
 const rotZInput = document.getElementById('rotZ');
+
 const colorHexInput = document.getElementById('colorHex');
 const cubeListDiv = document.getElementById('cubeList');
-const addCubeBtn = document.getElementById('addCubeBtn');
-const bgColorInput = document.getElementById('bgColorInput');
+
+const addWindow = document.getElementById('addWindow');
+const addWindowContent = document.getElementById('addWindowContent');
+
+const aW_CreateFolder = document.getElementById('aW_CreateFolder');
+const aW_CreateScript = document.getElementById('aW_CreateScript');
 
 bgColorInput.addEventListener('input', () => {
   const val = bgColorInput.value.trim();
@@ -450,12 +457,6 @@ function createScript(name = 'New Script') {
   return script;
 }
 
-const addWindow = document.getElementById('addWindow');
-const addWindowContent = document.getElementById('addWindowContent');
-
-const aW_CreateFolder = document.getElementById('aW_CreateFolder');
-const aW_CreateScript = document.getElementById('aW_CreateScript');
-
 aW_CreateFolder.addEventListener('click', () => {
   const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
   window.customFolders.push(newFolder);
@@ -469,7 +470,6 @@ aW_CreateScript.addEventListener('click', () => {
   selectedObject = newScript;
   updateCubeList();
 });
-
 
 function updateCubeList() {
   cubeListDiv.innerHTML = '';
@@ -498,7 +498,7 @@ function updateCubeList() {
   cubeListDiv.appendChild(projectDiv);
 
   const scriptIcon = document.createElement('img');
-  scriptIcon.src = 'resources/images/ui/icons/file.svg';
+  scriptIcon.src = 'resources/images/ui/icons/kerneliumScript_File.svg';
   scriptIcon.alt = 'Project Script';
   scriptIcon.style.width = '20px';
   scriptIcon.style.height = '20px';
@@ -610,7 +610,7 @@ function updateCubeList() {
     `;
 
     const icon = document.createElement('img');
-    icon.src = 'resources/images/ui/icons/file.svg';
+    icon.src = 'resources/images/ui/icons/kerneliumScript_File.svg';
     icon.alt = 'Script';
     icon.style.width = '18px';
     icon.style.height = '18px';
