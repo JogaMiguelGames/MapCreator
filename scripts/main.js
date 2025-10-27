@@ -431,7 +431,7 @@ window.customFolders = window.customFolders || [];
 window.folderCount = window.folderCount || 0;
 
 window.customScripts = window.customScripts || [];
-window.ScriptsCount = window.ScriptsCount || 0;
+window.scriptsCount = window.scriptsCount || 0;
 
 function createFolder(name = 'New Folder') {
   window.folderCount = (window.folderCount || 0) + 1;
@@ -855,16 +855,3 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
-
-
-
-
-
-
-
-
-
-
-
-
-
