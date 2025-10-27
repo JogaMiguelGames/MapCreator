@@ -430,7 +430,7 @@ function updatePanelForCube(cube){
 window.customFolders = window.customFolders || [];
 window.folderCount = window.folderCount || 0;
 
-window.customScripts = window.customFolders || [];
+window.customScripts = window.customScripts || [];
 window.ScriptsCount = window.ScriptsCount || 0;
 
 function createFolder(name = 'New Folder') {
@@ -855,6 +855,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
