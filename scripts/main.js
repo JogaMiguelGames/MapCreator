@@ -471,7 +471,19 @@ aW_CreateScript.addEventListener('click', () => {
   updateCubeList();
 });
 
-function updateCubeList() {
+function updateCubeList() { 
+  const folder_SVG_Icon = 'resources/images/ui/icons/folder.svg';
+  const kS_Script_SVG_Icon = 'resources/images/ui/icons/kerneliumScript_File.svg';
+  
+  const cube_SVG_Icon = 'resources/images/ui/icons/cube.svg';
+  const sphere_SVG_Icon = 'resources/images/ui/icons/sphere.svg';
+  
+  const cube_PNG_Icon = 'resources/images/ui/icons/cube.png';
+  const sphere_PNG_Icon = 'resources/images/ui/icons/sphere.png';
+  const cylinder_PNG_Icon = 'resources/images/ui/icons/cylinder.png';
+  const cone_PNG_Icon = 'resources/images/ui/icons/cone.png';
+  const plane_PNG_Icon = 'resources/images/ui/icons/plane.png';
+  
   cubeListDiv.innerHTML = '';
 
   const projectDiv = document.createElement('div');
@@ -485,7 +497,7 @@ function updateCubeList() {
   projectDiv.style.fontWeight = 'bold';
 
   const folderIcon = document.createElement('img');
-  folderIcon.src = 'resources/images/ui/icons/folder.svg';
+  folderIcon.src = folderSVGIcon;
   folderIcon.alt = 'Project Folder';
   folderIcon.style.width = '20px';
   folderIcon.style.height = '20px';
@@ -498,7 +510,7 @@ function updateCubeList() {
   cubeListDiv.appendChild(projectDiv);
 
   const scriptIcon = document.createElement('img');
-  scriptIcon.src = 'resources/images/ui/icons/kerneliumScript_File.svg';
+  scriptIcon.src = kS_Script_SVG_Icon;
   scriptIcon.alt = 'Project Script';
   scriptIcon.style.width = '20px';
   scriptIcon.style.height = '20px';
@@ -543,7 +555,7 @@ function updateCubeList() {
     `;
 
     const icon = document.createElement('img');
-    icon.src = 'resources/images/ui/icons/folder.svg';
+    icon.src = folderSVGIcon;
     icon.alt = 'Folder';
     icon.style.width = '18px';
     icon.style.height = '18px';
@@ -610,7 +622,7 @@ function updateCubeList() {
     `;
 
     const icon = document.createElement('img');
-    icon.src = 'resources/images/ui/icons/kerneliumScript_File.svg';
+    icon.src = kS_Script_SVG_Icon;
     icon.alt = 'Script';
     icon.style.width = '18px';
     icon.style.height = '18px';
@@ -856,7 +868,3 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
-
-
-
-
