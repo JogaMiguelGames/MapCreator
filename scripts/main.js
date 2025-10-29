@@ -437,18 +437,6 @@ aW_CreateScript.addEventListener('click', () => {
 });
 
 function updateCubeList() { 
-  const folder_SVG_Icon = 'resources/images/ui/icons/folder.svg';
-  const kS_Script_SVG_Icon = 'resources/images/ui/icons/kerneliumScript_File.svg';
-  
-  const cube_SVG_Icon = 'resources/images/ui/icons/cube.svg';
-  const sphere_SVG_Icon = 'resources/images/ui/icons/sphere.svg';
-  
-  const cube_PNG_Icon = 'resources/images/ui/icons/cube.png';
-  const sphere_PNG_Icon = 'resources/images/ui/icons/sphere.png';
-  const cylinder_PNG_Icon = 'resources/images/ui/icons/cylinder.png';
-  const cone_PNG_Icon = 'resources/images/ui/icons/cone.png';
-  const plane_PNG_Icon = 'resources/images/ui/icons/plane.png';
-  
   cubeListDiv.innerHTML = '';
 
   const projectDiv = document.createElement('div');
@@ -830,6 +818,7 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
 
