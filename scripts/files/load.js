@@ -60,7 +60,7 @@ loadInput?.addEventListener('change', () => {
 });
 
 function loadMapData(mapData) {
-  const cubesData = mapData.cubes || [];
+  const cubesData = mapData.Model.Objects || [];
   const foldersData = mapData.customFolders || [];
   const scriptsData = mapData.customScripts || [];
   const scriptInput = document.getElementById('scriptInput');
@@ -107,7 +107,7 @@ function loadMapData(mapData) {
           object.userData.icon = "camera";
 
           scene.add(object);
-          cubes.push(object);
+          Model.Objects.push(object);
 
           addManipulationSpheres(object);
           updateCubeList();
@@ -152,11 +152,11 @@ function loadMapData(mapData) {
 
     addManipulationSpheres(obj);
     scene.add(obj);
-    cubes.push(obj);
+    Model.Objects.push(obj);
   });
 
-  selectedCube = cubes[0] || null;
-  updatePanelForCube(selectedCube);
-  updateCubeList();
+  Model.Selected.Object = Model.Objects[0] || null;
+  updatePanelForCube(Model.Selected.Object);
+  UpdateTreeView();
   updateSpheresVisibility();
 }
