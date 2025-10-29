@@ -73,8 +73,8 @@ function loadMapData(mapData) {
     scriptInput.value = mapData.script;
   }
 
-  cubes.forEach(c => scene.remove(c));
-  cubes.length = 0;
+  Model.Objects.forEach(c => scene.remove(c));
+  Model.Objects.length = 0;
 
   window.customFolders = foldersData.map(f => ({ ...f }));
   window.customScripts = scriptsData.map(f => ({ ...f }));
