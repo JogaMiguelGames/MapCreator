@@ -13,24 +13,24 @@ export const Project = {
 };
 
 export const Model = (() => {
-  const Model3D = new THREE.Mesh(box_geometry, white_material);
-  Object.position.set(0, 0, 0);
-  Object.name = 'Cube 1';
-  Object.castShadow = true;
-  Object.receiveShadow = true;
-  Object.userData.icon = "cube";
+  const Object3D = new THREE.Mesh(box_geometry, white_material);
+  Object3D.position.set(0, 0, 0);
+  Object3D.name = 'Cube 1';
+  Object3D.castShadow = true;
+  Object3D.receiveShadow = true;
+  Object3D.userData.icon = "cube";
 
-  scene.add(Object);
+  scene.add(Object3D);
 
-  const Objects: = [Object];
+  const Objects: = [Object3D];
 
   const Selected = {
-    Object: Object,
+    Object: Object3D,
     Item: null
   };
 
   return {
-    Object,
+    Object3D,
     Objects,
     Selected
   };
