@@ -505,7 +505,6 @@ function updateCubeList() {
   projectDiv.appendChild(folderIcon);
 
   const folderText = document.createElement('span');
-  folderText.textContent = 'Project';
   projectDiv.appendChild(folderText);
   cubeListDiv.appendChild(projectDiv);
 
@@ -866,5 +865,3 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
-
-
