@@ -12,7 +12,7 @@ export const Project = {
   }
 };
 
-export const Object = {
+export const Model = {
   const Object = new THREE.Mesh(box_geometry, white_material);
 
   Object.position.set(0, 0, 0);
