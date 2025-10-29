@@ -40,7 +40,7 @@ export const Page = {
     Scale: {
       X: document.getElementById('scaleX'),
       Y: document.getElementById('scaleY'),
-      Z; document.getElementById('scaleZ')
+      Z: document.getElementById('scaleZ')
     },
     Position: {
       X: document.getElementById('posX'),
