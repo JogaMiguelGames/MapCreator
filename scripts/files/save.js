@@ -1,5 +1,5 @@
 // === save.js - Map Creator === 
-import { Project, Model, Page, Icon } from '../libs/mcl.js';
+import { Project, Model, Page, Icon } from '../../libs/mcl.js';
 
 const saveButton = document.getElementById('saveButton');
 
@@ -68,4 +68,5 @@ window.addEventListener('beforeunload', (e) => {
     e.returnValue = '';
   }
 });
+
 
