@@ -52,7 +52,7 @@ function saveMap() {
   const blob = new Blob([json], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'map1.map';
+  a.download = mapFileName;
   a.click();
   URL.revokeObjectURL(a.href);
 
@@ -67,7 +67,3 @@ window.addEventListener('beforeunload', (e) => {
     e.returnValue = '';
   }
 });
-
-
-
-
