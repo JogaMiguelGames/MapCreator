@@ -1,5 +1,5 @@
 // === Map Creator - Main.js ===
-import { Project, Model, Page, Icon } from './libs/mcl.js';
+import { Project, Model, Page, Icon } from '../libs/mcl.js';
 
 const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 
@@ -820,5 +820,6 @@ animate();
 updatePanelForCube(Model.Selected.Object);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
