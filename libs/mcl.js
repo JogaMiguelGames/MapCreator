@@ -22,7 +22,7 @@ export const Model = (() => {
 
   scene.add(Object3D);
 
-  const Objects: = [Object3D];
+  const Objects = [Object3D];
 
   const Selected = {
     Object: Object3D,
