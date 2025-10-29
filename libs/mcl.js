@@ -1,34 +1,36 @@
 // === MCL.js - Map Creator Lib ===
 
 export const Project = {
-  Name: {
-    const projectName = "Project";
-    const mapFileName =  `${projectName}.map`;
+  Name: "Project",
+  File: {
+    Name: {
+      Map: null
+    }
   }
   Icon: {
-    const projectIcon = "";
+    Project_Icon: "";
   }
 };
 
 export const Object = {
-  const mainCube = new THREE.Mesh(box_geometry, white_material);
+  const Main_Cube = new THREE.Mesh(box_geometry, white_material);
 
-  mainCube.position.set(0, 0, 0);
+  Main_Cube.position.set(0, 0, 0);
 
-  mainCube.name = 'Cube 1';
+  Main_Cube.name = 'Cube 1';
 
-  mainCube.castShadow = true;
-  mainCube.receiveShadow = true;
+  Main_Cube.castShadow = true;
+  Main_Cube.receiveShadow = true;
 
-  scene.add(mainCube);
+  scene.add(Main_Cube);
 
-  mainCube.userData.icon = "cube";
+  Main_Cube.userData.icon = "cube";
 
-  const cubes = [mainCube];
+  const Cubes = [Main_Cube];
 
   Selected: {
-    let selectedCube = mainCube;
-    let selectedObject = null;
+    let Selected_Object = Main_Cube;
+    let Selected_Item = null;
   }
 };
 
@@ -51,15 +53,17 @@ export const Page = {
     }
     Add_Window: {
       Options: {
-        const aW_CreateFolder = document.getElementById('aW_CreateFolder');
-        const aW_CreateScript = document.getElementById('aW_CreateScript');
+        Create: {
+          const Folder = document.getElementById('aW_CreateFolder');
+          const Script = document.getElementById('aW_CreateScript');
+        }
       }
       const Window = document.getElementById('addWindow');
       const Content = document.getElementById('addWindowContent');
     }
     Input: {
       Color: {
-        const HexInput = document.getElementById('colorHex');
+        const Hex_Input = document.getElementById('colorHex');
       }
     }
     Tree_View: {
@@ -85,3 +89,5 @@ export const Icon = {
     const Plane = 'resources/images/ui/icons/plane.png';
   }
 };
+
+Project.File.Name.Map = `${Project.Name}.map`;
