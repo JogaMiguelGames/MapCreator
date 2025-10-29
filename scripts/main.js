@@ -1,5 +1,5 @@
 // === Map Creator - Main.js ===
-import { Icon } from './libs/mcl.js';
+import { Project, Model, Page, Icon } from './libs/mcl.js';
 
 const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 
@@ -49,13 +49,13 @@ offsets.forEach(o => {
   sphere.position.copy(o.pos.clone().multiplyScalar(2));
   sphere.userData.axis = o.axis; 
   sphere.visible = false;
-  mainCube.add(sphere);
+  model.Object.add(sphere);
   spheres.push(sphere);
 });
 
 function updateSpheresVisibility() {
   cubes.forEach(cube => {
-    const isSelected = (cube === selectedCube);
+    const isSelected = (cube === Model.Selected.Object);
     if (cube.userData.spheres) {
       cube.userData.spheres.forEach(s => s.visible = isSelected);
     }
@@ -76,9 +76,9 @@ function onPointerDown(event) {
   mouseVec.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
   dragRaycaster.setFromCamera(mouseVec, camera);
-  if (!selectedCube || !selectedCube.userData.spheres) return;
+  if (!Model.Selected.Object || !Model.Selected.Object.userData.spheres) return;
 
-  const intersects = dragRaycaster.intersectObjects(selectedCube.userData.spheres);
+  const intersects = dragRaycaster.intersectObjects(Model.Selected.Object.userData.spheres);
 
   if (intersects.length > 0) {
     selectedSphere = intersects[0].object;
@@ -103,8 +103,8 @@ function updateCursor() {
     const rect = renderer.domElement.getBoundingClientRect();
     dragRaycaster.setFromCamera(mouseVec, camera);
 
-    if (selectedCube && selectedCube.userData.spheres) {
-      const intersects = dragRaycaster.intersectObjects(selectedCube.userData.spheres);
+    if (Model.Selected.Object && Model.Selected.Object.userData.spheres) {
+      const intersects = dragRaycaster.intersectObjects(Model.Selected.Object.userData.spheres);
       if (intersects.length > 0) {
         renderer.domElement.style.cursor = 'grab';
         return;
@@ -126,11 +126,11 @@ function onPointerMove(event) {
   if (dragRaycaster.ray.intersectPlane(plane, intersection)) {
     const axis = selectedSphere.userData.axis;
     const worldPos = intersection.clone().sub(offset);
-    const localPos = selectedCube.worldToLocal(worldPos.clone());
+    const localPos = Model.Selected.Object.worldToLocal(worldPos.clone());
 
-    if(axis === 'x') selectedCube.position.x = Math.round(selectedCube.position.x + localPos.x);
-    if(axis === 'y') selectedCube.position.y = Math.round(selectedCube.position.y + localPos.y);
-    if(axis === 'z') selectedCube.position.z = Math.round(selectedCube.position.z + localPos.z);
+    if(axis === 'x') Model.Selected.Object.position.x = Math.round(Model.Selected.Object.position.x + localPos.x);
+    if(axis === 'y') Model.Selected.Object.position.y = Math.round(Model.Selected.Object.position.y + localPos.y);
+    if(axis === 'z') Model.Selected.Object.position.z = Math.round(Model.Selected.Object.position.z + localPos.z);
   }
 }
 
@@ -331,73 +331,73 @@ bgColorInput.addEventListener('input', () => {
 
 function updatePanelForCube(cube){
   if(!cube){
-    [scaleXInput, scaleYInput, scaleZInput, posXInput, posYInput, posZInput, colorHexInput].forEach(i => { i.value=''; i.disabled = true; });
+    [Page.Elements.Scale.X, Page.Elements.Scale.Y, Page.Elements.Scale.Z, Page.Elements.Position.X, Page.Elements.Position.Y, Page.Elements.Position.Z, Page.Elements.Input.Color.Hex_Input].forEach(i => { i.value=''; i.disabled = true; });
     [rotXInput, rotYInput, rotZInput].forEach(i => { i.value=''; i.disabled = true; });
     return;
   }
-  scaleXInput.disabled = false;
-  scaleYInput.disabled = false;
-  scaleZInput.disabled = false;
-  posXInput.disabled = false;
-  posYInput.disabled = false;
-  posZInput.disabled = false;
-  rotXInput.disabled = false;
-  rotYInput.disabled = false;
-  rotZInput.disabled = false;
-  colorHexInput.disabled = false;
+  Page.Elements.Scale.X.disabled = false;
+  Page.Elements.Scale.Y.disabled = false;
+  Page.Elements.Scale.Z.disabled = false;
+  Page.Elements.Position.X.disabled = false;
+  Page.Elements.Position.Y.disabled = false;
+  Page.Elements.Position.Z.disabled = false;
+  Page.Elements.Rotation.X.disabled = false;
+  Page.Elements.Rotation.y.disabled = false;
+  Page.Elements.Rotation.z.disabled = false;
+  Page.Elements.Input.Color.Hex_Input.disabled = false;
 
-  rotXInput.value = THREE.MathUtils.radToDeg(cube.rotation.x).toFixed(2);
-  rotYInput.value = THREE.MathUtils.radToDeg(cube.rotation.y).toFixed(2);
-  rotZInput.value = THREE.MathUtils.radToDeg(cube.rotation.z).toFixed(2);
+  Page.Elements.Rotation.X.value = THREE.MathUtils.radToDeg(cube.rotation.x).toFixed(2);
+  Page.Elements.Rotation.Y.value = THREE.MathUtils.radToDeg(cube.rotation.y).toFixed(2);
+  Page.Elements.Rotation.Z.value = THREE.MathUtils.radToDeg(cube.rotation.z).toFixed(2);
 
-  scaleXInput.value = cube.scale.x.toFixed(2);
-  scaleYInput.value = cube.scale.y.toFixed(2);
-  scaleZInput.value = cube.scale.z.toFixed(2);
+  Page.Elements.Scale.X.value = cube.scale.x.toFixed(2);
+  Page.Elements.Scale.Y.value = cube.scale.y.toFixed(2);
+  Page.Elements.Scale.Z.value = cube.scale.z.toFixed(2);
 
-  posXInput.value = cube.position.x.toFixed(2);
-  posYInput.value = cube.position.y.toFixed(2);
-  posZInput.value = cube.position.z.toFixed(2);
+  Page.Elements.Position.X.value = cube.position.x.toFixed(2);
+  Page.Elements.Position.Y.value = cube.position.y.toFixed(2);
+  Page.Elements.Position.Z.value = cube.position.z.toFixed(2);
 
   if(cube.material && cube.material.color){
-    colorHexInput.value = `#${cube.material.color.getHexString()}`;
+    Page.Elements.Input.Color.Hex_Input.value = `#${Model.Object3D.material.color.getHexString()}`;
   }else{
-    colorHexInput.value = '';
+    Page.Elements.Input.Color.Hex_Input.value = '';
   }
 }
 
-[scaleXInput, scaleYInput, scaleZInput].forEach((input,i) => {
+[Page.Elements.Scale.X, Page.Elements.Scale.Y, Page.Elements.Scale.Z].forEach((input,i) => {
   input.addEventListener('input', () => {
-    if(!selectedCube) return;
+    if(!Model.Selected.Object) return;
     const val = parseFloat(input.value);
     if(val > 0){
-      if(i===0) selectedCube.scale.x = val;
-      if(i===1) selectedCube.scale.y = val;
-      if(i===2) selectedCube.scale.z = val;
+      if(i===0) Model.Selected.Object.scale.x = val;
+      if(i===1) Model.Selected.Object.scale.y = val;
+      if(i===2) Model.Selected.Object.scale.z = val;
     }
   });
 });
 
-[posXInput, posYInput, posZInput].forEach((input,i) => {
+[Page.Elements.Position.X, Page.Elements.Position.Y, Page.Elements.Position.Z].forEach((input,i) => {
   input.addEventListener('input', () => {
-    if(!selectedCube) return;
+    if(!Model.Selected.Object) return;
     const val = parseFloat(input.value);
     if(!isNaN(val)){
-      if(i===0) selectedCube.position.x = val;
-      if(i===1) selectedCube.position.y = val;
-      if(i===2) selectedCube.position.z = val;
+      if(i===0) Model.Selected.Object.position.x = val;
+      if(i===1) Model.Selected.Object.position.y = val;
+      if(i===2) Model.Selected.Object.position.z = val;
     }
   });
 });
 
-[rotXInput, rotYInput, rotZInput].forEach((input,i) => {
+[Page.Elements.Rotation.X, Page.Elements.Rotation.Y, Page.Elements.Rotation.Z].forEach((input,i) => {
   input.addEventListener('input', () => {
-    if(!selectedCube) return;
+    if(!Model.Selected.Object) return;
     const val = parseFloat(input.value);
     if(!isNaN(val)){
       const rad = THREE.MathUtils.degToRad(val);
-      if(i===0) selectedCube.rotation.x = rad;
-      if(i===1) selectedCube.rotation.y = rad;
-      if(i===2) selectedCube.rotation.z = rad;
+      if(i===0) Model.Selected.Object.rotation.x = rad;
+      if(i===1) Model.Selected.Object.rotation.y = rad;
+      if(i===2) Model.Selected.Object.rotation.z = rad;
     }
   });
 });
@@ -412,7 +412,7 @@ function createFolder(name = 'New Folder') {
   window.folderCount = (window.folderCount || 0) + 1;
   const folder = { id: Date.now() + Math.random(), name };
   window.customFolders.push(folder);
-  updateCubeList();
+  UpdateTreeView();
   return folder;
 }
 
@@ -420,25 +420,25 @@ function createScript(name = 'New Script') {
   window.scriptCount = (window.scriptCount || 0) + 1;
   const script = { id: Date.now() + Math.random(), name };
   window.customScripts.push(script);
-  updateCubeList();
+  UpdateTreeView();
   return script;
 }
 
 aW_CreateFolder.addEventListener('click', () => {
   const newFolder = { id: Date.now() + Math.random(), name: 'New Folder' };
   window.customFolders.push(newFolder);
-  selectedObject = newFolder;
-  updateCubeList();
+  Tree_View.Selected.Item = newFolder;
+  UpdateTreeView();
 });
 
 aW_CreateScript.addEventListener('click', () => {
   const newScript = { id: Date.now() + Math.random(), name: 'New Script' };
   window.customScripts.push(newScript);
-  selectedObject = newScript;
-  updateCubeList();
+  Tree_View.Selected.Item = newScript;
+  UpdateTreeView();
 });
 
-function updateCubeList() { 
+function UpdateTreeView() { 
   cubeListDiv.innerHTML = '';
 
   const projectDiv = document.createElement('div');
@@ -453,7 +453,7 @@ function updateCubeList() {
 
   const folderIcon = document.createElement('img');
   folderIcon.src = Icon.SVG.Folder;
-  folderIcon.alt = projectName;
+  folderIcon.alt = Project.Name;
   folderIcon.style.width = '20px';
   folderIcon.style.height = '20px';
   folderIcon.style.objectFit = 'contain';
@@ -491,16 +491,16 @@ function updateCubeList() {
   projectDiv.appendChild(addWindowBtn);
 
   addWindowBtn.addEventListener("click", () => {
-    addWindow.style.display = addWindow.style.display === "flex" ? "none" : "flex";
+    Page.Elements.Add_Window.Window.style.display = Page.Elements.Add_Window.Window.style.display === "flex" ? "none" : "flex";
   });
 
-  addWindow.addEventListener("click", (e) => {
-    if (e.target === addWindow) addWindow.style.display = "none";
+  Page.Elements.Add_Window.Window.addEventListener("click", (e) => {
+    if (e.target === Page.Elements.Add_Window.Window) Page.Elements.Add_Window.Window.style.display = "none";
   });
 
   window.customFolders.forEach(folder => {
     const folderDiv = document.createElement('div');
-    folderDiv.className = 'cubeListObjects';
+    folderDiv.className = 'TreeViewObjects';
     folderDiv.style.cssText = `
       display:flex; align-items:center; padding:4px 8px; border-radius:4px;
       cursor:pointer; gap:8px; color:#fff; margin-bottom:4px; margin-left:20px;
@@ -528,14 +528,14 @@ function updateCubeList() {
       input.addEventListener('blur', () => {
         folder.name = input.value.trim() || 'Unnamed Folder';
         folder.isEditing = false;
-        updateCubeList();
+        UpdateTreeView();
       });
 
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
           folder.name = input.value.trim() || 'Unnamed Folder';
           folder.isEditing = false;
-          updateCubeList();
+          UpdateTreeView();
         }
       });
     } else {
@@ -544,20 +544,20 @@ function updateCubeList() {
       folderDiv.appendChild(span);
 
       folderDiv.addEventListener('click', () => {
-        selectedCube = null;
-        selectedObject = folder;
-        updateCubeList();
+        Model.Selected.Object = null;
+        Tree_View.Selected.Item = folder;
+        UpdateTreeView();
         updateSpheresVisibility();
       });
 
       span.addEventListener('dblclick', e => {
         e.stopPropagation();
         folder.isEditing = true;
-        updateCubeList();
+        UpdateTreeView();
       });
     }
 
-    if (selectedObject === folder) {
+    if (Tree_View.Selected.Item === folder) {
       folderDiv.style.backgroundColor = '#3366ff';
       folderDiv.style.color = 'white';
     }
@@ -595,14 +595,14 @@ function updateCubeList() {
       input.addEventListener('blur', () => {
         script.name = input.value.trim() || 'Unnamed Script';
         script.isEditing = false;
-        updateCubeList();
+        UpdateTreeView();
       });
 
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
           script.name = input.value.trim() || 'Unnamed Script';
           script.isEditing = false;
-          updateCubeList();
+          UpdateTreeView();
         }
       });
     } else {
@@ -611,20 +611,20 @@ function updateCubeList() {
       scriptDiv.appendChild(span);
 
       scriptDiv.addEventListener('click', () => {
-        selectedCube = null;
-        selectedObject = script;
-        updateCubeList();
+        Model.Selected.Object = null;
+        Tree_View.Selected.Item = script;
+        UpdateTreeView();
         updateSpheresVisibility();
       });
 
       span.addEventListener('dblclick', e => {
         e.stopPropagation();
         script.isEditing = true;
-        updateCubeList();
+        UpdateTreeView();
       });
     }
 
-    if (selectedObject === script) {
+    if (Tree_View.Selected.Item === script) {
       scriptDiv.style.backgroundColor = '#3366ff';
       scriptDiv.style.color = 'white';
     }
@@ -632,7 +632,7 @@ function updateCubeList() {
     projectContent.appendChild(scriptDiv);
   });
 
-  cubes.forEach(cube => {
+  Model.Objects.forEach(cube => {
     const item = document.createElement('div');
     item.className = 'cubeListItem';
     item.style.cssText = `
@@ -663,10 +663,10 @@ function updateCubeList() {
     item.addEventListener('click', () => {
       if (clickTimer) clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
-        selectedCube = cube;
-        selectedObject = null;
-        updatePanelForCube(selectedCube);
-        updateCubeList();
+        Model.Selected.Object = cube;
+        Tree_View.Selected.Item = null;
+        updatePanelForCube(Model.Selected.Object);
+        UpdateTreeView();
         updateSpheresVisibility();
         clickTimer = null;
       }, 250);
@@ -678,7 +678,7 @@ function updateCubeList() {
       renameCube(item, cube);
     });
 
-    if (selectedCube === cube) {
+    if (Model.Selected.Object === cube) {
       item.style.backgroundColor = '#3366ff';
       item.style.color = 'white';
     }
@@ -702,7 +702,7 @@ function renameCube(div, cube){
 
   function saveName() {
     cube.name = input.value.trim() || 'Unnamed';
-    updateCubeList();
+    UpdateTreeView();
   }
 
   input.addEventListener('blur', saveName);
@@ -720,19 +720,19 @@ function onClick(event){
   const intersects = raycaster.intersectObjects(cubes);
 
   if(intersects.length > 0){
-    selectedCube = intersects[0].object;
-    updatePanelForCube(selectedCube);
-    updateCubeList();
+    Model.Selected.Object = intersects[0].object;
+    updatePanelForCube(Model.Selected.Object);
+    UpdateTreeView();
     updateSpheresVisibility();
   }
 }
 canvas.addEventListener('click', onClick);
 
 colorHexInput.addEventListener('input', () => {
-  if(!selectedCube || !selectedCube.material) return;
+  if(!Model.Selected.Object || !Model.Selected.Object.material) return;
   const val = colorHexInput.value.trim();
   if(/^#([0-9a-f]{6})$/i.test(val)){
-    selectedCube.material.color.set(val);
+    Model.Selected.Object.material.color.set(val);
   }
 });
 
@@ -743,33 +743,33 @@ document.addEventListener('keydown', e => {
   if ((e.key === 'Delete' || e.key === 'Backspace') && !isTyping) {
     e.preventDefault();
 
-    if (selectedCube) {
-      const idx = cubes.indexOf(selectedCube);
+    if (Model.Selected.Object) {
+      const idx = cubes.indexOf(Model.Selected.Object);
       if (idx !== -1) {
-        scene.remove(selectedCube);
+        scene.remove(Model.Selected.Object);
         cubes.splice(idx, 1);
-        selectedCube = cubes[idx - 1] || cubes[0] || null;
-        updatePanelForCube(selectedCube);
-        updateCubeList();
+        Model.Selected.Object = cubes[idx - 1] || cubes[0] || null;
+        updatePanelForCube(Model.Selected.Object);
+        UpdateTreeView();
       }
       return;
     }
 
-    if (selectedObject) {
-      const idx = window.customFolders.indexOf(selectedObject);
+    if (Tree_View.Selected.Item) {
+      const idx = window.customFolders.indexOf(Tree_View.Selected.Item);
       if (idx !== -1) {
         window.customFolders.splice(idx, 1);
-        selectedObject = null;
-        updateCubeList();
+        Tree_View.Selected.Item = null;
+        UpdateTreeView();
       }
     }
 
-    if (selectedObject) {
-      const idx = window.customScripts.indexOf(selectedObject);
+    if (Tree_View.Selected.Item) {
+      const idx = window.customScripts.indexOf(Tree_View.Selected.Item);
       if (idx !== -1) {
         window.customScripts.splice(idx, 1);
-        selectedObject = null;
-        updateCubeList();
+        Tree_View.Selected.Item = null;
+        UpdateTreeView();
       }
     }
   }
@@ -817,6 +817,7 @@ function animate(time=0){
 }
 animate();
 
-updatePanelForCube(selectedCube);
-updateCubeList();
+updatePanelForCube(Model.Selected.Object);
+UpdateTreeView();
 updateSpheresVisibility();
+
