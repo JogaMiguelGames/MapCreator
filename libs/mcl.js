@@ -37,17 +37,23 @@ const aW_CreateFolder = document.getElementById('aW_CreateFolder');
 const aW_CreateScript = document.getElementById('aW_CreateScript');
 
 // Icons
-const folder_SVG_Icon = 'resources/images/ui/icons/folder.svg';
-const kS_Script_SVG_Icon = 'resources/images/ui/icons/kerneliumScript_File.svg';
-
-const cube_SVG_Icon = 'resources/images/ui/icons/cube.svg';
-const sphere_SVG_Icon = 'resources/images/ui/icons/sphere.svg';
-
-const cube_PNG_Icon = 'resources/images/ui/icons/cube.png';
-const sphere_PNG_Icon = 'resources/images/ui/icons/sphere.png';
-const cylinder_PNG_Icon = 'resources/images/ui/icons/cylinder.png';
-const cone_PNG_Icon = 'resources/images/ui/icons/cone.png';
-const plane_PNG_Icon = 'resources/images/ui/icons/plane.png';
+export const Icons = {
+  SVG: {
+    const Folder = 'resources/images/ui/icons/folder.svg';
+    const KS_Script = 'resources/images/ui/icons/kerneliumScript_File.svg';
+    
+    const Cube = 'resources/images/ui/icons/cube.svg';
+    const Sphere = 'resources/images/ui/icons/sphere.svg';
+  }
+  
+  PNG: {
+    const Cube = 'resources/images/ui/icons/cube.png';
+    const Sphere = 'resources/images/ui/icons/sphere.png';
+    const Cylinder = 'resources/images/ui/icons/cylinder.png';
+    const Cone = 'resources/images/ui/icons/cone.png';
+    const Plane = 'resources/images/ui/icons/plane.png';
+  }
+};
 
 // Selected Stuffs
 let selectedCube = mainCube;
