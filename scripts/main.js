@@ -54,10 +54,10 @@ offsets.forEach(o => {
 });
 
 function updateSpheresVisibility() {
-  cubes.forEach(cube => {
-    const isSelected = (cube === Model.Selected.Object);
-    if (cube.userData.spheres) {
-      cube.userData.spheres.forEach(s => s.visible = isSelected);
+  Objects.forEach(Model.Object3D => {
+    const isSelected = (Model.Object3D === Model.Selected.Object);
+    if (Model.Object3D.userData.spheres) {
+      Model.Object3D.userData.spheres.forEach(s => s.visible = isSelected);
     }
   });
 }
@@ -329,8 +329,8 @@ bgColorInput.addEventListener('input', () => {
   }
 });
 
-function updatePanelForCube(cube){
-  if(!cube){
+function updatePanelForCube(Model.Object3D){
+  if(!Model.Object3D){
     [Page.Elements.Scale.X, Page.Elements.Scale.Y, Page.Elements.Scale.Z, Page.Elements.Position.X, Page.Elements.Position.Y, Page.Elements.Position.Z, Page.Elements.Input.Color.Hex_Input].forEach(i => { i.value=''; i.disabled = true; });
     [rotXInput, rotYInput, rotZInput].forEach(i => { i.value=''; i.disabled = true; });
     return;
@@ -346,19 +346,19 @@ function updatePanelForCube(cube){
   Page.Elements.Rotation.z.disabled = false;
   Page.Elements.Input.Color.Hex_Input.disabled = false;
 
-  Page.Elements.Rotation.X.value = THREE.MathUtils.radToDeg(cube.rotation.x).toFixed(2);
-  Page.Elements.Rotation.Y.value = THREE.MathUtils.radToDeg(cube.rotation.y).toFixed(2);
-  Page.Elements.Rotation.Z.value = THREE.MathUtils.radToDeg(cube.rotation.z).toFixed(2);
+  Page.Elements.Rotation.X.value = THREE.MathUtils.radToDeg(Model.Object3D.rotation.x).toFixed(2);
+  Page.Elements.Rotation.Y.value = THREE.MathUtils.radToDeg(Model.Object3D.rotation.y).toFixed(2);
+  Page.Elements.Rotation.Z.value = THREE.MathUtils.radToDeg(Model.Object3D.rotation.z).toFixed(2);
 
-  Page.Elements.Scale.X.value = cube.scale.x.toFixed(2);
-  Page.Elements.Scale.Y.value = cube.scale.y.toFixed(2);
-  Page.Elements.Scale.Z.value = cube.scale.z.toFixed(2);
+  Page.Elements.Scale.X.value = Model.Object3D.scale.x.toFixed(2);
+  Page.Elements.Scale.Y.value = Model.Object3D.scale.y.toFixed(2);
+  Page.Elements.Scale.Z.value = Model.Object3D.scale.z.toFixed(2);
 
-  Page.Elements.Position.X.value = cube.position.x.toFixed(2);
-  Page.Elements.Position.Y.value = cube.position.y.toFixed(2);
-  Page.Elements.Position.Z.value = cube.position.z.toFixed(2);
+  Page.Elements.Position.X.value = Model.Object3D.position.x.toFixed(2);
+  Page.Elements.Position.Y.value = Model.Object3D.position.y.toFixed(2);
+  Page.Elements.Position.Z.value = Model.Object3D.position.z.toFixed(2);
 
-  if(cube.material && cube.material.color){
+  if(Model.Object3D.material && Model.Object3D.material.color){
     Page.Elements.Input.Color.Hex_Input.value = `#${Model.Object3D.material.color.getHexString()}`;
   }else{
     Page.Elements.Input.Color.Hex_Input.value = '';
@@ -632,7 +632,7 @@ function UpdateTreeView() {
     projectContent.appendChild(scriptDiv);
   });
 
-  Model.Objects.forEach(cube => {
+  Model.Objects.forEach(Model.Object3D => {
     const item = document.createElement('div');
     item.className = 'cubeListItem';
     item.style.cssText = `
@@ -645,7 +645,7 @@ function UpdateTreeView() {
     iconWrapper.style.width = '20px';
     iconWrapper.style.height = '20px';
     const icon = document.createElement('img');
-    const iconName = (cube.userData.icon || "cube") + ".png";
+    const iconName = (Model.Object3D.userData.icon || "cube") + ".png";
     icon.src = `resources/images/ui/icons/${iconName}`;
     icon.alt = 'object icon';
     icon.style.width = '100%';
@@ -656,14 +656,14 @@ function UpdateTreeView() {
     item.appendChild(iconWrapper);
 
     const text = document.createElement('span');
-    text.textContent = cube.name || 'Unnamed';
+    text.textContent = Model.Object3D.name || 'Unnamed';
     item.appendChild(text);
 
     let clickTimer = null;
     item.addEventListener('click', () => {
       if (clickTimer) clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
-        Model.Selected.Object = cube;
+        Model.Selected.Object = Model.Object3D;
         Tree_View.Selected.Item = null;
         updatePanelForCube(Model.Selected.Object);
         UpdateTreeView();
@@ -675,10 +675,10 @@ function UpdateTreeView() {
     item.addEventListener('dblclick', () => {
       if (clickTimer) clearTimeout(clickTimer);
       clickTimer = null;
-      renameCube(item, cube);
+      renameCube(item, Model.Object3D);
     });
 
-    if (Model.Selected.Object === cube) {
+    if (Model.Selected.Object === Model.Object3D) {
       item.style.backgroundColor = '#3366ff';
       item.style.color = 'white';
     }
@@ -687,11 +687,11 @@ function UpdateTreeView() {
   });
 }
 
-function renameCube(div, cube){
+function renameCube(div, Model.Object3D){
   const text = div.querySelector('span');
   const input = document.createElement('input');
   input.type = 'text';
-  input.value = cube.name || 'Cube';
+  input.value = Model.Object3D.name || 'Cube';
   input.style.flex = '1';
   input.style.padding = '2px';
   input.style.border = '1px solid #ccc';
@@ -701,7 +701,7 @@ function renameCube(div, cube){
   input.focus();
 
   function saveName() {
-    cube.name = input.value.trim() || 'Unnamed';
+    Model.Object3D.name = input.value.trim() || 'Unnamed';
     UpdateTreeView();
   }
 
@@ -717,7 +717,7 @@ function onClick(event){
   mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
   raycaster.setFromCamera(mouse, camera);
-  const intersects = raycaster.intersectObjects(cubes);
+  const intersects = raycaster.intersectObjects(Model.Objects);
 
   if(intersects.length > 0){
     Model.Selected.Object = intersects[0].object;
@@ -744,11 +744,11 @@ document.addEventListener('keydown', e => {
     e.preventDefault();
 
     if (Model.Selected.Object) {
-      const idx = cubes.indexOf(Model.Selected.Object);
+      const idx = Model.Objects.indexOf(Model.Selected.Object);
       if (idx !== -1) {
         scene.remove(Model.Selected.Object);
-        cubes.splice(idx, 1);
-        Model.Selected.Object = cubes[idx - 1] || cubes[0] || null;
+        Model.Objects.splice(idx, 1);
+        Model.Selected.Object = Model.Objects[idx - 1] || Model.Objects[0] || null;
         updatePanelForCube(Model.Selected.Object);
         UpdateTreeView();
       }
@@ -820,4 +820,5 @@ animate();
 updatePanelForCube(Model.Selected.Object);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
