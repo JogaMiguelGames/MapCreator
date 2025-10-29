@@ -1,4 +1,5 @@
 // === save.js - Map Creator === 
+import { Project, Model, Page, Icon } from './libs/mcl.js';
 
 const saveButton = document.getElementById('saveButton');
 
@@ -8,8 +9,8 @@ function markUnsaved() {
   unsavedChanges = true;
 }
 
-cubes.forEach(cube => {
-  cube.userData.onChange = markUnsaved;
+Model.Objects.forEach(Model.Object3D => {
+  Model.Object3D.userData.onChange = markUnsaved;
 });
 
 function saveMap() {
@@ -20,7 +21,7 @@ function saveMap() {
     sceneColor: `#${scene.background.getHexString()}`,
     customFolders: window.customFolders || [],
     customScripts: window.customScripts || [],
-    cubes: cubes.map(obj => {
+    cubes: Model.Objects.map(obj => {
       let type = 'cube';
       let color = '#ffffff';
       let textureData = null;
@@ -52,7 +53,7 @@ function saveMap() {
   const blob = new Blob([json], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = mapFileName;
+  a.download = Project.File.Name.Map;
   a.click();
   URL.revokeObjectURL(a.href);
 
