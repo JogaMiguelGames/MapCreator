@@ -13,20 +13,20 @@ export const Project = {
 };
 
 export const Object = {
-  const Main_Cube = new THREE.Mesh(box_geometry, white_material);
+  const Object = new THREE.Mesh(box_geometry, white_material);
 
-  Main_Cube.position.set(0, 0, 0);
+  Object.position.set(0, 0, 0);
 
-  Main_Cube.name = 'Cube 1';
+  Object.name = 'Cube 1';
 
-  Main_Cube.castShadow = true;
-  Main_Cube.receiveShadow = true;
+  Object.castShadow = true;
+  Object.receiveShadow = true;
 
-  scene.add(Main_Cube);
+  scene.add(Object);
 
-  Main_Cube.userData.icon = "cube";
+  Object.userData.icon = "cube";
 
-  const Cubes = [Main_Cube];
+  const Objects = [Object];
 
   Selected: {
     let Selected_Object = Main_Cube;
