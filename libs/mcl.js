@@ -12,7 +12,7 @@ const cubes = [mainCube];
 
 // Project Data
 const projectName = "Project";
-const fileName = "Project.map";
+const mapFileName = "Project.map";
 
 // Page Elements
 const scaleXInput = document.getElementById('scaleX');
