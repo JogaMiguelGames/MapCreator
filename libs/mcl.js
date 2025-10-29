@@ -8,7 +8,7 @@ export const Project = {
     }
   },
   Icon: {
-    Project_Icon: "";
+    Project_Icon: ""
   }
 };
 
