@@ -463,7 +463,7 @@ function updateCubeList() {
 
   const folderIcon = document.createElement('img');
   folderIcon.src = folder_SVG_Icon;
-  folderIcon.alt = 'Project';
+  folderIcon.alt = projectName;
   folderIcon.style.width = '20px';
   folderIcon.style.height = '20px';
   folderIcon.style.objectFit = 'contain';
@@ -830,5 +830,6 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
 
