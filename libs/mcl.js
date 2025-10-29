@@ -6,87 +6,89 @@ export const Project = {
     Name: {
       Map: null
     }
-  }
+  },
   Icon: {
     Project_Icon: "";
   }
 };
 
-export const Model = {
-  const Object = new THREE.Mesh(box_geometry, white_material);
-
+export const Model = (() => {
+  const Model3D = new THREE.Mesh(box_geometry, white_material);
   Object.position.set(0, 0, 0);
-
   Object.name = 'Cube 1';
-
   Object.castShadow = true;
   Object.receiveShadow = true;
+  Object.userData.icon = "cube";
 
   scene.add(Object);
 
-  Object.userData.icon = "cube";
+  const Objects: = [Object];
 
-  const Objects = [Object];
+  const Selected = {
+    Object: Object,
+    Item: null
+  };
 
-  Selected: {
-    let Selected_Object = Main_Cube;
-    let Selected_Item = null;
-  }
-};
+  return {
+    Object,
+    Objects,
+    Selected
+  };
+})();
 
 export const Page = {
   Elements: {
     Scale: {
-      const X = document.getElementById('scaleX');
-      const Y = document.getElementById('scaleY');
-      const Z = document.getElementById('scaleZ');
-    }
+      X: document.getElementById('scaleX'),
+      Y: document.getElementById('scaleY'),
+      Z; document.getElementById('scaleZ')
+    },
     Position: {
-      const X = document.getElementById('posX');
-      const Y = document.getElementById('posY');
-      const Z = document.getElementById('posZ');
-    }
+      X: document.getElementById('posX'),
+      Y: document.getElementById('posY'),
+      Z: document.getElementById('posZ')
+    },
     Rotation: {
-      const X = document.getElementById('rotX');
-      const Y = document.getElementById('rotY');
-      const Z = document.getElementById('rotZ');
-    }
+      X: document.getElementById('rotX'),
+      Y: document.getElementById('rotY'),
+      Z: document.getElementById('rotZ')
+    },
     Add_Window: {
       Options: {
         Create: {
-          const Folder = document.getElementById('aW_CreateFolder');
-          const Script = document.getElementById('aW_CreateScript');
+          Folder: document.getElementById('aW_CreateFolder'),
+          Script: document.getElementById('aW_CreateScript')
         }
-      }
-      const Window = document.getElementById('addWindow');
-      const Content = document.getElementById('addWindowContent');
-    }
+      },
+      Window: document.getElementById('addWindow'),
+      Content: document.getElementById('addWindowContent')
+    },
     Input: {
       Color: {
-        const Hex_Input = document.getElementById('colorHex');
+        Hex_Input: document.getElementById('colorHex')
       }
-    }
+    },
     Tree_View: {
-      const Div = document.getElementById('Tree_View');
+      Div: document.getElementById('Tree_View')
     }
   }
 };
 
 export const Icon = {
   SVG: {
-    const Folder = 'resources/images/ui/icons/folder.svg';
-    const KS_Script = 'resources/images/ui/icons/kerneliumScript_File.svg';
+    Folder: 'resources/images/ui/icons/folder.svg',
+    KS_Script: 'resources/images/ui/icons/kerneliumScript_File.svg',
     
-    const Cube = 'resources/images/ui/icons/cube.svg';
-    const Sphere = 'resources/images/ui/icons/sphere.svg';
-  }
+    Cube: 'resources/images/ui/icons/cube.svg',
+    Sphere: 'resources/images/ui/icons/sphere.svg'
+  },
   
   PNG: {
-    const Cube = 'resources/images/ui/icons/cube.png';
-    const Sphere = 'resources/images/ui/icons/sphere.png';
-    const Cylinder = 'resources/images/ui/icons/cylinder.png';
-    const Cone = 'resources/images/ui/icons/cone.png';
-    const Plane = 'resources/images/ui/icons/plane.png';
+    Cube: 'resources/images/ui/icons/cube.png',
+    Sphere: 'resources/images/ui/icons/sphere.png',
+    Cylinder: 'resources/images/ui/icons/cylinder.png',
+    Cone: 'resources/images/ui/icons/cone.png',
+    Plane: 'resources/images/ui/icons/plane.png'
   }
 };
 
