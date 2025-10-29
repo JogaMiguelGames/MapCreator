@@ -1,15 +1,4 @@
 // === Map Creator - Main.js ===
-
-const mainCube = new THREE.Mesh(box_geometry, white_material);
-mainCube.position.set(0, 0, 0);
-mainCube.name = 'Cube 1';
-mainCube.castShadow = true;
-mainCube.receiveShadow = true;
-scene.add(mainCube);
-mainCube.userData.icon = "cube";
-
-const cubes = [mainCube];
-
 const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 
 const offsets = [
@@ -331,36 +320,12 @@ function updateCamera(delta){
   if(keys['KeyQ']) camera.position.y -= speed * delta;
 }
 
-const scaleXInput = document.getElementById('scaleX');
-const scaleYInput = document.getElementById('scaleY');
-const scaleZInput = document.getElementById('scaleZ');
-
-const posXInput = document.getElementById('posX');
-const posYInput = document.getElementById('posY');
-const posZInput = document.getElementById('posZ');
-
-const rotXInput = document.getElementById('rotX');
-const rotYInput = document.getElementById('rotY');
-const rotZInput = document.getElementById('rotZ');
-
-const colorHexInput = document.getElementById('colorHex');
-const cubeListDiv = document.getElementById('cubeList');
-
-const addWindow = document.getElementById('addWindow');
-const addWindowContent = document.getElementById('addWindowContent');
-
-const aW_CreateFolder = document.getElementById('aW_CreateFolder');
-const aW_CreateScript = document.getElementById('aW_CreateScript');
-
 bgColorInput.addEventListener('input', () => {
   const val = bgColorInput.value.trim();
   if(/^#([0-9a-f]{6})$/i.test(val)){
     scene.background.set(val);
   }
 });
-
-let selectedCube = mainCube;
-let selectedObject = null;
 
 function updatePanelForCube(cube){
   if(!cube){
@@ -865,4 +830,5 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
+
 
