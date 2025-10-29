@@ -610,7 +610,7 @@ body.focusing-script #exitScriptFocusBtn {
 .centerPopUpContent {
   width: 800px;
   height: 600px;
-  background: rgba(26 26 26, 1);
+  background: rgba(26, 26, 26, 1);
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 1);
@@ -649,3 +649,4 @@ body.focusing-script #exitScriptFocusBtn {
 
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
