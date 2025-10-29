@@ -54,7 +54,7 @@ offsets.forEach(o => {
 });
 
 function updateSpheresVisibility() {
-  Model.Objects.forEach(Model.Object3D => {
+  Model.Object3D.forEach(Model.Object3D => {
     const isSelected = (Model.Object3D === Model.Selected.Object);
     if (Model.Object3D.userData.spheres) {
       Model.Object3D.userData.spheres.forEach(s => s.visible = isSelected);
@@ -820,6 +820,7 @@ animate();
 updatePanelForCube(Model.Selected.Object);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
