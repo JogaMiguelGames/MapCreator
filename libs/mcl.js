@@ -1,42 +1,73 @@
 // === MCL.js - Map Creator Lib ===
 
-const mainCube = new THREE.Mesh(box_geometry, white_material);
-mainCube.position.set(0, 0, 0);
-mainCube.name = 'Cube 1';
-mainCube.castShadow = true;
-mainCube.receiveShadow = true;
-scene.add(mainCube);
-mainCube.userData.icon = "cube";
+export const Project = {
+  Name: {
+    const projectName = "Project";
+    const mapFileName =  `${projectName}.map`;
+  }
+  Icon: {
+    const projectIcon = "";
+  }
+};
 
-const cubes = [mainCube];
+export const Object = {
+  const mainCube = new THREE.Mesh(box_geometry, white_material);
 
-// Project Data
-const projectName = "Project";
-const mapFileName =  `${projectName}.map`;
+  mainCube.position.set(0, 0, 0);
 
-// Page Elements
-const scaleXInput = document.getElementById('scaleX');
-const scaleYInput = document.getElementById('scaleY');
-const scaleZInput = document.getElementById('scaleZ');
+  mainCube.name = 'Cube 1';
 
-const posXInput = document.getElementById('posX');
-const posYInput = document.getElementById('posY');
-const posZInput = document.getElementById('posZ');
+  mainCube.castShadow = true;
+  mainCube.receiveShadow = true;
 
-const rotXInput = document.getElementById('rotX');
-const rotYInput = document.getElementById('rotY');
-const rotZInput = document.getElementById('rotZ');
+  scene.add(mainCube);
 
-const colorHexInput = document.getElementById('colorHex');
-const cubeListDiv = document.getElementById('cubeList');
+  mainCube.userData.icon = "cube";
 
-const addWindow = document.getElementById('addWindow');
-const addWindowContent = document.getElementById('addWindowContent');
+  const cubes = [mainCube];
 
-const aW_CreateFolder = document.getElementById('aW_CreateFolder');
-const aW_CreateScript = document.getElementById('aW_CreateScript');
+  Selected: {
+    let selectedCube = mainCube;
+    let selectedObject = null;
+  }
+};
 
-// Icons
+export const Page = {
+  Elements: {
+    Scale: {
+      const X = document.getElementById('scaleX');
+      const Y = document.getElementById('scaleY');
+      const Z = document.getElementById('scaleZ');
+    }
+    Position: {
+      const X = document.getElementById('posX');
+      const Y = document.getElementById('posY');
+      const Z = document.getElementById('posZ');
+    }
+    Rotation: {
+      const X = document.getElementById('rotX');
+      const Y = document.getElementById('rotY');
+      const Z = document.getElementById('rotZ');
+    }
+    Add_Window: {
+      Options: {
+        const aW_CreateFolder = document.getElementById('aW_CreateFolder');
+        const aW_CreateScript = document.getElementById('aW_CreateScript');
+      }
+      const Window = document.getElementById('addWindow');
+      const Content = document.getElementById('addWindowContent');
+    }
+    Input: {
+      Color: {
+        const HexInput = document.getElementById('colorHex');
+      }
+    }
+    Tree_View: {
+      const Div = document.getElementById('Tree_View');
+    }
+  }
+};
+
 export const Icon = {
   SVG: {
     const Folder = 'resources/images/ui/icons/folder.svg';
@@ -54,7 +85,3 @@ export const Icon = {
     const Plane = 'resources/images/ui/icons/plane.png';
   }
 };
-
-// Selected Stuffs
-let selectedCube = mainCube;
-let selectedObject = null;
