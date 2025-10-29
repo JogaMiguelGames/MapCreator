@@ -1,4 +1,6 @@
 // === Map Creator - Main.js ===
+import { Icon } from './libs/mcl.js';
+
 const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 
 const offsets = [
@@ -450,7 +452,7 @@ function updateCubeList() {
   projectDiv.style.fontWeight = 'bold';
 
   const folderIcon = document.createElement('img');
-  folderIcon.src = folder_SVG_Icon;
+  folderIcon.src = Icon.SVG.Folder;
   folderIcon.alt = projectName;
   folderIcon.style.width = '20px';
   folderIcon.style.height = '20px';
@@ -462,7 +464,7 @@ function updateCubeList() {
   cubeListDiv.appendChild(projectDiv);
 
   const scriptIcon = document.createElement('img');
-  scriptIcon.src = kS_Script_SVG_Icon;
+  scriptIcon.src = Icon.SVG.KS_Script;
   scriptIcon.alt = 'Project Script';
   scriptIcon.style.width = '20px';
   scriptIcon.style.height = '20px';
@@ -505,7 +507,7 @@ function updateCubeList() {
     `;
 
     const icon = document.createElement('img');
-    icon.src = folder_SVG_Icon;
+    icon.src = Icon.SVG.Folder;
     icon.alt = 'Folder';
     icon.style.width = '18px';
     icon.style.height = '18px';
@@ -572,7 +574,7 @@ function updateCubeList() {
     `;
 
     const icon = document.createElement('img');
-    icon.src = kS_Script_SVG_Icon;
+    icon.src = Icon.SVG.KS_Script;
     icon.alt = 'Script';
     icon.style.width = '18px';
     icon.style.height = '18px';
@@ -818,7 +820,3 @@ animate();
 updatePanelForCube(selectedCube);
 updateCubeList();
 updateSpheresVisibility();
-
-
-
-
