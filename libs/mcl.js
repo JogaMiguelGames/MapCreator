@@ -37,7 +37,7 @@ const aW_CreateFolder = document.getElementById('aW_CreateFolder');
 const aW_CreateScript = document.getElementById('aW_CreateScript');
 
 // Icons
-export const Icons = {
+export const Icon = {
   SVG: {
     const Folder = 'resources/images/ui/icons/folder.svg';
     const KS_Script = 'resources/images/ui/icons/kerneliumScript_File.svg';
