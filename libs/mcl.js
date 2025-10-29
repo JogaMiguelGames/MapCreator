@@ -26,7 +26,6 @@ export const Model = (() => {
 
   const Selected = {
     Object: Object3D,
-    Item: null
   };
 
   return {
@@ -71,6 +70,12 @@ export const Page = {
     Tree_View: {
       Div: document.getElementById('Tree_View')
     }
+  }
+};
+
+export const Tree_View = {
+  Selected: {
+    Item: null
   }
 };
 
