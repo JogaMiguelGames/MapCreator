@@ -53,7 +53,7 @@ export const Page = {
       Z: document.getElementById('rotZ')
     },
     Script: {
-      Input: document.getElementByID('scriptInput')
+      Input: document.getElementById('scriptInput')
     },
     Add_Window: {
       Options: {
