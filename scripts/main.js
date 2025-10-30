@@ -1,6 +1,10 @@
 // === Map Creator - Main.js ===
 import { Project, Model, Page, Tree_View, Icon } from '../libs/mcl.js';
 
+const object3D;
+
+object3D = Model.Object3D;
+
 const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 
 const offsets = [
@@ -823,7 +827,3 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
-
-
-
-
