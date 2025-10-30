@@ -468,7 +468,7 @@ function UpdateTreeView() {
 
   const folderText = document.createElement('span');
   projectDiv.appendChild(folderText);
-  Tree_View_Div.appendChild(projectDiv);
+  Page.Elements.Tree_View.Div.appendChild(projectDiv);
 
   const scriptIcon = document.createElement('img');
   scriptIcon.src = Icon.SVG.KS_Script;
@@ -485,7 +485,7 @@ function UpdateTreeView() {
   projectContent.style.display = 'flex';
   projectContent.style.flexDirection = 'column';
   projectContent.style.marginLeft = '20px';
-  Tree_View_Div.appendChild(projectContent);
+  Page.Elements.Tree_View.Div.appendChild(projectContent);
 
   const addWindowBtn = document.createElement('button');
   addWindowBtn.textContent = '+';
@@ -827,3 +827,4 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
