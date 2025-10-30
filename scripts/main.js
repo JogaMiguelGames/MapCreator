@@ -54,7 +54,7 @@ offsets.forEach(o => {
 });
 
 function updateSpheresVisibility() {
-  Model.Objects.forEach(Model.Object3D => {
+  Model.Objects.forEach(object3D => {
     const isSelected = (Model.Object3D === Model.Selected.Object);
     if (Model.Object3D.userData.spheres) {
       Model.Object3D.userData.spheres.forEach(s => s.visible = isSelected);
@@ -690,7 +690,7 @@ function UpdateTreeView() {
   });
 }
 
-function renameCube(div, Model.Object3D){
+function renameCube(div, object3D){
   const text = div.querySelector('span');
   const input = document.createElement('input');
   input.type = 'text';
@@ -823,3 +823,4 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
