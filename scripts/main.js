@@ -329,12 +329,15 @@ bgColorInput.addEventListener('input', () => {
   }
 });
 
-function updatePanelForCube(Model.Object3D){
-  if(!Model.Object3D){
-    [Page.Elements.Scale.X, Page.Elements.Scale.Y, Page.Elements.Scale.Z, Page.Elements.Position.X, Page.Elements.Position.Y, Page.Elements.Position.Z, Page.Elements.Input.Color.Hex_Input].forEach(i => { i.value=''; i.disabled = true; });
+function updatePanelForCube(object3D) {
+  if (!object3D) {
+    [Page.Elements.Scale.X, Page.Elements.Scale.Y, Page.Elements.Scale.Z,
+     Page.Elements.Position.X, Page.Elements.Position.Y, Page.Elements.Position.Z,
+     Page.Elements.Input.Color.Hex_Input].forEach(i => { i.value=''; i.disabled = true; });
     [rotXInput, rotYInput, rotZInput].forEach(i => { i.value=''; i.disabled = true; });
     return;
   }
+
   Page.Elements.Scale.X.disabled = false;
   Page.Elements.Scale.Y.disabled = false;
   Page.Elements.Scale.Z.disabled = false;
@@ -342,25 +345,25 @@ function updatePanelForCube(Model.Object3D){
   Page.Elements.Position.Y.disabled = false;
   Page.Elements.Position.Z.disabled = false;
   Page.Elements.Rotation.X.disabled = false;
-  Page.Elements.Rotation.y.disabled = false;
-  Page.Elements.Rotation.z.disabled = false;
+  Page.Elements.Rotation.Y.disabled = false;
+  Page.Elements.Rotation.Z.disabled = false;
   Page.Elements.Input.Color.Hex_Input.disabled = false;
 
-  Page.Elements.Rotation.X.value = THREE.MathUtils.radToDeg(Model.Object3D.rotation.x).toFixed(2);
-  Page.Elements.Rotation.Y.value = THREE.MathUtils.radToDeg(Model.Object3D.rotation.y).toFixed(2);
-  Page.Elements.Rotation.Z.value = THREE.MathUtils.radToDeg(Model.Object3D.rotation.z).toFixed(2);
+  Page.Elements.Rotation.X.value = THREE.MathUtils.radToDeg(object3D.rotation.x).toFixed(2);
+  Page.Elements.Rotation.Y.value = THREE.MathUtils.radToDeg(object3D.rotation.y).toFixed(2);
+  Page.Elements.Rotation.Z.value = THREE.MathUtils.radToDeg(object3D.rotation.z).toFixed(2);
 
-  Page.Elements.Scale.X.value = Model.Object3D.scale.x.toFixed(2);
-  Page.Elements.Scale.Y.value = Model.Object3D.scale.y.toFixed(2);
-  Page.Elements.Scale.Z.value = Model.Object3D.scale.z.toFixed(2);
+  Page.Elements.Scale.X.value = object3D.scale.x.toFixed(2);
+  Page.Elements.Scale.Y.value = object3D.scale.y.toFixed(2);
+  Page.Elements.Scale.Z.value = object3D.scale.z.toFixed(2);
 
-  Page.Elements.Position.X.value = Model.Object3D.position.x.toFixed(2);
-  Page.Elements.Position.Y.value = Model.Object3D.position.y.toFixed(2);
-  Page.Elements.Position.Z.value = Model.Object3D.position.z.toFixed(2);
+  Page.Elements.Position.X.value = object3D.position.x.toFixed(2);
+  Page.Elements.Position.Y.value = object3D.position.y.toFixed(2);
+  Page.Elements.Position.Z.value = object3D.position.z.toFixed(2);
 
-  if(Model.Object3D.material && Model.Object3D.material.color){
-    Page.Elements.Input.Color.Hex_Input.value = `#${Model.Object3D.material.color.getHexString()}`;
-  }else{
+  if (object3D.material && object3D.material.color) {
+    Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
+  } else {
     Page.Elements.Input.Color.Hex_Input.value = '';
   }
 }
@@ -817,17 +820,6 @@ function animate(time=0){
 }
 animate();
 
-updatePanelForCube(Model.Selected.Object);
+updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
-
-
-
-
-
-
-
-
-
-
-
