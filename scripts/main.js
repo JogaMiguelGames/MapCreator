@@ -49,7 +49,7 @@ offsets.forEach(o => {
   sphere.position.copy(o.pos.clone().multiplyScalar(2));
   sphere.userData.axis = o.axis; 
   sphere.visible = false;
-  model.Object.add(sphere);
+  Model.Object3D.add(sphere);
   spheres.push(sphere);
 });
 
@@ -820,6 +820,7 @@ animate();
 updatePanelForCube(Model.Selected.Object);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
