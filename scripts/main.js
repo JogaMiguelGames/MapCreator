@@ -731,9 +731,9 @@ function onClick(event){
 }
 canvas.addEventListener('click', onClick);
 
-colorHexInput.addEventListener('input', () => {
+Page.Elements.Input.Color.Hex_Input.addEventListener('input', () => {
   if(!Model.Selected.Object || !Model.Selected.Object.material) return;
-  const val = colorHexInput.value.trim();
+  const val = Page.Elements.Input.Color.Hex_Input.value.trim();
   if(/^#([0-9a-f]{6})$/i.test(val)){
     Model.Selected.Object.material.color.set(val);
   }
@@ -823,5 +823,6 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
