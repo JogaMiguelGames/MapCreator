@@ -52,6 +52,9 @@ export const Page = {
       Y: document.getElementById('rotY'),
       Z: document.getElementById('rotZ')
     },
+    Script: {
+      Input: document.getElementByID('scriptInput')
+    },
     Add_Window: {
       Options: {
         Create: {
