@@ -3,16 +3,6 @@ import { Project, Model, Page, Icon } from '../../libs/mcl.js';
 
 const saveButton = document.getElementById('saveButton');
 
-let unsavedChanges = false;
-
-function markUnsaved() {
-  unsavedChanges = true;
-}
-
-Model.Objects.forEach(Model.Object3D => {
-  Model.Object3D.userData.onChange = markUnsaved;
-});
-
 function saveMap() {
   const scriptInput = document.getElementById('scriptInput');
   const scriptCode = scriptInput ? scriptInput.value : '';
@@ -56,18 +46,6 @@ function saveMap() {
   a.download = Project.File.Name.Map;
   a.click();
   URL.revokeObjectURL(a.href);
-
-  unsavedChanges = false;
 }
 
 saveButton?.addEventListener('click', saveMap);
-
-window.addEventListener('beforeunload', (e) => {
-  if (unsavedChanges) {
-    e.preventDefault();
-    e.returnValue = '';
-  }
-});
-
-
-
