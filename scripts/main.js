@@ -446,7 +446,7 @@ aW_CreateScript.addEventListener('click', () => {
 });
 
 function UpdateTreeView() { 
-  cubeListDiv.innerHTML = '';
+  Tree_View_Div.innerHTML = '';
 
   const projectDiv = document.createElement('div');
   projectDiv.className = 'Tree_View_Objects';
@@ -468,7 +468,7 @@ function UpdateTreeView() {
 
   const folderText = document.createElement('span');
   projectDiv.appendChild(folderText);
-  cubeListDiv.appendChild(projectDiv);
+  Tree_View_Div.appendChild(projectDiv);
 
   const scriptIcon = document.createElement('img');
   scriptIcon.src = Icon.SVG.KS_Script;
@@ -485,7 +485,7 @@ function UpdateTreeView() {
   projectContent.style.display = 'flex';
   projectContent.style.flexDirection = 'column';
   projectContent.style.marginLeft = '20px';
-  cubeListDiv.appendChild(projectContent);
+  Tree_View_Div.appendChild(projectContent);
 
   const addWindowBtn = document.createElement('button');
   addWindowBtn.textContent = '+';
@@ -827,3 +827,4 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
