@@ -446,7 +446,7 @@ aW_CreateScript.addEventListener('click', () => {
 });
 
 function UpdateTreeView() { 
-  Tree_View_Div.innerHTML = '';
+  Page.Elements.Tree_View.Div.innerHTML = '';
 
   const projectDiv = document.createElement('div');
   projectDiv.className = 'Tree_View_Objects';
@@ -827,4 +827,3 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
-
