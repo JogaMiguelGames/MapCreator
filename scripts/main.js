@@ -1,7 +1,7 @@
 // === Map Creator - Main.js ===
 import { Project, Model, Page, Tree_View, Icon } from '../libs/mcl.js';
 
-const object3D;
+let object3D;
 
 object3D = Model.Object3D;
 
