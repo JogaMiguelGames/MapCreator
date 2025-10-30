@@ -635,7 +635,7 @@ function UpdateTreeView() {
     projectContent.appendChild(scriptDiv);
   });
 
-  Model.Objects.forEach(Model.Object3D => {
+  Model.Objects.forEach(object3D => {
     const item = document.createElement('div');
     item.className = 'cubeListItem';
     item.style.cssText = `
@@ -823,4 +823,5 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
