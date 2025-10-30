@@ -439,7 +439,7 @@ aW_CreateFolder.addEventListener('click', () => {
 });
 
 aW_CreateScript.addEventListener('click', () => {
-  const newScript = { id: Date.now() + Math.random(), name: 'New Script' };
+  const newScript = { id: Date.now() + Math.random(), content: 'console.print("Hello, World!")', name: 'New Script' };
   window.customScripts.push(newScript);
   Tree_View.Selected.Item = newScript;
   UpdateTreeView();
@@ -634,6 +634,8 @@ function UpdateTreeView() {
     if (Tree_View.Selected.Item === script) {
       scriptDiv.style.backgroundColor = '#3366ff';
       scriptDiv.style.color = 'white';
+      const Scripting = Page.Elements.Script.Input.value;
+      Tree_View.Selected.Item.Content.value = Scripting.value
     }
 
     projectContent.appendChild(scriptDiv);
@@ -827,4 +829,5 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
