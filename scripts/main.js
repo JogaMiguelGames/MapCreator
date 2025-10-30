@@ -445,7 +445,7 @@ function UpdateTreeView() {
   cubeListDiv.innerHTML = '';
 
   const projectDiv = document.createElement('div');
-  projectDiv.className = 'cubeListObjects';
+  projectDiv.className = 'Tree_View_Objects';
   projectDiv.style.display = 'flex';
   projectDiv.style.alignItems = 'center';
   projectDiv.style.padding = '4px 8px';
@@ -503,7 +503,7 @@ function UpdateTreeView() {
 
   window.customFolders.forEach(folder => {
     const folderDiv = document.createElement('div');
-    folderDiv.className = 'TreeViewObjects';
+    folderDiv.className = 'Tree_View_Objects';
     folderDiv.style.cssText = `
       display:flex; align-items:center; padding:4px 8px; border-radius:4px;
       cursor:pointer; gap:8px; color:#fff; margin-bottom:4px; margin-left:20px;
@@ -570,7 +570,7 @@ function UpdateTreeView() {
 
   window.customScripts.forEach(script => {
     const scriptDiv = document.createElement('div');
-    scriptDiv.className = 'cubeListObjects';
+    scriptDiv.className = 'Tree_View_Objects';
     scriptDiv.style.cssText = `
       display:flex; align-items:center; padding:4px 8px; border-radius:4px;
       cursor:pointer; gap:8px; color:#fff; margin-bottom:4px; margin-left:20px;
@@ -637,7 +637,7 @@ function UpdateTreeView() {
 
   Model.Objects.forEach(object3D => {
     const item = document.createElement('div');
-    item.className = 'cubeListItem';
+    item.className = 'Tree_View_Item';
     item.style.cssText = `
       display:flex; align-items:center; padding:4px 8px; border-radius:3px;
       cursor:pointer; gap:6px; margin-bottom:2px; margin-left:20px;
@@ -823,6 +823,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
