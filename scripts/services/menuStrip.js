@@ -78,18 +78,16 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
     });
   }
 
-  // --- FILE menu: Save (menuSave) ---
   const menuSaveEl = document.getElementById('menuSave');
   if (menuSaveEl) {
     menuSaveEl.addEventListener('click', (e) => {
       e.stopPropagation();
-      safeInvoke('saveMap', 'saveButton');
+      safeInvoke('saveMap');
       fileBtn.classList.remove('open');
       fileBtn.setAttribute('aria-expanded','false');
     });
   }
 
-  // -- ADD MENU: cria objetos direto --
   document.getElementById('menuCube')?.addEventListener('click', () => {
     createCube();
     addBtn.classList.remove('open');
@@ -109,7 +107,6 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
     createCone();
     addBtn.classList.remove('open');
   });
-
 
   document.getElementById('menuPlane')?.addEventListener('click', () => {
     createPlane();
