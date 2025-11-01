@@ -1,5 +1,5 @@
-import { Project, Model, Page, Tree_View, Icon } from 'mcl.js';
-import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from 'add.js';
+import { Project, Model, Page, Tree_View, Icon } from './mcl.js';
+import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from './add.js';
 
 export const Gizmo = {
 
