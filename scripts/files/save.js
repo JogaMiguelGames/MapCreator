@@ -1,5 +1,6 @@
 // === save.js - Map Creator === 
-import { Project, Model, Page, Icon } from '../../libs/mcl.js';
+import { Project, Model, Page, Tree_View, Icon } from '../../libs/mcl/mcl.js';
+import { Create } from '../../libs/mcl/add.js';
 
 const saveButton = document.getElementById('saveButton');
 
@@ -11,8 +12,8 @@ function saveMap() {
     sceneColor: `#${scene.background.getHexString()}`,
     customFolders: window.customFolders || [],
     customScripts: window.customScripts || [],
-    cubes: Model.Objects.map(obj => {
-      let type = 'cube';
+    Objects: Model.Objects.map(obj => {
+      let type = 'Object';
       let color = '#ffffff';
       let textureData = null;
 
