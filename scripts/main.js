@@ -568,10 +568,10 @@ function UpdateTreeView() {
     item.addEventListener('dblclick', () => {
       if (clickTimer) clearTimeout(clickTimer);
       clickTimer = null;
-      renameCube(item, Model.Object3D);
+      renameCube(item, object3D);
     });
 
-    if (Model.Selected.Object === Model.Object3D) {
+    if (Model.Selected.Object === object3D) {
       item.style.backgroundColor = '#3366ff';
       item.style.color = 'white';
     }
@@ -715,6 +715,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
