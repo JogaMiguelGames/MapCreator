@@ -76,7 +76,7 @@ function loadMapData(mapData) {
 
   Model.Objects.forEach(c => scene.remove(c));
   Model.Objects.length = 0;
-u
+
   window.customFolders = foldersData.map(f => ({ ...f }));
   window.customScripts = scriptsData.map(f => ({ ...f }));
 
