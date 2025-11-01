@@ -76,7 +76,7 @@ function loadMapData(mapData) {
 
   Model.Objects.forEach(c => scene.remove(c));
   Model.Objects.length = 0;
-
+u
   window.customFolders = foldersData.map(f => ({ ...f }));
   window.customScripts = scriptsData.map(f => ({ ...f }));
 
@@ -111,7 +111,7 @@ function loadMapData(mapData) {
 
           addManipulationSpheres(object);
           updateCubeList();
-          updatePanelForCube(object);
+          window.updatePanelForCube(object);
         },
         (xhr) => console.log(`Loading camera model: ${(xhr.loaded / xhr.total) * 100}% complete`),
         (error) => console.error("Error loading camera OBJ:", error)
@@ -156,7 +156,7 @@ function loadMapData(mapData) {
   });
 
   Model.Selected.Object = Model.Objects[0] || null;
-  updatePanelForCube(selectedObject3D);
+  window.updatePanelForCube(selectedObject3D);
   UpdateTreeView();
   updateSpheresVisibility();
 }
