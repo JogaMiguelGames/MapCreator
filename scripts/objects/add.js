@@ -12,8 +12,8 @@ function createCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), materi
   addManipulationSpheres(cube);
 
   scene.add(cube);
-  cubes.push(cube);
-  updateCubeList();
+  Model.Objects.push(cube);
+  UpdateTreeView();
   return cube;
 }
 
@@ -22,7 +22,7 @@ function createSphere() {
   const sphere = new THREE.Mesh(sphere_geometry, material);
 
   sphere.position.set(0, 0, 0);
-  sphere.name = `Sphere ${cubes.length}`;
+  sphere.name = `Sphere ${Model.Objects.length}`;
   sphere.castShadow = true;
   sphere.receiveShadow = true;
   
@@ -31,8 +31,8 @@ function createSphere() {
   addManipulationSpheres(sphere);
 
   scene.add(sphere);
-  cubes.push(sphere);
-  updateCubeList();
+  Model.Objects.push(sphere);
+  UpdateTreeView();
   pushToHistory({ type: 'delete', object: sphere });
 }
 
@@ -42,7 +42,7 @@ function createCylinder() {
 
   cylinder.position.set(0, 0, 0);
   cylinder.scale.set(0.5, 0.5, 0.5);
-  cylinder.name = `Cylinder ${cubes.length}`;
+  cylinder.name = `Cylinder ${Model.Objects.length}`;
   cylinder.castShadow = true;
   cylinder.receiveShadow = true;
 
@@ -51,8 +51,8 @@ function createCylinder() {
   addManipulationSpheres(cylinder);
 
   scene.add(cylinder);
-  cubes.push(cylinder);
-  updateCubeList();
+  Model.Objects.push(cylinder);
+  UpdateTreeView();
   pushToHistory({ type: 'delete', object: cylinder });
 }
 
@@ -62,7 +62,7 @@ function createCone() {
 
   cone.position.set(0, 0, 0);
   cone.scale.set(0.5, 0.5, 0.5);
-  cone.name = `Cone ${cubes.length}`;
+  cone.name = `Cone ${Model.Objects.length}`;
   cone.castShadow = true;
   cone.receiveShadow = true;
 
@@ -71,8 +71,8 @@ function createCone() {
   addManipulationSpheres(cone);
 
   scene.add(cone);
-  cubes.push(cone);
-  updateCubeList();
+  Model.Objects.push(cone);
+  UpdateTreeView();
   pushToHistory({ type: 'delete', object: cone });
 }
 
@@ -82,7 +82,7 @@ function createPlane() {
 
   plane.position.set(0, 0, 0);
   plane.rotation.x = -Math.PI / 2;
-  plane.name = `Plane ${cubes.length}`;
+  plane.name = `Plane ${Model.Objects.length}`;
   plane.castShadow = true;
   plane.receiveShadow = true;
 
@@ -91,8 +91,8 @@ function createPlane() {
   addManipulationSpheres(plane);
 
   scene.add(plane);
-  cubes.push(plane);
-  updateCubeList();
+  Model.Objects.push(plane);
+  UpdateTreeView();
   pushToHistory({ type: 'delete', object: plane });
 }
 
@@ -126,11 +126,11 @@ function createCamera() {
       object.userData.icon = "camera";
 
       scene.add(object);
-      cubes.push(object);
+      Model.Objects.push(object);
 
       selectedCube = object;
       updatePanelForCube(object);
-      updateCubeList();
+      UpdateTreeView();
 
       pushToHistory({ type: "delete", object: object });
     },
@@ -155,7 +155,7 @@ function createLight() {
   });
   const sphere = new THREE.Mesh(sphere_geometry.clone(), sphereMat);
   sphere.scale.set(0.2, 0.2, 0.2);
-  sphere.name = `Light ${cubes.length}`;
+  sphere.name = `Light ${Model.Objects.length}`;
   sphere.position.set(0, 0, 0);
 
   // hierarquia luz + esfera
@@ -165,8 +165,8 @@ function createLight() {
   addManipulationSpheres(sphere);
 
   scene.add(light);
-  cubes.push(light);
-  updateCubeList();
+  Model.Objects.push(light);
+  UpdateTreeView();
   pushToHistory({ type: 'delete', object: light });
 
   return light;
@@ -188,6 +188,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
