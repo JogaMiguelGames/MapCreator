@@ -89,32 +89,32 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
   }
 
   document.getElementById('menuCube')?.addEventListener('click', () => {
-    createCube();
+    CreateCube();
     addBtn.classList.remove('open');
   });
 
   document.getElementById('menuCylinder')?.addEventListener('click', () => {
-    createCylinder();
+    CreateCylinder();
     addBtn.classList.remove('open');
   });
 
   document.getElementById('menuSphere')?.addEventListener('click', () => {
-    createSphere();
+    CreateSphere();
     addBtn.classList.remove('open');
   });
 
   document.getElementById('menuCone')?.addEventListener('click', () => {
-    createCone();
+    CreateCone();
     addBtn.classList.remove('open');
   });
 
   document.getElementById('menuPlane')?.addEventListener('click', () => {
-    createPlane();
+    CreatePlane();
     addBtn.classList.remove('open');
   });
   
   document.getElementById('menuCamera')?.addEventListener('click', () => {
-    createCamera();
+    CreateCamera();
     addBtn.classList.remove('open');
   });
 
