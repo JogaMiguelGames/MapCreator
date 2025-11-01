@@ -109,8 +109,8 @@ function loadMapData(mapData) {
           scene.add(object);
           Model.Objects.push(object);
 
-          addManipulationSpheres(object);
-          updateCubeList();
+          window.addManipulationSpheres(object);
+          window.UpdateTreeView();
           window.updatePanelForCube(object);
         },
         (xhr) => console.log(`Loading camera model: ${(xhr.loaded / xhr.total) * 100}% complete`),
@@ -150,13 +150,13 @@ function loadMapData(mapData) {
       };
     }
 
-    addManipulationSpheres(obj);
+    window.addManipulationSpheres(obj);
     scene.add(obj);
     Model.Objects.push(obj);
   });
 
   Model.Selected.Object = Model.Objects[0] || null;
-  window.updatePanelForCube(selectedObject3D);
-  UpdateTreeView();
-  updateSpheresVisibility();
+  window.updatePanelForCube(window.selectedObject3D);
+  window.UpdateTreeView();
+  window.updateSpheresVisibility();
 }
