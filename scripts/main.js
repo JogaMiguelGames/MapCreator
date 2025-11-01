@@ -202,8 +202,11 @@ function updatePanelForCube(object3D) {
   if (!object3D) {
     [Page.Elements.Scale.X, Page.Elements.Scale.Y, Page.Elements.Scale.Z,
      Page.Elements.Position.X, Page.Elements.Position.Y, Page.Elements.Position.Z,
-     Page.Elements.Input.Color.Hex_Input].forEach(i => { i.value=''; i.disabled = true; });
-    [rotXInput, rotYInput, rotZInput].forEach(i => { i.value=''; i.disabled = true; });
+     Page.Elements.Input.Color.Hex_Input,
+     Page.Elements.Rotation.X, Page.Elements.Rotation.Y, Page.Elements.Rotation.Z].forEach(i => {
+      i.value = '';
+      i.disabled = true;
+    });
     return;
   }
 
@@ -553,7 +556,7 @@ function UpdateTreeView() {
     item.addEventListener('click', () => {
       if (clickTimer) clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
-        Model.Selected.Object = Model.Object3D;
+        Model.Selected.Object = object3D;
         Tree_View.Selected.Item = null;
         updatePanelForCube(Model.Selected.Object);
         UpdateTreeView();
@@ -712,6 +715,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
