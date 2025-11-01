@@ -237,23 +237,40 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return;
     }
+  
     if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const code = document.getElementById('scriptInput').value;
-    await runScript(code);
-  });
-
-  pauseButton.addEventListener('click', () => {
-    if (isRunning) {
-      isPaused = !isPaused;
-      gconsole.print(isPaused ? 'Paused.' : 'Resumed.');
+    const output = document.getElementById('scriptOutput');
+    output.textContent = '';
+  
+    if (!window.customScripts || window.customScripts.length === 0) {
+      gconsole.print('No scripts found in Tree View.');
+      return;
     }
-  });
-
-  stopButton.addEventListener('click', () => {
-    if (isRunning) {
-      stopRequested = true;
-      isPaused = false;
-      gconsole.print('Stopped.');
+  
+    gconsole.print(`Running ${window.customScripts.length} scripts...`);
+  
+    isRunning = true;
+    stopRequested = false;
+  
+    for (const script of window.customScripts) {
+      if (stopRequested) break;
+  
+      const code = script.content?.trim();
+      if (!code) {
+        gconsole.print(`Skipped empty script: ${script.name}`);
+        continue;
+      }
+  
+      gconsole.print(`\n=== Running Script: ${script.name} ===`);
+      Object.keys(variables).forEach(k => delete variables[k]);
+      Object.keys(functions).forEach(k => delete functions[k]);
+  
+      await runLines(code.split('\n'));
+      gconsole.print(`=== Finished Script: ${script.name} ===\n`);
     }
+  
+    isRunning = false;
+    gconsole.print('All scripts finished.');
   });
 });
+
