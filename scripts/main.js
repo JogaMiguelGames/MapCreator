@@ -450,7 +450,7 @@ aW_CreateFolder.addEventListener('click', () => {
 });
 
 aW_CreateScript.addEventListener('click', () => {
-  const newScript = { id: Date.now() + Math.random(), content: 'console.print("Hello, World!")', name: 'New Script' };
+  const newScript = { id: Date.now() + Math.random(), Content: 'console.print("Hello, World!")', name: 'New Script' };
   window.customScripts.push(newScript);
   Tree_View.Selected.Item = newScript;
   UpdateTreeView();
@@ -842,6 +842,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
