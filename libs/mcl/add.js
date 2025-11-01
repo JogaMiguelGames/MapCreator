@@ -139,35 +139,35 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
     );
   }
   
-  export function CreateLight() {
-    const lightColor = 0xffffff;
-    const lightIntensity = 2;
-    const lightDistance = 15;
+export function CreateLight() {
+  const lightColor = 0xffffff;
+  const lightIntensity = 2;
+  const lightDistance = 15;
   
-    const light = new THREE.PointLight(lightColor, lightIntensity, lightDistance);
-    light.castShadow = true;
+  const light = new THREE.PointLight(lightColor, lightIntensity, lightDistance);
+  light.castShadow = true;
   
-    const sphereMat = new THREE.MeshBasicMaterial({
-      color: lightColor,
-      emissive: lightColor,
-      emissiveIntensity: 1
-    });
-    const sphere = new THREE.Mesh(sphere_geometry.clone(), sphereMat);
-    sphere.scale.set(0.2, 0.2, 0.2);
-    sphere.name = `Light ${Model.Objects.length}`;
-    sphere.position.set(0, 0, 0);
+  const sphereMat = new THREE.MeshBasicMaterial({
+    color: lightColor,
+    emissive: lightColor,
+    emissiveIntensity: 1
+  });
   
-    light.add(sphere);
+  const sphere = new THREE.Mesh(sphere_geometry.clone(), sphereMat);
+  sphere.scale.set(0.2, 0.2, 0.2);
+  sphere.name = `Light ${Model.Objects.length}`;
+  sphere.position.set(0, 0, 0);
   
-    addManipulationSpheres(sphere);
+  light.add(sphere);
   
-    scene.add(light);
-    Model.Objects.push(light);
-    UpdateTreeView();
-    pushToHistory({ type: 'delete', object: light });
+  addManipulationSpheres(sphere);
   
-    return light;
-  }
+  scene.add(light);
+  Model.Objects.push(light);
+  UpdateTreeView();
+  pushToHistory({ type: 'delete', object: light });
+  
+  return light;
 }
 
 document.getElementById("commandLine").addEventListener("keydown", function(e) {
@@ -185,3 +185,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
