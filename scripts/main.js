@@ -651,7 +651,7 @@ function UpdateTreeView() {
       Scripting.value = ScriptContent;
       
       setInterval(() => {
-        ScriptContent = Scripting.value;
+        ScriptContent = Page.Elements.Script.Input.value;
       }, 100);
     }
 
@@ -848,3 +848,4 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
