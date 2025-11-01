@@ -649,6 +649,10 @@ function UpdateTreeView() {
       scriptDiv.style.color = 'white';
       const Scripting = Page.Elements.Script.Input;
       Scripting.value = ScriptContent;
+      
+      setInterval(() => {
+        ScriptContent = Scripting.value;
+      }, 100);
     }
 
     projectContent.appendChild(scriptDiv);
@@ -844,11 +848,3 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
-
-
-
-
-
-
-
-
