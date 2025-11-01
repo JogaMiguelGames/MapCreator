@@ -213,18 +213,6 @@
     document.getElementById('importTextureBtn').addEventListener('click', () => {
       document.getElementById('importButton').click();
     });
-
-    function isMobileOrTablet() {
-      return /Mobi|Android|iPad|iPhone|iPod|Tablet/i.test(navigator.userAgent) || window.innerWidth < 1024;
-    }
-    if (isMobileOrTablet()) {
-      document.body.innerHTML = `<div style="display:flex;align-items:center;justify-content:center;text-align:center;height:100vh;background-color:#111;color:white;font-family:sans-serif;padding:20px;">
-        <div>
-          <h1 style="font-size:2em;">Your device is not supported on this site.</h1>
-          <p style="font-size:1.2em;">Use a computer to access this site.</p>
-        </div>
-      </div>`;
-    }
   </script>
 </body>
 </html>
