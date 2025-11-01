@@ -381,7 +381,7 @@ function updatePanelForCube(object3D) {
   }
 }
 
-window.updatePanelForCube = updatePanelForCube();
+window.updatePanelForCube = updatePanelForCube;
 
 [Page.Elements.Scale.X, Page.Elements.Scale.Y, Page.Elements.Scale.Z].forEach((input,i) => {
   input.addEventListener('input', () => {
@@ -842,6 +842,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
