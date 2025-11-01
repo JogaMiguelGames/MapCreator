@@ -591,8 +591,10 @@ function UpdateTreeView() {
       cursor:pointer; gap:8px; color:#fff; margin-bottom:4px; margin-left:20px;
     `;
 
-    let ScriptContent = 'console.print("Hello, World")';
-
+    if (script.content === undefined) {
+      script.content = 'console.log("Hello, World!");';
+    }
+  
     const icon = document.createElement('img');
     icon.src = Icon.SVG.KS_Script;
     icon.alt = 'Script';
@@ -600,7 +602,7 @@ function UpdateTreeView() {
     icon.style.height = '18px';
     icon.style.objectFit = 'contain';
     scriptDiv.appendChild(icon);
-
+  
     if (script.isEditing) {
       const input = document.createElement('input');
       input.type = 'text';
@@ -611,13 +613,13 @@ function UpdateTreeView() {
       input.style.borderRadius = '3px';
       scriptDiv.appendChild(input);
       input.focus();
-
+  
       input.addEventListener('blur', () => {
         script.name = input.value.trim() || 'Unnamed Script';
         script.isEditing = false;
         UpdateTreeView();
       });
-
+  
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
           script.name = input.value.trim() || 'Unnamed Script';
@@ -631,12 +633,16 @@ function UpdateTreeView() {
       scriptDiv.appendChild(span);
 
       scriptDiv.addEventListener('click', () => {
+        if (Tree_View.Selected.Item && Tree_View.Selected.Item.content !== undefined) {
+          Tree_View.Selected.Item.content = Page.Elements.Script.Input.value;
+        }
+  
         Model.Selected.Object = null;
         Tree_View.Selected.Item = script;
         UpdateTreeView();
         updateSpheresVisibility();
       });
-
+  
       span.addEventListener('dblclick', e => {
         e.stopPropagation();
         script.isEditing = true;
@@ -648,14 +654,15 @@ function UpdateTreeView() {
       scriptDiv.style.backgroundColor = '#3366ff';
       scriptDiv.style.color = 'white';
       const Scripting = Page.Elements.Script.Input;
-      Scripting.value = ScriptContent;
-      
+
+      Scripting.value = script.content;
+
       clearInterval(window.scriptWatcher);
       window.scriptWatcher = setInterval(() => {
-        ScriptContent = Page.Elements.Script.Input.value;
-      }, 100);
+        script.content = Scripting.value;
+      }, 200);
     }
-
+  
     projectContent.appendChild(scriptDiv);
   });
 
@@ -849,4 +856,5 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
