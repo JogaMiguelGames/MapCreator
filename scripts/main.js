@@ -450,7 +450,7 @@ aW_CreateFolder.addEventListener('click', () => {
 });
 
 aW_CreateScript.addEventListener('click', () => {
-  const newScript = { id: Date.now() + Math.random(), Content: 'console.print("Hello, World!")', name: 'New Script' };
+  const newScript = { id: Date.now() + Math.random(), name: 'New Script' };
   window.customScripts.push(newScript);
   Tree_View.Selected.Item = newScript;
   UpdateTreeView();
@@ -591,6 +591,8 @@ function UpdateTreeView() {
       cursor:pointer; gap:8px; color:#fff; margin-bottom:4px; margin-left:20px;
     `;
 
+    const ScriptContent = 'console.print("Hello, World")';
+
     const icon = document.createElement('img');
     icon.src = Icon.SVG.KS_Script;
     icon.alt = 'Script';
@@ -646,7 +648,7 @@ function UpdateTreeView() {
       scriptDiv.style.backgroundColor = '#3366ff';
       scriptDiv.style.color = 'white';
       const Scripting = Page.Elements.Script.Input;
-      Scripting.value = Tree_View.Selected.Item.Content.value;
+      Scripting.value = ScriptContent.value;
     }
 
     projectContent.appendChild(scriptDiv);
@@ -842,6 +844,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
