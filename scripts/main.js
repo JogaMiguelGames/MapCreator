@@ -72,6 +72,8 @@ function updateSpheresVisibility() {
   });
 }
 
+window.updateSpheresVisibility = updateSpheresVisibility;
+
 let selectedSphere = null;
 const plane = new THREE.Plane();
 const offset = new THREE.Vector3();
@@ -703,6 +705,8 @@ function UpdateTreeView() {
     projectContent.appendChild(item);
   });
 }
+
+window.UpdateTreeView = UpdateTreeView;
 
 function renameCube(div, object3D){
   const text = div.querySelector('span');
