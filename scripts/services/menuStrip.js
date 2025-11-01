@@ -82,7 +82,7 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
   if (menuSaveEl) {
     menuSaveEl.addEventListener('click', (e) => {
       e.stopPropagation();
-      safeInvoke('saveMap');
+      safeInvoke('saveMap', 'menuSave');
       fileBtn.classList.remove('open');
       fileBtn.setAttribute('aria-expanded','false');
     });
