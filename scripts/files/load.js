@@ -156,7 +156,7 @@ function loadMapData(mapData) {
   });
 
   Model.Selected.Object = Model.Objects[0] || null;
-  updatePanelForCube(Model.Selected.Object);
+  updatePanelForCube(selectedObject3D);
   UpdateTreeView();
   updateSpheresVisibility();
 }
