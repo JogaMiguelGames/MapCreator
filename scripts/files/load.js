@@ -60,7 +60,7 @@ loadInput?.addEventListener('change', () => {
 });
 
 function loadMapData(mapData) {
-  const cubesData = mapData.Model.Object || [];
+  const cubesData = mapData.Model.Objects || [];
   const foldersData = mapData.customFolders || [];
   const scriptsData = mapData.customScripts || [];
   const scriptInput = document.getElementById('scriptInput');
