@@ -1,4 +1,6 @@
 // scripts/services/menuStrip.js
+import { Project, Model, Page, Tree_View, Icon } from '../../libs/mcl/mcl.js';
+import { Create } from '../../libs/mcl/add.js';
 
 (function(){
   const fileBtn = document.getElementById('fileMenuBtn');
