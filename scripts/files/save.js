@@ -8,10 +8,20 @@ function saveMap() {
   const scriptInput = document.getElementById('scriptInput');
   const scriptCode = scriptInput ? scriptInput.value : '';
 
+  // 🔹 Garante que o conteúdo atual do script selecionado está salvo
+  if (window.Tree_View?.Selected?.Item && window.Tree_View.Selected.Item.content !== undefined) {
+    window.Tree_View.Selected.Item.content = scriptCode;
+  }
+
   const mapData = {
     sceneColor: `#${scene.background.getHexString()}`,
     customFolders: window.customFolders || [],
-    customScripts: window.customScripts || [],
+    // 🔹 Salva scripts com nome e conteúdo
+    customScripts: (window.customScripts || []).map(s => ({
+      id: s.id,
+      name: s.name,
+      content: s.content || ''
+    })),
     Objects: Model.Objects.map(obj => {
       let type = 'Object';
       let color = '#ffffff';
@@ -36,8 +46,7 @@ function saveMap() {
         texture: textureData,
         icon: obj.userData.icon || "cube"
       };
-    }),
-    script: scriptCode
+    })
   };
 
   const json = JSON.stringify(mapData, null, 2);
