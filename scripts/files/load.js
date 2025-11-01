@@ -79,7 +79,11 @@ function loadMapData(mapData) {
   Model.Objects.length = 0;
 
   window.customFolders = foldersData.map(f => ({ ...f }));
-  window.customScripts = scriptsData.map(f => ({ ...f }));
+  window.customScripts = (scriptsData || []).map(s => ({
+    id: s.id,
+    name: s.name,
+    content: s.content || 'console.log("Empty Script");'
+  }));
 
   const objLoader = new THREE.OBJLoader();
   const textureLoader = new THREE.TextureLoader();
