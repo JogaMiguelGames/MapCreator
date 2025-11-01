@@ -437,6 +437,16 @@ function UpdateTreeView() {
     if (Tree_View.Selected.Item === folder) {
       folderDiv.style.backgroundColor = '#3366ff';
       folderDiv.style.color = 'white';
+      Page.Elements.Scale.X.disabled = true;
+      Page.Elements.Scale.Y.disabled = true;
+      Page.Elements.Scale.Z.disabled = true;
+      Page.Elements.Position.X.disabled = true;
+      Page.Elements.Position.Y.disabled = true;
+      Page.Elements.Position.Z.disabled = true;
+      Page.Elements.Rotation.X.disabled = true;
+      Page.Elements.Rotation.Y.disabled = true;
+      Page.Elements.Rotation.Z.disabled = true;
+      Page.Elements.Input.Color.Hex_Input.disabled = true;
     }
 
     projectContent.appendChild(folderDiv);
@@ -512,6 +522,17 @@ function UpdateTreeView() {
     if (Tree_View.Selected.Item === script) {
       scriptDiv.style.backgroundColor = '#3366ff';
       scriptDiv.style.color = 'white';
+      Page.Elements.Scale.X.disabled = true;
+      Page.Elements.Scale.Y.disabled = true;
+      Page.Elements.Scale.Z.disabled = true;
+      Page.Elements.Position.X.disabled = true;
+      Page.Elements.Position.Y.disabled = true;
+      Page.Elements.Position.Z.disabled = true;
+      Page.Elements.Rotation.X.disabled = true;
+      Page.Elements.Rotation.Y.disabled = true;
+      Page.Elements.Rotation.Z.disabled = true;
+      Page.Elements.Input.Color.Hex_Input.disabled = true;
+      
       const Scripting = Page.Elements.Script.Input;
 
       Scripting.value = script.content;
@@ -715,6 +736,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
