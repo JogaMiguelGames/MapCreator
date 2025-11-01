@@ -1,5 +1,5 @@
 // ===================== ADD.JS =====================
-import { Project, Model, Page, Icon } from 'mcl.js';
+import { Project, Model, Page, Icon } from './mcl.js';
 
 export const Create = {
   function Cube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
@@ -186,3 +186,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
