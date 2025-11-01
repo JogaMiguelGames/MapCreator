@@ -1,5 +1,6 @@
 // ===================== ADD.JS =====================
 import { Project, Model, Page, Icon } from './mcl.js';
+import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSpheresVisibility, selectedSphere, plane, offset, intersection, dragRaycaster, mouseVec, onPointerDown, updateCursor, onPointerMove, onPointerUp} from '../libs/mcl/objects.js';
 
 export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
   const cube = new THREE.Mesh(box_geometry.clone(), material);
@@ -185,4 +186,5 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
