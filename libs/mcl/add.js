@@ -1,25 +1,24 @@
 // ===================== ADD.JS =====================
 import { Project, Model, Page, Icon } from './mcl.js';
 
-export const Create = {
-  function Cube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
-    const cube = new THREE.Mesh(box_geometry.clone(), material);
-    cube.position.copy(position);
-    cube.name = name;
-    cube.castShadow = true;
-    cube.receiveShadow = true;
+export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
+  const cube = new THREE.Mesh(box_geometry.clone(), material);
+  cube.position.copy(position);
+  cube.name = name;
+  cube.castShadow = true;
+  cube.receiveShadow = true;
   
-    cube.userData.icon = "cube";
+  cube.userData.icon = "cube";
   
-    addManipulationSpheres(cube);
+  addManipulationSpheres(cube);
   
-    scene.add(cube);
-    Model.Objects.push(cube);
-    UpdateTreeView();
-    return cube;
-  }
+  scene.add(cube);
+  Model.Objects.push(cube);
+  UpdateTreeView();
+  return cube;
+}
   
-  function Sphere() {
+  export function CreateSphere() {
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
     const sphere = new THREE.Mesh(sphere_geometry, material);
   
@@ -38,7 +37,7 @@ export const Create = {
     pushToHistory({ type: 'delete', object: sphere });
   }
   
-  function Cylinder() {
+  export function CreateCylinder() {
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
     const cylinder = new THREE.Mesh(cylinder_geometry, material);
   
@@ -58,7 +57,7 @@ export const Create = {
     pushToHistory({ type: 'delete', object: cylinder });
   }
   
-  function Cone() {
+  export function CreateCone() {
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
     const cone = new THREE.Mesh(cone_geometry, material);
   
@@ -78,7 +77,7 @@ export const Create = {
     pushToHistory({ type: 'delete', object: cone });
   }
   
-  function Plane() {
+  export function CreatePlane() {
     const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
     const plane = new THREE.Mesh(plane_geometry, material);
   
@@ -98,7 +97,7 @@ export const Create = {
     pushToHistory({ type: 'delete', object: plane });
   }
   
-  function Camera() {
+  export function CreateCamera() {
     const existingCamera = scene.getObjectByName("Camera");
     if (existingCamera) {
       console.warn("A camera already exists in the scene!");
@@ -140,7 +139,7 @@ export const Create = {
     );
   }
   
-  function Light() {
+  export function CreateLight() {
     const lightColor = 0xffffff;
     const lightIntensity = 2;
     const lightDistance = 15;
@@ -186,4 +185,3 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
-
