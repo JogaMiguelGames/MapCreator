@@ -2,8 +2,6 @@
 import { Project, Model, Page, Tree_View, Icon } from '../../libs/mcl/mcl.js';
 import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from '../../libs/mcl/add.js';
 
-const saveButton = document.getElementById('saveButton');
-
 function saveMap() {
   const scriptInput = document.getElementById('scriptInput');
   const scriptCode = scriptInput ? scriptInput.value : '';
@@ -50,4 +48,5 @@ function saveMap() {
 }
 
 saveButton?.addEventListener('click', saveMap);
+
 
