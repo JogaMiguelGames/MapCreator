@@ -591,7 +591,7 @@ function UpdateTreeView() {
       cursor:pointer; gap:8px; color:#fff; margin-bottom:4px; margin-left:20px;
     `;
 
-    const ScriptContent = 'console.print("Hello, World")';
+    let ScriptContent = 'console.print("Hello, World")';
 
     const icon = document.createElement('img');
     icon.src = Icon.SVG.KS_Script;
@@ -650,7 +650,8 @@ function UpdateTreeView() {
       const Scripting = Page.Elements.Script.Input;
       Scripting.value = ScriptContent;
       
-      setInterval(() => {
+      clearInterval(window.scriptWatcher);
+      window.scriptWatcher = setInterval(() => {
         ScriptContent = Page.Elements.Script.Input.value;
       }, 100);
     }
