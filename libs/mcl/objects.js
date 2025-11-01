@@ -59,9 +59,9 @@ offsets.forEach(o => {
 
 export function updateSpheresVisibility() {
   Model.Objects.forEach(object3D => {
-    const isSelected = (Model.Object3D === Model.Selected.Object);
-    if (Model.Object3D.userData.spheres) {
-      Model.Object3D.userData.spheres.forEach(s => s.visible = isSelected);
+    const isSelected = (object3D === Model.Selected.Object);
+    if (object3D.userData.spheres) {
+      object3D.userData.spheres.forEach(s => s.visible = isSelected);
     }
   });
 }
