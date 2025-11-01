@@ -1,5 +1,6 @@
 // === LOAD.JS - Map Creator===
-import { Project, Model, Page, Icon } from '../../libs/mcl.js';
+import { Project, Model, Page, Tree_View, Icon } from '../../libs/mcl/mcl.js';
+import { Create } from '../../libs/mcl/add.js';
 
 const loadButton = document.getElementById('loadButton');
 const loadInput = document.getElementById('loadInput');
