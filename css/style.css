@@ -163,7 +163,6 @@ canvas {
   width: 64px !important;
   height: 64px !important;
   object-fit: contain !important;
-  pointer-events: none !important;
 }
 
 #panel {
@@ -649,5 +648,6 @@ body.focusing-script #exitScriptFocusBtn {
 
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
 
 
