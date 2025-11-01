@@ -4,8 +4,12 @@ import { Project, Model, Page, Tree_View, Icon } from '../libs/mcl.js';
 let object3D;
 object3D = Model.Object3D;
 
+window.object3D = object3D;
+
 let selectedObject3D;
 selectedObject3D = Model.Selected.Object;
+
+window.selectedObject3D = selectedObject3D;
 
 const sphereGeometrySmall = new THREE.SphereGeometry(0.2, 16, 8);
 
