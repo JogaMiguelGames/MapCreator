@@ -8,7 +8,6 @@ function saveMap() {
   const scriptInput = document.getElementById('scriptInput');
   const scriptCode = scriptInput ? scriptInput.value : '';
 
-  // 🔹 Garante que o conteúdo atual do script selecionado está salvo
   if (window.Tree_View?.Selected?.Item && window.Tree_View.Selected.Item.content !== undefined) {
     window.Tree_View.Selected.Item.content = scriptCode;
   }
@@ -16,7 +15,6 @@ function saveMap() {
   const mapData = {
     sceneColor: `#${scene.background.getHexString()}`,
     customFolders: window.customFolders || [],
-    // 🔹 Salva scripts com nome e conteúdo
     customScripts: (window.customScripts || []).map(s => ({
       id: s.id,
       name: s.name,
