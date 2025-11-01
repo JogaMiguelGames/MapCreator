@@ -461,7 +461,7 @@ function UpdateTreeView() {
     `;
 
     if (script.content === undefined) {
-      script.content = 'console.log("Hello, World!");';
+      script.content = '';
     }
   
     const icon = document.createElement('img');
@@ -746,6 +746,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
