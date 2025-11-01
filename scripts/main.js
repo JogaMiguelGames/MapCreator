@@ -595,6 +595,16 @@ function UpdateTreeView() {
     if (Model.Selected.Object === object3D) {
       item.style.backgroundColor = '#3366ff';
       item.style.color = 'white';
+      Page.Elements.Scale.X.disabled = false;
+      Page.Elements.Scale.Y.disabled = false;
+      Page.Elements.Scale.Z.disabled = false;
+      Page.Elements.Position.X.disabled = false;
+      Page.Elements.Position.Y.disabled = false;
+      Page.Elements.Position.Z.disabled = false;
+      Page.Elements.Rotation.X.disabled = false;
+      Page.Elements.Rotation.Y.disabled = false;
+      Page.Elements.Rotation.Z.disabled = false;
+      Page.Elements.Input.Color.Hex_Input.disabled = false;
     }
 
     projectContent.appendChild(item);
@@ -736,6 +746,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
