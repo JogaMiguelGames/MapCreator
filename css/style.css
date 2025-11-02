@@ -54,6 +54,23 @@ canvas {
   font-size: 14px;
 }
 
+.RGB_Color_Input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.RGB_Color_Input input[type="text"]{
+  flex: 0 0 auto;
+  width: 128px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px 8px;
+  font-family: monospace;
+  font-size: 14px;
+}
+
 .colorPreview {
   flex: 0 0 auto;
   width: 18px;
@@ -648,6 +665,7 @@ body.focusing-script #exitScriptFocusBtn {
 
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
 
 
 
