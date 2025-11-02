@@ -213,6 +213,10 @@ function updatePanelForCube(object3D) {
 
   let HEX_Enabled = false;
 
+  Page.Elements.Input.Color.Color_Type.addEventListener("click", () => {
+    HEX_Enabled = !HEX_Enabled;
+  });
+
   Page.Elements.Scale.X.disabled = false;
   Page.Elements.Scale.Y.disabled = false;
   Page.Elements.Scale.Z.disabled = false;
@@ -779,6 +783,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
