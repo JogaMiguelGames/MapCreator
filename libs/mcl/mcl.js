@@ -67,6 +67,7 @@ export const Page = {
     },
     Input: {
       Color: {
+        Color_Type: document.getElementById('Color_Type'),
         Hex_Input: document.getElementById('colorHex'),
         RGB: {
           RGB_Color_Input: document.getElementById('RGB_Input_Color'),
