@@ -211,6 +211,8 @@ function updatePanelForCube(object3D) {
     return;
   }
 
+  let HEX_Enabled = false;
+
   Page.Elements.Scale.X.disabled = false;
   Page.Elements.Scale.Y.disabled = false;
   Page.Elements.Scale.Z.disabled = false;
@@ -234,16 +236,18 @@ function updatePanelForCube(object3D) {
   Page.Elements.Position.X.value = object3D.position.x.toFixed(2);
   Page.Elements.Position.Y.value = object3D.position.y.toFixed(2);
   Page.Elements.Position.Z.value = object3D.position.z.toFixed(2);
-
-  if (object3D.material && object3D.material.color) {
-    Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
+  if (HEX_Enabled == true) {
+    if (object3D.material && object3D.material.color) {
+      Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
+    } else {
+      Page.Elements.Input.Color.Hex_Input.value = '';
+    }
   } else {
-    Page.Elements.Input.Color.Hex_Input.value = '';
-  }
-  if (object3D.material && object3D.material.color) {
-    Page.Elements.Input.Color.RGB.RGB_Color_Input.value = `${object3D.material.color}`;
-  } else {
-    Page.Elements.Input.Color.RGB.RGB_Color_Input.value = '';
+    if (object3D.material && object3D.material.color) {
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.value = `${object3D.material.color}`;
+    } else {
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.value = '';
+    }
   }
 }
 
@@ -764,6 +768,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
