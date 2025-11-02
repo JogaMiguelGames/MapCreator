@@ -309,12 +309,6 @@ window.folderCount = window.folderCount || 0;
 window.customScripts = window.customScripts || [];
 window.scriptsCount = window.scriptsCount || 0;
 
-const TreeViewObjects = {
-  Folder: createFolder(),
-  Script: createScript(),
-  Object3D: Model.Object3D()
-};
-
 function createFolder(name = 'New Folder') {
   window.folderCount = (window.folderCount || 0) + 1;
   const folder = { id: Date.now() + Math.random(), name };
@@ -349,7 +343,10 @@ function UpdateTreeView() {
   console.log("Tree View as been iniciated.");
   console.log("Possible Objects/Itens:");
 
-  console.log(TreeViewObjects);
+  console.log("Folder");
+  console.log("Script");
+
+  console.log("3D Object");
   
   console.log("Selected Objects Color Selected_Color: ", Selected_Color);
   
@@ -817,6 +814,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
