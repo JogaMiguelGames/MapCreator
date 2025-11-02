@@ -13,6 +13,8 @@ selectedObject3D = Model.Selected.Object;
 
 window.selectedObject3D = selectedObject3D;
 
+let Selected_Color = '#3366ff';
+
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(ambientLight);
 
@@ -302,6 +304,12 @@ window.folderCount = window.folderCount || 0;
 window.customScripts = window.customScripts || [];
 window.scriptsCount = window.scriptsCount || 0;
 
+const TreeViewObjects = {
+  Folder: createFolder(),
+  Script: createScript(),
+  Object3D: Model.Object3D()
+};
+
 function createFolder(name = 'New Folder') {
   window.folderCount = (window.folderCount || 0) + 1;
   const folder = { id: Date.now() + Math.random(), name };
@@ -333,6 +341,13 @@ aW_CreateScript.addEventListener('click', () => {
 });
 
 function UpdateTreeView() { 
+  console.log("Tree View as been iniciated.");
+  console.log("Possible Objects/Itens:");
+
+  console.log(TreeViewObjects);
+  
+  console.log("Selected Objects Color Selected_Color: ", Selected_Color);
+  
   Page.Elements.Tree_View.Div.innerHTML = '';
 
   const projectDiv = document.createElement('div');
@@ -449,10 +464,14 @@ function UpdateTreeView() {
         folder.isEditing = true;
         UpdateTreeView();
       });
+      console.log("A folder as been created.");
+      console.log("=== Propeties ===");
+      console.log("Icon: ", icon.src.value);
+      console.log("Name: ", newFolder.name);
     }
 
     if (Tree_View.Selected.Item === folder) {
-      folderDiv.style.backgroundColor = '#3366ff';
+      folderDiv.style.backgroundColor = Selected_Color;
       folderDiv.style.color = 'white';
       Page.Elements.Scale.X.disabled = true;
       Page.Elements.Scale.Y.disabled = true;
@@ -537,8 +556,13 @@ function UpdateTreeView() {
       });
     }
 
+    console.log("A Script as been created.");
+    console.log("=== Propeties ===");
+    console.log("Icon: ", icon.src.value);
+    console.log("Name: ", newScript.name);
+
     if (Tree_View.Selected.Item === script) {
-      scriptDiv.style.backgroundColor = '#3366ff';
+      scriptDiv.style.backgroundColor = Selected_Color;
       scriptDiv.style.color = 'white';
       Page.Elements.Scale.X.disabled = true;
       Page.Elements.Scale.Y.disabled = true;
@@ -611,8 +635,13 @@ function UpdateTreeView() {
       renameCube(item, object3D);
     });
 
+    console.log("A 3D Object as been created.");
+    console.log("=== Propeties ===");
+    console.log("Icon: ", icon.src.value);
+    console.log("Name: ", object3D.name);
+
     if (Model.Selected.Object === object3D) {
-      item.style.backgroundColor = '#3366ff';
+      item.style.backgroundColor = Selected_Color;
       item.style.color = 'white';
       Page.Elements.Scale.X.disabled = false;
       Page.Elements.Scale.Y.disabled = false;
@@ -783,6 +812,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
