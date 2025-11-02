@@ -241,7 +241,7 @@ function updatePanelForCube(object3D) {
     Page.Elements.Input.Color.Hex_Input.value = '';
   }
   if (object3D.material && object3D.material.color) {
-    Page.Elements.Input.Color.RGB.RGB_Color_Input.value = `'rgb(${object3D.material.color}')`;
+    Page.Elements.Input.Color.RGB.RGB_Color_Input.value = `${object3D.material.color}`;
   } else {
     Page.Elements.Input.Color.RGB.RGB_Color_Input.value = '';
   }
@@ -764,5 +764,6 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
