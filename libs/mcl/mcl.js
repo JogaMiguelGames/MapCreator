@@ -80,7 +80,7 @@ export const Page = {
       }
     },
     Tree_View: {
-      Div: document.getElementById('colorHex'),
+      Div: document.getElementById('Tree_View'),
     }
   }
 };
