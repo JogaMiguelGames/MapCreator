@@ -132,11 +132,8 @@
       <label for="colorHex" class="colorInputWrapper">
         HEX Color: <input type="text" id="colorHex" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#ffffff" disabled />
       </label>
-      <label for="RGB_Color_Input" class="colorInputWrapper">
-        RGB Color:
-        <input type="text" id="RGB_Red" maxlength="3" pattern="#[0-9]{3}" placeholder="255" disabled />  
-        <input type="text" id="RGB_Green" maxlength="3" pattern="#[0-9]{3}" placeholder="255" disabled />
-        <input type="text" id="RGB_Blue" maxlength="3" pattern="#[0-9]{3}" placeholder="255" disabled />
+      <label for="RGB_Color" class="colorInputWrapper">
+        RGB Color: <input type="text" id="RGB_Input_Color" maxlength="13" pattern="[0-9], [0-9], [0-9]{13}" placeholder="255, 255, 255" disabled />
       </label>
     </section>
 
@@ -222,5 +219,6 @@
   </script>
 </body>
 </html>
+
 
 
