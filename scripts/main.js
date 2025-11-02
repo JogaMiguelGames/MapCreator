@@ -14,9 +14,9 @@ selectedObject3D = Model.Selected.Object;
 window.selectedObject3D = selectedObject3D;
 
 let RGB_Input_Color = {
-  Red: 255,
-  Green: 255,
-  Blue: 255
+  Red: "255",
+  Green: "255",
+  Blue: "255"
 };
 
 let RGB_Color = ''RGB_Input_Color.Red, ", ", RGB_Input_Color.Green, ", ", RGB_Input_Color.Blue'';
@@ -796,6 +796,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
