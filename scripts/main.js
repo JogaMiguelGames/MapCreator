@@ -77,6 +77,7 @@ function updateGridAroundCameraCircle(camera) {
   gridGroup.clear();
 
   const camX = camera.position.x;
+  const camY = camera.position.y;
   const camZ = camera.position.z;
 
   const radius = 500;
@@ -116,8 +117,8 @@ function updateGridAroundCameraCircle(camera) {
   gridGroup.add(lines);
 }
 
-camera.position.set(0, 1.6, 5);
-let yaw = 0, pitch = 0;
+camera.position.set(0, 4, 4);
+let yaw = 0, pitch = -45;
 const moveSpeed = 5;
 const lookSpeed = 0.002;
 const keys = {};
@@ -746,6 +747,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
