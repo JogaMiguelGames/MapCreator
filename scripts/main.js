@@ -764,10 +764,3 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
-
-
-
-
-
-
-
