@@ -342,7 +342,7 @@ aW_CreateScript.addEventListener('click', () => {
 });
 
 function UpdateTreeView() { 
-  console.log("Tree View as been iniciated.");
+  console.log("Tree View Called.");
   console.log("Possible Objects/Itens:");
 
   console.log("Folder");
@@ -468,7 +468,7 @@ function UpdateTreeView() {
         folder.isEditing = true;
         UpdateTreeView();
       });
-      console.log("A folder as been created.");
+      console.log("A folder as been created or selected.");
       console.log("=== Propeties ===");
       console.log("Icon: ", icon.src.value);
       console.log("Name: ", newFolder.name);
@@ -560,7 +560,7 @@ function UpdateTreeView() {
       });
     }
 
-    console.log("A Script as been created.");
+    console.log("A Script as been created or selected.");
     console.log("=== Propeties ===");
     console.log("Icon: ", icon.src.value);
     console.log("Name: ", newScript.name);
@@ -639,7 +639,7 @@ function UpdateTreeView() {
       renameCube(item, object3D);
     });
 
-    console.log("A 3D Object as been created.");
+    console.log("A 3D Object as been created or selected.");
     console.log("=== Propeties ===");
     console.log("Icon: ", icon.src.value);
     console.log("Name: ", object3D.name);
@@ -816,6 +816,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
