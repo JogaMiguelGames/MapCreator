@@ -663,6 +663,42 @@ Page.Elements.Input.Color.Hex_Input.addEventListener('input', () => {
   }
 });
 
+let RGB_Input_Color = {
+  Red: 255,
+  Green: 255,
+  Blue: 255
+};
+
+//Page.Elements.Input.Color.RGB.RGB_Color_Input.addEventListener('input', () => {
+//  if(!Model.Selected.Object || !Model.Selected.Object.material) return;
+//  if(/^([0-9]{3})$/i.test(val)){
+//    Model.Selected.Object.material.color.set(val);
+//  }
+//});
+
+Page.Elements.Input.Color.RGB.Input.Red.addEventListener('input', () => {
+  if(!Model.Selected.Object || !Model.Selected.Object.material) return;
+  if(/^([0-9]{3})$/i.test(RGB_Input_Color.Red)){
+    Model.Selected.Object.material.color.set(RGB_Input_Color.Red);
+  }
+});
+
+Page.Elements.Input.Color.RGB.Input.Green.addEventListener('input', () => {
+  if(!Model.Selected.Object || !Model.Selected.Object.material) return;
+  const val = Page.Elements.Input.Color.RGB.RGB_Color_Input.value.trim();
+  if(/^([0-9]{3})$/i.test(RGB_Input_Color.Green)){
+    Model.Selected.Object.material.color.set(RGB_Input_Color.Green);
+  }
+});
+
+Page.Elements.Input.Color.RGB.Input.Blue.addEventListener('input', () => {
+  if(!Model.Selected.Object || !Model.Selected.Object.material) return;
+  const val = Page.Elements.Input.Color.RGB.RGB_Color_Input.value.trim();
+  if(/^([0-9]{3})$/i.test(RGB_Input_Color.Blue)){
+    Model.Selected.Object.material.color.set(RGB_Input_Color.Blue);
+  }
+});
+
 document.addEventListener('keydown', e => {
   const tag = document.activeElement.tagName;
   const isTyping = tag === 'INPUT' || tag === 'TEXTAREA' || document.activeElement.isContentEditable;
