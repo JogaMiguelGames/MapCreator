@@ -67,11 +67,19 @@ export const Page = {
     },
     Input: {
       Color: {
-        Hex_Input: document.getElementById('colorHex')
+        Hex_Input: document.getElementById('colorHex'),
+        RGB: {
+          RGB_Color_Input: document.getElementById('RGB_Input_Color'),
+          Input: {
+            Red: document.getElementById('RGB_Red'),
+            Green: document.getElementById('RGB_Green'),
+            Blue: document.getElementById('RGB_Blue')
+          }
+        }
       }
     },
     Tree_View: {
-      Div: document.getElementById('Tree_View')
+      Div: document.getElementById('colorHex'),
     }
   }
 };
