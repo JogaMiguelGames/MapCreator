@@ -13,14 +13,6 @@ selectedObject3D = Model.Selected.Object;
 
 window.selectedObject3D = selectedObject3D;
 
-let RGB_Input_Color = {
-  Red: "255",
-  Green: "255",
-  Blue: "255"
-};
-
-let RGB_Color = ''RGB_Input_Color.Red, ", ", RGB_Input_Color.Green, ", ", RGB_Input_Color.Blue'';
-
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(ambientLight);
 
@@ -219,8 +211,6 @@ function updatePanelForCube(object3D) {
     return;
   }
 
-  RGB_Color.value = RGB_Input_Color.Red, ", ", RGB_Input_Color.Green, ", ", RGB_Input_Color.Blue;
-
   Page.Elements.Scale.X.disabled = false;
   Page.Elements.Scale.Y.disabled = false;
   Page.Elements.Scale.Z.disabled = false;
@@ -251,9 +241,9 @@ function updatePanelForCube(object3D) {
     Page.Elements.Input.Color.Hex_Input.value = '';
   }
   if (object3D.material && object3D.material.color) {
-    RGB_Color.value = `#${object3D.material.color.getRGBString()}`;
+    Page.Elements.Input.Color.RGB.RGB_Color_Input.value = `${object3D.material.color.getRGBString()}`;
   } else {
-    RGB_Color.value = '';
+    Page.Elements.Input.Color.RGB.RGB_Color_Input.value = '';
   }
 }
 
@@ -682,33 +672,11 @@ Page.Elements.Input.Color.Hex_Input.addEventListener('input', () => {
   }
 });
 
-//Page.Elements.Input.Color.RGB.RGB_Color_Input.addEventListener('input', () => {
-//  if(!Model.Selected.Object || !Model.Selected.Object.material) return;
-//  if(/^([0-9]{3})$/i.test(val)){
-//    Model.Selected.Object.material.color.set(val);
-//  }
-//});
-
-Page.Elements.Input.Color.RGB.Input.Red.addEventListener('input', () => {
-  if(!Model.Selected.Object || !Model.Selected.Object.material) return;
-  if(/^([0-9]{3})$/i.test(RGB_Input_Color.Red)){
-    Model.Selected.Object.material.color.set(RGB_Input_Color.Red);
-  }
-});
-
-Page.Elements.Input.Color.RGB.Input.Green.addEventListener('input', () => {
+Page.Elements.Input.Color.RGB.RGB_Color_Input.addEventListener('input', () => {
   if(!Model.Selected.Object || !Model.Selected.Object.material) return;
   const val = Page.Elements.Input.Color.RGB.RGB_Color_Input.value.trim();
-  if(/^([0-9]{3})$/i.test(RGB_Input_Color.Green)){
-    Model.Selected.Object.material.color.set(RGB_Input_Color.Green);
-  }
-});
-
-Page.Elements.Input.Color.RGB.Input.Blue.addEventListener('input', () => {
-  if(!Model.Selected.Object || !Model.Selected.Object.material) return;
-  const val = Page.Elements.Input.Color.RGB.RGB_Color_Input.value.trim();
-  if(/^([0-9]{3})$/i.test(RGB_Input_Color.Blue)){
-    Model.Selected.Object.material.color.set(RGB_Input_Color.Blue);
+  if(/^#([0-9a-f]{6})$/i.test(val)){
+    Model.Selected.Object.material.color.set(val);
   }
 });
 
@@ -796,6 +764,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
