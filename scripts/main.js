@@ -215,7 +215,8 @@ function updatePanelForCube(object3D) {
 
   let HEX_Enabled = false;
 
-  Page.Elements.Input.Color.Color_Type.addEventListener("click", () => {
+  });
+  Page.Elements.Input.Color.Color_Type.addEventListener("click", (e) => {
     HEX_Enabled = !HEX_Enabled;
     if (HEX_Enabled) {
       button.textContent = "RGB";
@@ -814,6 +815,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
