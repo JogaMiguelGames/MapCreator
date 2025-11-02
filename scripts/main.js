@@ -13,6 +13,12 @@ selectedObject3D = Model.Selected.Object;
 
 window.selectedObject3D = selectedObject3D;
 
+let RGB_Input_Color = {
+  Red: 255,
+  Green: 255,
+  Blue: 255
+};
+
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(ambientLight);
 
@@ -211,6 +217,8 @@ function updatePanelForCube(object3D) {
     return;
   }
 
+  RGB_Color = RGB_Input_Color.Red, ", ", RGB_Input_Color.Green, ", ", RGB_Input_Color.Blue;
+
   Page.Elements.Scale.X.disabled = false;
   Page.Elements.Scale.Y.disabled = false;
   Page.Elements.Scale.Z.disabled = false;
@@ -221,6 +229,7 @@ function updatePanelForCube(object3D) {
   Page.Elements.Rotation.Y.disabled = false;
   Page.Elements.Rotation.Z.disabled = false;
   Page.Elements.Input.Color.Hex_Input.disabled = false;
+  Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
 
   Page.Elements.Rotation.X.value = THREE.MathUtils.radToDeg(object3D.rotation.x).toFixed(2);
   Page.Elements.Rotation.Y.value = THREE.MathUtils.radToDeg(object3D.rotation.y).toFixed(2);
@@ -238,6 +247,11 @@ function updatePanelForCube(object3D) {
     Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
   } else {
     Page.Elements.Input.Color.Hex_Input.value = '';
+  }
+  if (object3D.material && object3D.material.color) {
+    RGB_Color.value = `#${object3D.material.color.getRGBString()}`;
+  } else {
+    RGB_Color.value = '';
   }
 }
 
@@ -448,6 +462,7 @@ function UpdateTreeView() {
       Page.Elements.Rotation.Y.disabled = true;
       Page.Elements.Rotation.Z.disabled = true;
       Page.Elements.Input.Color.Hex_Input.disabled = true;
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = true;
     }
 
     projectContent.appendChild(folderDiv);
@@ -533,6 +548,7 @@ function UpdateTreeView() {
       Page.Elements.Rotation.Y.disabled = true;
       Page.Elements.Rotation.Z.disabled = true;
       Page.Elements.Input.Color.Hex_Input.disabled = true;
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = true;
       
       const Scripting = Page.Elements.Script.Input;
 
@@ -606,6 +622,7 @@ function UpdateTreeView() {
       Page.Elements.Rotation.Y.disabled = false;
       Page.Elements.Rotation.Z.disabled = false;
       Page.Elements.Input.Color.Hex_Input.disabled = false;
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
     }
 
     projectContent.appendChild(item);
@@ -662,12 +679,6 @@ Page.Elements.Input.Color.Hex_Input.addEventListener('input', () => {
     Model.Selected.Object.material.color.set(val);
   }
 });
-
-let RGB_Input_Color = {
-  Red: 255,
-  Green: 255,
-  Blue: 255
-};
 
 //Page.Elements.Input.Color.RGB.RGB_Color_Input.addEventListener('input', () => {
 //  if(!Model.Selected.Object || !Model.Selected.Object.material) return;
@@ -783,3 +794,4 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
