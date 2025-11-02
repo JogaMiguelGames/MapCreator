@@ -130,7 +130,13 @@
     <!-- Color -->
     <section class="control-group color-center" aria-labelledby="colorLabel">
       <label for="colorHex" class="colorInputWrapper">
-        Color HEX: <input type="text" id="colorHex" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#ffffff" disabled />
+        HEX Color: <input type="text" id="colorHex" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#ffffff" disabled />
+      </label>
+      <label for="colorRGB" class="colorInputWrapper">
+        RGB Color:
+        <input type="text" id="RGB_Red" maxlength="3" pattern="#[0-9]{3}" placeholder="255" disabled />  
+        <input type="text" id="RGB_Green" maxlength="3" pattern="#[0-9]{3}" placeholder="255" disabled />
+        <input type="text" id="RGB_Blue" maxlength="3" pattern="#[0-9]{3}" placeholder="255" disabled />
       </label>
     </section>
 
@@ -216,3 +222,4 @@
   </script>
 </body>
 </html>
+
