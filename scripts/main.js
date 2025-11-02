@@ -19,7 +19,7 @@ let RGB_Input_Color = {
   Blue: 255
 };
 
-let RGB_Color = RGB_Input_Color.Red.value, ", ", RGB_Input_Color.Green.value, ", ", RGB_Input_Color.Blue.value;
+let RGB_Color = RGB_Input_Color.Red, ", ", RGB_Input_Color.Green, ", ", RGB_Input_Color.Blue;
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(ambientLight);
@@ -796,5 +796,6 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
