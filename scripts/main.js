@@ -117,8 +117,8 @@ function updateGridAroundCameraCircle(camera) {
   gridGroup.add(lines);
 }
 
-camera.position.set(0, 3.7, 9);
-let yaw = 0, pitch = -22.5;
+camera.position.set(0, 1.6, 4);
+let yaw = 0, pitch = 0;
 const moveSpeed = 5;
 const lookSpeed = 0.002;
 const keys = {};
@@ -747,13 +747,3 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
-
-
-
-
-
-
-
-
-
-
