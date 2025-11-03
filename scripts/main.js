@@ -213,7 +213,7 @@ function updatePanelForCube(object3D) {
     return;
   }
 
-  let HEX_Enabled = false;
+  let HEX_Enabled = true;
 
   const Type_Color_Button = Page.Elements.Input.Color.Color_Type;
   
@@ -249,7 +249,7 @@ function updatePanelForCube(object3D) {
   Page.Elements.Position.X.value = object3D.position.x.toFixed(2);
   Page.Elements.Position.Y.value = object3D.position.y.toFixed(2);
   Page.Elements.Position.Z.value = object3D.position.z.toFixed(2);
-  if (HEX_Enabled == true) {
+  if (HEX_Enabled === true) {
     if (object3D.material && object3D.material.color) {
       Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
     } else {
@@ -820,3 +820,4 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
