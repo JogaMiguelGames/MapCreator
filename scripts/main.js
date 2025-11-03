@@ -201,6 +201,10 @@ bgColorInput.addEventListener('input', () => {
   }
 });
 
+let HEX_Enabled = true;
+const Type_Color_Button = Page.Elements.Input.Color.Color_Type;
+
+
 function UpdateColorInput(object3D, HEX_Enabled) {
   if (HEX_Enabled) {
     if (object3D.material && object3D.material.color) {
@@ -230,10 +234,6 @@ function updatePanelForCube(object3D) {
     });
     return;
   }
-
-  let HEX_Enabled = true;
-
-  const Type_Color_Button = Page.Elements.Input.Color.Color_Type;
   
   Type_Color_Button.addEventListener("click", (e) => {
     HEX_Enabled = !HEX_Enabled;
@@ -825,5 +825,6 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
