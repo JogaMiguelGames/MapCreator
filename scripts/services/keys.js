@@ -1,4 +1,4 @@
-import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSpheresVisibility, selectedSphere, plane, offset, intersection, dragRaycaster, mouseVec, onPointerDown, updateCursor, onPointerMove, onPointerUp, linesVisible} from '../../libs/mcl/objects.js';
+import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSpheresVisibility, selectedSphere, plane, offset, intersection, dragRaycaster, mouseVec, onPointerDown, updateCursor, onPointerMove, onPointerUp, linesVisible, axisLines, addAxisLine, createHugeGrid, hugeGrid, gridGroup, gridStep, gridLimit, gridColor, updateGridAroundCameraCircle} from '../../libs/mcl/objects.js';
 
 document.addEventListener("keydown", (event) => {
   if (event.ctrlKey && event.shiftKey &&event.code === "KeyV") {
