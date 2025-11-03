@@ -43,5 +43,5 @@ document.addEventListener("keydown", (event) => {
       if (hugeGrid) hugeGrid.visible = linesVisible;
       if (gridGroup) gridGroup.visible = linesVisible;
     }
-  })
+  }
 });
