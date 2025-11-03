@@ -32,13 +32,14 @@ document.addEventListener("keydown", (event) => {
   }
 });
 
-document.addEventListener('keydown', (e) => {
-  if (e.ctrlKey && e.shiftKey && e.code === 'KeyK') {
-    linesVisible = !linesVisible;
+document.addEventListener("keydown", (event) => {
+  if (event.ctrlKey && event.shiftKey &&event.code === "KeyK") {
+      linesVisible = !linesVisible;
 
-    axisLines.forEach(line => line.visible = linesVisible);
-
-    if (hugeGrid) hugeGrid.visible = linesVisible;
-    if (gridGroup) gridGroup.visible = linesVisible;
+      axisLines.forEach(line => line.visible = linesVisible);
+  
+      if (hugeGrid) hugeGrid.visible = linesVisible;
+      if (gridGroup) gridGroup.visible = linesVisible;
+    }
   }
 });
