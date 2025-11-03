@@ -148,6 +148,95 @@ export function onPointerUp() {
   renderer.domElement.style.cursor = 'default';
 }
 
+export const axisLines = [];
+
+export function addAxisLine(from, to, color){
+  const line = new THREE.Line(
+    new THREE.BufferGeometry().setFromPoints([from, to]),
+    new THREE.LineBasicMaterial({color})
+  );
+  scene.add(line);
+  axisLines.push(line);
+}
+
+addAxisLine(new THREE.Vector3(0,-9999,0), new THREE.Vector3(0,9999,0), 0x00ff00); // Y
+addAxisLine(new THREE.Vector3(-9999,0,0), new THREE.Vector3(9999,0,0), 0xff0000); // X
+addAxisLine(new THREE.Vector3(0,0,-9999), new THREE.Vector3(0,0,9999), 0x0000ff); // Z
+
+export function createHugeGrid(step = 1, color = 0x888888) {
+  const size = 0;
+  const material = new THREE.LineBasicMaterial({ color: color });
+  const vertices = [];
+
+  for (let z = -size; z <= size; z += step) {
+    vertices.push(-size, 0, z, size, 0, z);
+  }
+
+  for (let x = -size; x <= size; x += step) {
+    vertices.push(x, 0, -size, x, 0, size);
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+  const lines = new THREE.LineSegments(geometry, material);
+  scene.add(lines);
+  return lines;
+}
+
+export const hugeGrid = createHugeGrid(1, 0x888888);
+
+export const gridGroup = new THREE.Group();
+scene.add(gridGroup);
+
+export const gridStep = 1;
+export const gridLimit = 200;
+export const gridColor = 0x888888;
+
+export function updateGridAroundCameraCircle(camera) {
+  gridGroup.clear();
+
+  const camX = camera.position.x;
+  const camY = camera.position.y;
+  const camZ = camera.position.z;
+
+  const radius = 500;
+  const step = 1;
+  const vertices = [];
+
+  const minX = Math.floor(camX - radius);
+  const maxX = Math.ceil(camX + radius);
+  const minZ = Math.floor(camZ - radius);
+  const maxZ = Math.ceil(camZ + radius);
+
+  for (let z = minZ; z <= maxZ; z += step) {
+    if (z === 0) continue;
+
+    const dz = z - camZ;
+    if (Math.abs(dz) > radius) continue;
+
+    const deltaX = Math.sqrt(radius * radius - dz * dz);
+    vertices.push(camX - deltaX, 0, z, camX + deltaX, 0, z);
+  }
+
+  for (let x = minX; x <= maxX; x += step) {
+    if (x === 0) continue;
+
+    const dx = x - camX;
+    if (Math.abs(dx) > radius) continue;
+
+    const deltaZ = Math.sqrt(radius * radius - dx * dx);
+    vertices.push(x, 0, camZ - deltaZ, x, 0, camZ + deltaZ);
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+  const material = new THREE.LineBasicMaterial({ color: 0x888888 });
+  const lines = new THREE.LineSegments(geometry, material);
+  gridGroup.add(lines);
+}
+
 renderer.domElement.addEventListener('pointerdown', onPointerDown);
 renderer.domElement.addEventListener('pointermove', onPointerMove);
 renderer.domElement.addEventListener('pointerup', onPointerUp);
