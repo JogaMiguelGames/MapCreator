@@ -474,7 +474,7 @@ function UpdateTreeView() {
       });
       console.log("A folder as been created or selected.");
       console.log("=== Propeties ===");
-      console.log("Icon: ", icon.src.value);
+      console.log("Icon: ", folderIcon.src);
       console.log("Name: ", folder.name);
     }
 
@@ -566,7 +566,7 @@ function UpdateTreeView() {
 
     console.log("A Script as been created or selected.");
     console.log("=== Propeties ===");
-    console.log("Icon: ", icon.src.value);
+    console.log("Icon: ", scriptIcon.src);
     console.log("Name: ", script.name);
 
     if (Tree_View.Selected.Item === script) {
@@ -820,6 +820,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
