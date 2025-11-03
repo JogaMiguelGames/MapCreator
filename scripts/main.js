@@ -201,6 +201,24 @@ bgColorInput.addEventListener('input', () => {
   }
 });
 
+function UpdateColorInput(object3D, HEX_Enabled) {
+  if (HEX_Enabled) {
+    if (object3D.material && object3D.material.color) {
+      Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
+    } else {
+      Page.Elements.Input.Color.Hex_Input.value = '';
+    }
+  } else {
+    if (object3D.material && object3D.material.color) {
+      const c = object3D.material.color;
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.value =
+        `${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)}`;
+    } else {
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.value = '';
+    }
+  }
+}
+
 function updatePanelForCube(object3D) {
   if (!object3D) {
     [Page.Elements.Scale.X, Page.Elements.Scale.Y, Page.Elements.Scale.Z,
@@ -249,21 +267,8 @@ function updatePanelForCube(object3D) {
   Page.Elements.Position.X.value = object3D.position.x.toFixed(2);
   Page.Elements.Position.Y.value = object3D.position.y.toFixed(2);
   Page.Elements.Position.Z.value = object3D.position.z.toFixed(2);
-  if (HEX_Enabled === true) {
-    if (object3D.material && object3D.material.color) {
-      Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
-    } else {
-      Page.Elements.Input.Color.Hex_Input.value = '';
-    }
-  } else {
-    if (object3D.material && object3D.material.color) {
-      const c = object3D.material.color;
-      Page.Elements.Input.Color.RGB.RGB_Color_Input.value =
-        `${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)}`;
-    } else {
-      Page.Elements.Input.Color.RGB.RGB_Color_Input.value = '';
-    }
-  }
+
+  UpdateColorInput(object3D, HEX_Enabled);
 }
 
 window.updatePanelForCube = updatePanelForCube;
@@ -820,4 +825,5 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
