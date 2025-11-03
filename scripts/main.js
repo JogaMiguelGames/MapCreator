@@ -645,7 +645,7 @@ function UpdateTreeView() {
 
     console.log("A 3D Object as been created or selected.");
     console.log("=== Propeties ===");
-    console.log("Icon: ", icon.src.value);
+    console.log("Icon: ", icon.src);
     console.log("Name: ", object3D.name);
 
     if (Model.Selected.Object === object3D) {
@@ -820,19 +820,3 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
