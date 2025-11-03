@@ -1,7 +1,9 @@
 import { Project, Model, Page, Tree_View, Icon } from './mcl.js';
 import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from './add.js';
 
-export let linesVisible = true;
+export const State = {
+  linesVisible: true
+}
 
 export let selectedSphere = null;
 
