@@ -1,9 +1,10 @@
 import { Project, Model, Page, Tree_View, Icon } from './mcl.js';
 import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from './add.js';
 
-export let linesVisible = true;
-
 export let selectedSphere = null;
+
+export const linesVisible = true;
+
 export const plane = new THREE.Plane();
 export const offset = new THREE.Vector3();
 export const intersection = new THREE.Vector3();
