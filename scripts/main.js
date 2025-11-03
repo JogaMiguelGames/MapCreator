@@ -217,6 +217,8 @@ async function loop() {
           } else {
             Page.Elements.Input.Color.Hex_Input.value = '';
           }
+          Page.Elements.Input.Color.Hex_Input.disable = false;
+          Page.Elements.Input.Color.RGB.RGB_Color_Input.disable = true;
         } else {
           if (object3D.material && object3D.material.color) {
             const c = object3D.material.color;
@@ -225,6 +227,8 @@ async function loop() {
           } else {
             Page.Elements.Input.Color.RGB.RGB_Color_Input.value = '';
           }
+          Page.Elements.Input.Color.Hex_Input.disable = true;
+          Page.Elements.Input.Color.RGB.RGB_Color_Input.disable = false;
         }
         await sleep(100);
     }
@@ -831,4 +835,5 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
