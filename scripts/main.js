@@ -1,4 +1,4 @@
-// === Map Creator - Main.js ===
+como eu faço para repetir o trecho de verificação da bool HEX_Enabled? // === Map Creator - Main.js ===
 import { Project, Model, Page, Tree_View, Icon } from '../libs/mcl/mcl.js';
 import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from '../libs/mcl/add.js';
 import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSpheresVisibility, selectedSphere, plane, offset, intersection, dragRaycaster, mouseVec, onPointerDown, updateCursor, onPointerMove, onPointerUp} from '../libs/mcl/objects.js';
@@ -14,6 +14,10 @@ selectedObject3D = Model.Selected.Object;
 window.selectedObject3D = selectedObject3D;
 
 let Selected_Color = '#3366ff';
+
+let HEX_Enabled = true;
+
+const Type_Color_Button = Page.Elements.Input.Color.Color_Type;
 
 const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
 scene.add(ambientLight);
@@ -201,30 +205,29 @@ bgColorInput.addEventListener('input', () => {
   }
 });
 
-const Type_Color_Button = Page.Elements.Input.Color.Color_Type;
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
-let HEX_Enabled = true;
-
-window.UpdateColorInput = function(object3D, HEX_Enabled) {
-  if (HEX_Enabled) {
-    if (object3D.material && object3D.material.color) {
-      Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
-      Page.Elements.Input.Color.Hex_Input.style.display = "inline-block";
-      Page.Elements.Input.Color.RGB.RGB_Color_Input.style.display = "none";
-    } else {
-      Page.Elements.Input.Color.Hex_Input.value = '';
+async function loop() {
+    while (true) {
+        if (HEX_Enabled === true) {
+          if (object3D.material && object3D.material.color) {
+            Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
+          } else {
+            Page.Elements.Input.Color.Hex_Input.value = '';
+          }
+        } else {
+          if (object3D.material && object3D.material.color) {
+            const c = object3D.material.color;
+            Page.Elements.Input.Color.RGB.RGB_Color_Input.value =
+              `${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)}`;
+          } else {
+            Page.Elements.Input.Color.RGB.RGB_Color_Input.value = '';
+          }
+        }
+        await sleep(100);
     }
-  } else {
-    if (object3D.material && object3D.material.color) {
-      const c = object3D.material.color;
-      Page.Elements.Input.Color.RGB.RGB_Color_Input.value =
-        `${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)}`;
-      Page.Elements.Input.Color.Hex_Input.style.display = "none";
-      Page.Elements.Input.Color.RGB.RGB_Color_Input.style.display = "inline-block";
-    } else {
-      Page.Elements.Input.Color.RGB.RGB_Color_Input.value = '';
-    }
-  }
 }
 
 function updatePanelForCube(object3D) {
@@ -271,8 +274,6 @@ function updatePanelForCube(object3D) {
   Page.Elements.Position.X.value = object3D.position.x.toFixed(2);
   Page.Elements.Position.Y.value = object3D.position.y.toFixed(2);
   Page.Elements.Position.Z.value = object3D.position.z.toFixed(2);
-
-  UpdateColorInput(object3D, HEX_Enabled);
 }
 
 window.updatePanelForCube = updatePanelForCube;
@@ -829,8 +830,4 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
-
-
-
-
-
+loop();
