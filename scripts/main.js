@@ -205,23 +205,27 @@ const Type_Color_Button = Page.Elements.Input.Color.Color_Type;
 
 let HEX_Enabled = true;
 
-Type_Color_Button.addEventListener("click", () => {
-  HEX_Enabled = !HEX_Enabled;
-
+window.UpdateColorInput = function(object3D, HEX_Enabled) {
   if (HEX_Enabled) {
-    Type_Color_Button.textContent = "RGB";
-    Page.Elements.Input.Color.Hex_Input.style.display = "inline-block";
-    Page.Elements.Input.Color.RGB.RGB_Color_Input.style.display = "none";
+    if (object3D.material && object3D.material.color) {
+      Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
+      Page.Elements.Input.Color.Hex_Input.style.display = "inline-block";
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.style.display = "none";
+    } else {
+      Page.Elements.Input.Color.Hex_Input.value = '';
+    }
   } else {
-    Type_Color_Button.textContent = "HEX";
-    Page.Elements.Input.Color.Hex_Input.style.display = "none";
-    Page.Elements.Input.Color.RGB.RGB_Color_Input.style.display = "inline-block";
+    if (object3D.material && object3D.material.color) {
+      const c = object3D.material.color;
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.value =
+        `${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)}`;
+      Page.Elements.Input.Color.Hex_Input.style.display = "none";
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.style.display = "inline-block";
+    } else {
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.value = '';
+    }
   }
-
-  if (Model.Selected.Object) {
-    UpdateColorInput(Model.Selected.Object, HEX_Enabled);
-  }
-});
+}
 
 function updatePanelForCube(object3D) {
   if (!object3D) {
@@ -825,6 +829,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
