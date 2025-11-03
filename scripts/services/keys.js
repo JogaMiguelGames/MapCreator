@@ -44,4 +44,4 @@ document.addEventListener("keydown", (event) => {
       if (gridGroup) gridGroup.visible = linesVisible;
     }
   }
-});
+)};
