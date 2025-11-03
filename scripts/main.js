@@ -342,6 +342,8 @@ aW_CreateScript.addEventListener('click', () => {
 });
 
 function UpdateTreeView() { 
+  let Unnamed_Item = "Unnamed Item"
+  
   console.log("Tree View Called.");
   console.log("Possible Objects/Itens:");
 
@@ -351,6 +353,8 @@ function UpdateTreeView() {
   console.log("3D Object");
   
   console.log("Selected Objects Color Selected_Color: ", Selected_Color);
+
+  console.log("Unnamed Item Name: ", Unnamed_Item);
   
   Page.Elements.Tree_View.Div.innerHTML = '';
 
@@ -439,14 +443,14 @@ function UpdateTreeView() {
       input.focus();
 
       input.addEventListener('blur', () => {
-        folder.name = input.value.trim() || 'Unnamed Folder';
+        folder.name = input.value.trim() || Unnamed_Item;
         folder.isEditing = false;
         UpdateTreeView();
       });
 
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
-          folder.name = input.value.trim() || 'Unnamed Folder';
+          folder.name = input.value.trim() || Unnamed_Item;
           folder.isEditing = false;
           UpdateTreeView();
         }
@@ -471,7 +475,7 @@ function UpdateTreeView() {
       console.log("A folder as been created or selected.");
       console.log("=== Propeties ===");
       console.log("Icon: ", icon.src.value);
-      console.log("Name: ", newFolder.name);
+      console.log("Name: ", folder.name);
     }
 
     if (Tree_View.Selected.Item === folder) {
@@ -525,14 +529,14 @@ function UpdateTreeView() {
       input.focus();
   
       input.addEventListener('blur', () => {
-        script.name = input.value.trim() || 'Unnamed Script';
+        script.name = input.value.trim() || Unnamed_Item;
         script.isEditing = false;
         UpdateTreeView();
       });
   
       input.addEventListener('keydown', e => {
         if (e.key === 'Enter') {
-          script.name = input.value.trim() || 'Unnamed Script';
+          script.name = input.value.trim() || Unnamed_Item;
           script.isEditing = false;
           UpdateTreeView();
         }
@@ -563,7 +567,7 @@ function UpdateTreeView() {
     console.log("A Script as been created or selected.");
     console.log("=== Propeties ===");
     console.log("Icon: ", icon.src.value);
-    console.log("Name: ", newScript.name);
+    console.log("Name: ", script.name);
 
     if (Tree_View.Selected.Item === script) {
       scriptDiv.style.backgroundColor = Selected_Color;
@@ -617,7 +621,7 @@ function UpdateTreeView() {
     item.appendChild(iconWrapper);
 
     const text = document.createElement('span');
-    text.textContent = object3D.name || 'Unnamed';
+    text.textContent = object3D.name || Unnamed_Item;
     item.appendChild(text);
 
     let clickTimer = null;
@@ -816,6 +820,7 @@ animate();
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
+
 
 
 
