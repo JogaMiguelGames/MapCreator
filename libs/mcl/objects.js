@@ -1,6 +1,16 @@
 import { Project, Model, Page, Tree_View, Icon } from './mcl.js';
 import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from './add.js';
 
+export let linesVisible = true;
+
+export let selectedSphere = null;
+export const plane = new THREE.Plane();
+export const offset = new THREE.Vector3();
+export const intersection = new THREE.Vector3();
+
+export const dragRaycaster = new THREE.Raycaster();
+export const mouseVec = new THREE.Vector2();
+
 export const Gizmo = {
 
 };
@@ -67,14 +77,6 @@ export function updateSpheresVisibility() {
 }
 
 window.updateSpheresVisibility = updateSpheresVisibility;
-
-export let selectedSphere = null;
-export const plane = new THREE.Plane();
-export const offset = new THREE.Vector3();
-export const intersection = new THREE.Vector3();
-
-export const dragRaycaster = new THREE.Raycaster();
-export const mouseVec = new THREE.Vector2();
 
 export function onPointerDown(event) {
   const rect = renderer.domElement.getBoundingClientRect();
