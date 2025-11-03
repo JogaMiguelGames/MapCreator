@@ -684,11 +684,11 @@ function UpdateTreeView() {
 
 window.UpdateTreeView = UpdateTreeView;
 
-function renameCube(div, object3D){
+function renameCube(div, object3D) {
   const text = div.querySelector('span');
   const input = document.createElement('input');
   input.type = 'text';
-  input.value = Model.Object3D.name || 'Cube';
+  input.value = object3D.name || 'Object';
   input.style.flex = '1';
   input.style.padding = '2px';
   input.style.border = '1px solid #ccc';
@@ -698,15 +698,18 @@ function renameCube(div, object3D){
   input.focus();
 
   function saveName() {
-    Model.Object3D.name = input.value.trim() || 'Unnamed';
+    object3D.name = input.value.trim() || 'Unnamed';
     UpdateTreeView();
   }
 
-  input.addEventListener('blur', saveName);
+  input.addEventListener('blur', saveName, { once: true });
   input.addEventListener('keydown', e => {
-    if (e.key === 'Enter') saveName();
+    if (e.key === 'Enter') {
+      saveName();
+    }
   });
 }
+
 
 function onClick(event){
   const rect = canvas.getBoundingClientRect();
@@ -835,6 +838,3 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
-
-
-
