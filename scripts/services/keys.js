@@ -36,12 +36,11 @@ document.addEventListener("keydown", (event) => {
 
 document.addEventListener("keydown", (event) => {
   if (event.ctrlKey && event.shiftKey &&event.code === "KeyK") {
-      linesVisible = !linesVisible;
+    linesVisible = !linesVisible;
 
-      axisLines.forEach(line => line.visible = linesVisible);
+    axisLines.forEach(line => line.visible = linesVisible);
   
-      if (hugeGrid) hugeGrid.visible = linesVisible;
-      if (gridGroup) gridGroup.visible = linesVisible;
-    }
+    if (hugeGrid) hugeGrid.visible = linesVisible;
+    if (gridGroup) gridGroup.visible = linesVisible;
   }
 });
