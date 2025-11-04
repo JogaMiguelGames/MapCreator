@@ -3,7 +3,7 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
 
 export const State = {
   linesVisible: true
-}
+};
 
 export let selectedSphere = null;
 
