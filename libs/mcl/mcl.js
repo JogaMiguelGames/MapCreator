@@ -72,6 +72,8 @@ export const Page = {
           Dark: document.getElementById('TW_Dark')
         }
       }
+      Window: document.getElementById('ThemesWindow'),
+      Content: document.getElementById('ThemesWindowContent')
     },
     Input: {
       Color: {
