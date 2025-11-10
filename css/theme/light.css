@@ -520,7 +520,7 @@ body.focusing-script #exitScriptFocusBtn {
   font-size: 13px;
 }
 .menuItem .dropdown li:hover {
-  background: #333;
+  background: rgba(150, 150, 150, 1);
   color: rgba(255, 255, 255, 1);
 }
 
