@@ -478,7 +478,7 @@ body.focusing-script #exitScriptFocusBtn {
   left: 0;
   right: 280px;
   height: 30px;
-  background: rgba(34, 34, 34, 1);
+  background: rgba(190, 190, 190, 1);
   display: flex;
   align-items: center;
   padding: 0 8px;
@@ -502,7 +502,7 @@ body.focusing-script #exitScriptFocusBtn {
   top: 100%;
   left: 0;
   margin-top: 6px;
-  background: rgba(26, 26, 26, 1);
+  background: rgba(190, 190, 190, 1);
   border: 1px solid rgba(51, 51, 51, 1);
   border-radius: 6px;
   min-width: 140px;
