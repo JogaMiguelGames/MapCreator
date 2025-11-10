@@ -616,7 +616,7 @@ body.focusing-script #exitScriptFocusBtn {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(17, 17, 17, 0.8);
+  background: rgba(17, 17, 17, 0);
   display: none;
   justify-content: center;
   align-items: center;
@@ -666,3 +666,4 @@ body.focusing-script #exitScriptFocusBtn {
 
 #leftButtons::-webkit-scrollbar { height: 6px; }
 #leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+
