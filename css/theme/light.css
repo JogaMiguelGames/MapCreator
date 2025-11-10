@@ -547,7 +547,7 @@ body.focusing-script #exitScriptFocusBtn {
   left: 0;
   right: 280px;
   height: 70px;
-  background: rgba(51, 51, 51, 1);
+  background: rgba(240, 240, 240, 1);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -633,7 +633,7 @@ body.focusing-script #exitScriptFocusBtn {
   height: 32;
   border-radius: 15px;
   border: 1px solid rgba(0, 0, 0, 1);
-  background-color: rgba(51, 51, 51, 1);
+  background-color: rgba(190, 190, 190, 1);
   color: white;
   padding: 6px 8px;
   cursor: pointer;
