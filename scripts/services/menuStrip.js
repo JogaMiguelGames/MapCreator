@@ -9,6 +9,9 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
   const addBtn = document.getElementById('addMenuBtn');
   if (!addBtn) return;
 
+  const PreferencesButton = document.getElementById('PreferencesMenuButton');
+  if (!PreferencesButton) return;
+
   addBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     const opened = addBtn.classList.toggle('open');
@@ -38,6 +41,10 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
     if (!addBtn.contains(e.target)) {
       addBtn.classList.remove('open');
       addBtn.setAttribute('aria-expanded','false');
+    }
+    if (!PreferencesButton.contains(e.target)) {
+      PreferencesButton.classList.remove('open');
+      PreferencesButton.setAttribute('aria-expanded','false');
     }
   });
 
