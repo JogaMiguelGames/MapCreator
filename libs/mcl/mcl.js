@@ -71,7 +71,7 @@ export const Page = {
           Light: document.getElementById('TW_Light'),
           Dark: document.getElementById('TW_Dark')
         }
-      }
+      },
       Window: document.getElementById('ThemesWindow'),
       Content: document.getElementById('ThemesWindowContent')
     },
