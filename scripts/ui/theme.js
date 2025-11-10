@@ -1,4 +1,4 @@
 function SetTheme(Theme) {
-  const CSSLink = document.getDocumentById("PageTheme");
+  const CSSLink = document.getElementById("PageTheme");
   CSSLink.href = Theme;
 }
