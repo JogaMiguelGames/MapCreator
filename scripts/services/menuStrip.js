@@ -9,7 +9,6 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
   const addBtn = document.getElementById('addMenuBtn');
   if (!addBtn) return;
 
-  // abrir/fechar no clique
   addBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     const opened = addBtn.classList.toggle('open');
@@ -22,7 +21,6 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
     fileBtn.setAttribute('aria-expanded', opened ? 'true' : 'false');
   });
 
-  // teclado Enter / Space
   [fileBtn, addBtn].forEach(btn => {
     btn.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -32,7 +30,6 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
     });
   });
 
-  // fechar ao clicar fora
   document.addEventListener('click', (e) => {
     if (!fileBtn.contains(e.target)) {
       fileBtn.classList.remove('open');
@@ -44,7 +41,6 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
     }
   });
 
-  // helper: tenta chamar função global, senão faz fallback em botão/input
   function safeInvoke(fnNameOrArray, fallbackBtnId, fallbackInputId) {
     const names = Array.isArray(fnNameOrArray) ? fnNameOrArray : [fnNameOrArray];
     for (const name of names) {
@@ -66,12 +62,10 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
     return false;
   }
 
-  // --- FILE menu: Open (menuOpen or menuLoad) ---
   const menuOpenEl = document.getElementById('menuOpen') || document.getElementById('menuLoad');
   if (menuOpenEl) {
     menuOpenEl.addEventListener('click', (e) => {
       e.stopPropagation();
-      // tenta vários nomes comuns e fallback para botão/input
       safeInvoke(['openMap','loadMap','openFileDialog'], 'loadButton', 'loadInput');
       fileBtn.classList.remove('open');
       fileBtn.setAttribute('aria-expanded','false');
@@ -88,6 +82,10 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
     });
   }
 
+  document.getElementById('ThemesButton')?.addEventListener('click', () => {
+    Page.Elements.Themes_Window.Window.style.display = Page.Elements.Themes_Window.Window.style.display === "flex" ? "none" : "flex";
+  });
+  
   document.getElementById('menuCube')?.addEventListener('click', () => {
     CreateCube();
     addBtn.classList.remove('open');
