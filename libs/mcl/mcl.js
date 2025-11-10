@@ -65,6 +65,14 @@ export const Page = {
       Window: document.getElementById('addWindow'),
       Content: document.getElementById('addWindowContent')
     },
+    Themes_Window: {
+      Options: {
+        Theme: {
+          Light: document.getElementById('TW_Light'),
+          Dark: document.getElementById('TW_Dark')
+        }
+      }
+    },
     Input: {
       Color: {
         Color_Type: document.getElementById('Color_Type'),
