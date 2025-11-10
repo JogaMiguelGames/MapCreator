@@ -214,6 +214,7 @@ canvas {
 
 #scriptingSection {
   background: rgba(240, 240, 240, 1);
+  color: rgba(0, 0, 0, 1);
   border-radius: 6px;
   padding: 10px;
   margin-top: 8px;
