@@ -606,7 +606,7 @@ body.focusing-script #exitScriptFocusBtn {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(17, 17, 17, 0);
+  background: rgba(0, 0, 0, 0);
   display: none;
   justify-content: center;
   align-items: center;
@@ -617,7 +617,7 @@ body.focusing-script #exitScriptFocusBtn {
 .centerPopUpContent {
   width: 800px;
   height: 600px;
-  background: rgba(26, 26, 26, 1);
+  background: rgba(240, 240, 240, 1);
   border-radius: 8px;
   padding: 20px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 1);
