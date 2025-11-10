@@ -24,6 +24,12 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
     fileBtn.setAttribute('aria-expanded', opened ? 'true' : 'false');
   });
 
+  PreferencesButton.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const opened = PreferencesButton.classList.toggle('open');
+    PreferencesButton.setAttribute('aria-expanded', opened ? 'true' : 'false');
+  });
+  
   [fileBtn, addBtn].forEach(btn => {
     btn.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
