@@ -290,8 +290,8 @@ canvas {
 }
 
 .control-group input:disabled {
-  background: #222;
-  color: #777;
+  background: rgba(180, 180, 180, 1);
+  color: rgba(30, 30, 30, 1);
   cursor: not-allowed;
 }
 
