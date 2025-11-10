@@ -145,7 +145,7 @@ canvas {
   display: flex;
   align-items: center;
   gap: 6px;
-  color: white;
+  color: rgba(0, 0, 0, 1);
   font-size: 14px;
 }
 
@@ -272,7 +272,7 @@ canvas {
   flex: 1 1 calc(33% - 8px);
   display: flex;
   flex-direction: column;
-  color: rgb(221, 221, 221, 1);
+  color: rgba(0, 0, 0, 1);
   font-size: 13px;
 }
 
@@ -281,7 +281,7 @@ canvas {
   padding: 6px 8px;
   width: 100%;
   background: rgba(200, 200, 200, 1);
-  color: white;
+  color: rgba(0, 0, 0, 1);
   font-family: monospace;
   font-size: 14px;
   border: none;
