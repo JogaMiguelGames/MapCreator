@@ -71,7 +71,6 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
       if (inp) { inp.click(); return true; }
     }
 
-    console.warn('safeInvoke: nenhuma ação disponível para', names);
     return false;
   }
 
@@ -99,7 +98,7 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
   if (ExportButtonEl) {
     ExportButtonEl.addEventListener('click', (e) => {
       e.stopPropagation();
-      safeInvoke('ExportMap', 'ExportButton');
+      ExportMap();
       fileBtn.classList.remove('open');
       fileBtn.setAttribute('aria-expanded','false');
     });
