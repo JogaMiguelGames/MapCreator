@@ -95,6 +95,16 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
     });
   }
 
+  const ExportButtonEl = document.getElementById('ExportButton');
+  if (menuSaveEl) {
+    menuSaveEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      safeInvoke('saveMap', 'menuSave');
+      fileBtn.classList.remove('open');
+      fileBtn.setAttribute('aria-expanded','false');
+    });
+  }
+  
   document.getElementById('ThemesButton')?.addEventListener('click', () => {
     Page.Elements.Themes_Window.Window.style.display = Page.Elements.Themes_Window.Window.style.display === "flex" ? "none" : "flex";
   });
