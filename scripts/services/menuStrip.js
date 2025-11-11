@@ -96,8 +96,8 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
   }
 
   const ExportButtonEl = document.getElementById('ExportButton');
-  if (menuSaveEl) {
-    menuSaveEl.addEventListener('click', (e) => {
+  if (ExportButtonEl) {
+    ExportButtonEl.addEventListener('click', (e) => {
       e.stopPropagation();
       safeInvoke('saveMap', 'menuSave');
       fileBtn.classList.remove('open');
