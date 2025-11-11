@@ -1,10 +1,10 @@
 // === Export.js - Map Creator === 
-import { Project, Model, Page, Tree_View, Icon } from '../../libs/mcl/mcl.js';
-import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from '../../libs/mcl/add.js';
+import { Project, Model, Page, Tree_View, Icon } from 'mcl.js';
+import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from 'add.js';
 
-const ExportButton = document.getElementById('ExportButton');
+export const ExportButton = document.getElementById('ExportButton');
 
-function ExportMap() {
+export function ExportMap() {
   const scriptInput = document.getElementById('scriptInput');
   const scriptCode = scriptInput ? scriptInput.value : '';
 
