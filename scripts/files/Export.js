@@ -10,7 +10,7 @@ function ExportMap() {
     window.Tree_View.Selected.Item.content = scriptCode;
   }
 
-  const mapData = {
+  const ExportData = {
     sceneColor: `#${scene.background.getHexString()}`,
     customFolders: window.customFolders || [],
     customScripts: (window.customScripts || []).map(s => ({
@@ -45,7 +45,7 @@ function ExportMap() {
     })
   };
 
-  const json = JSON.stringify(mapData, null, 2);
+  const json = JSON.stringify(ExportData, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
   const Export = document.createElement('Export');
   Export.href = URL.createObjectURL(blob);
