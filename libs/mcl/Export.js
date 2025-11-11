@@ -56,4 +56,6 @@ function ExportMap() {
   URL.revokeObjectURL(Export.href);
 }
 
+window.ExportMap = ExportMap;
+
 ExportButton?.addEventListener('click', ExportMap);
