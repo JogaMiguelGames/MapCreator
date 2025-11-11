@@ -48,10 +48,25 @@ export function ExportMap() {
   };
 
   const json = JSON.stringify(ExportData, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
+  const HTML = `
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <style>
+        body {
+          background-color: rgba(240, 240, 240, 1);
+        }
+      </style>
+    </head>
+    <body>
+      <canvas id="RenderCanvas" class="RenderCanvas" width="800" height="600"></canvas>
+    </body>
+  </html>
+  `
+  const blob = new Blob([HTML], { type: 'text/html' });
   const Export = document.createElement('a');
   Export.href = URL.createObjectURL(blob);
-  Export.download = Project.File.Name.Map;
+  Export.download = `${Project.File.Name.Map}.html`;
   Export.click();
   URL.revokeObjectURL(Export.href);
 
