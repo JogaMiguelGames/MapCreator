@@ -49,7 +49,7 @@ export function ExportMap() {
 
   const json = JSON.stringify(ExportData, null, 2);
   const blob = new Blob([json], { type: 'application/json' });
-  const Export = document.createElement('Export');
+  const Export = document.createElement('a');
   Export.href = URL.createObjectURL(blob);
   Export.download = Project.File.Name.Map;
   Export.click();
