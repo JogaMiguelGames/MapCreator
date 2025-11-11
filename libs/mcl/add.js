@@ -2,10 +2,18 @@
 import { Project, Model, Page, Icon } from './mcl.js';
 import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSpheresVisibility, selectedSphere, plane, offset, intersection, dragRaycaster, mouseVec, onPointerDown, updateCursor, onPointerMove, onPointerUp } from './objects.js';
 
+function generateID(prefix = "OBJ") {
+  const unique = crypto.randomUUID ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+  return `${prefix}_${unique}`;
+}
+
 export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
   const cube = new THREE.Mesh(box_geometry.clone(), material);
   cube.position.copy(position);
   cube.name = name;
+
+  object3D.userData.id = generateID("OBJ");
+  
   cube.castShadow = true;
   cube.receiveShadow = true;
   
@@ -25,6 +33,9 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
   
     sphere.position.set(0, 0, 0);
     sphere.name = `Sphere ${Model.Objects.length}`;
+    
+    object3D.userData.id = generateID("OBJ");
+
     sphere.castShadow = true;
     sphere.receiveShadow = true;
     
@@ -45,6 +56,9 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
     cylinder.position.set(0, 0, 0);
     cylinder.scale.set(0.5, 0.5, 0.5);
     cylinder.name = `Cylinder ${Model.Objects.length}`;
+
+    object3D.userData.id = generateID("OBJ");
+
     cylinder.castShadow = true;
     cylinder.receiveShadow = true;
   
@@ -65,6 +79,9 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
     cone.position.set(0, 0, 0);
     cone.scale.set(0.5, 0.5, 0.5);
     cone.name = `Cone ${Model.Objects.length}`;
+
+    object3D.userData.id = generateID("OBJ");
+
     cone.castShadow = true;
     cone.receiveShadow = true;
   
@@ -85,6 +102,9 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
     plane.position.set(0, 0, 0);
     plane.rotation.x = -Math.PI / 2;
     plane.name = `Plane ${Model.Objects.length}`;
+
+    object3D.userData.id = generateID("OBJ");
+
     plane.castShadow = true;
     plane.receiveShadow = true;
   
@@ -123,6 +143,8 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
         object.position.set(0, 0, 0);
         object.scale.set(0.3, 0.3, 0.3);
         object.name = "Camera";
+
+        object3D.userData.id = generateID("OBJ");
   
         object.userData.icon = "camera";
   
@@ -186,6 +208,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
