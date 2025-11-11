@@ -98,7 +98,7 @@ import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, Crea
   if (ExportButtonEl) {
     ExportButtonEl.addEventListener('click', (e) => {
       e.stopPropagation();
-      ExportMap();
+      window.ExportMap();
       fileBtn.classList.remove('open');
       fileBtn.setAttribute('aria-expanded','false');
     });
