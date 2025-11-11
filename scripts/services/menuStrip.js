@@ -95,16 +95,6 @@ import { ExportButton, ExportMap } from '../../libs/mcl/Export.js';
     });
   }
 
-  const ExportButtonEl = document.getElementById('ExportButton');
-  if (ExportButtonEl) {
-    ExportButtonEl.addEventListener('click', (e) => {
-      e.stopPropagation();
-      ExportMap();
-      fileBtn.classList.remove('open');
-      fileBtn.setAttribute('aria-expanded','false');
-    });
-  }
-  
   document.getElementById('ThemesButton')?.addEventListener('click', () => {
     Page.Elements.Themes_Window.Window.style.display = Page.Elements.Themes_Window.Window.style.display === "flex" ? "none" : "flex";
   });
