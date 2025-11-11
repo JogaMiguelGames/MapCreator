@@ -2,6 +2,8 @@
 import { Project, Model, Page, Tree_View, Icon } from '../../libs/mcl/mcl.js';
 import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from '../../libs/mcl/add.js';
 
+const ExportButton = document.getElementById('ExportButton');
+
 function ExportMap() {
   const scriptInput = document.getElementById('scriptInput');
   const scriptCode = scriptInput ? scriptInput.value : '';
@@ -53,3 +55,5 @@ function ExportMap() {
   Export.click();
   URL.revokeObjectURL(Export.href);
 }
+
+ExportButton?.addEventListener('click', ExportMap);
