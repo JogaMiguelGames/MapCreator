@@ -1,6 +1,6 @@
 // === Map Creator - Main.js ===
 import { Project, Model, Page, Tree_View, Icon } from '../libs/mcl/mcl.js';
-import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight, generateID } from '../libs/mcl/add.js';
+import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from '../libs/mcl/add.js';
 import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSpheresVisibility, selectedSphere, plane, offset, intersection, dragRaycaster, mouseVec, onPointerDown, updateCursor, onPointerMove, onPointerUp, State, axisLines, addAxisLine, createHugeGrid, hugeGrid, gridGroup, gridStep, gridLimit, gridColor, updateGridAroundCameraCircle} from '../libs/mcl/objects.js';
 
 let object3D;
@@ -191,10 +191,6 @@ function updatePanelForCube(object3D) {
   Page.Elements.Position.X.value = object3D.position.x.toFixed(2);
   Page.Elements.Position.Y.value = object3D.position.y.toFixed(2);
   Page.Elements.Position.Z.value = object3D.position.z.toFixed(2);
-
-  if (Tree_View.Selected.Item) {
-    Page.Elements.Input.Script.ID.value = Tree_View.Selected.Item.id || '';
-  }
 }
 
 window.updatePanelForCube = updatePanelForCube;
@@ -244,9 +240,7 @@ window.scriptsCount = window.scriptsCount || 0;
 
 function createFolder(name = 'New Folder') {
   window.folderCount = (window.folderCount || 0) + 1;
-  
-  const folder = { id: generateID("FOLDER"), name };
-  
+  const folder = { id: Date.now() + Math.random(), name };
   window.customFolders.push(folder);
   UpdateTreeView();
   return folder;
@@ -254,9 +248,7 @@ function createFolder(name = 'New Folder') {
 
 function createScript(name = 'New Script') {
   window.scriptCount = (window.scriptCount || 0) + 1;
-  
-  const script = { id: generateID("SCRIPT"), name };
-
+  const script = { id: Date.now() + Math.random(), name };
   window.customScripts.push(script);
   UpdateTreeView();
   return script;
@@ -772,7 +764,3 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
-
-
-
-
