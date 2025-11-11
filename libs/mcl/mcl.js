@@ -76,9 +76,6 @@ export const Page = {
       Content: document.getElementById('ThemesWindowContent')
     },
     Input: {
-      Script: {
-        ID: document.getElementById('ID_Input')
-      },
       Color: {
         Color_Type: document.getElementById('Color_Type'),
         Hex_Input: document.getElementById('colorHex'),
