@@ -50,8 +50,11 @@ export function ExportMap() {
   const json = JSON.stringify(ExportData, null, 2);
   const HTML = `
   <!DOCTYPE html>
-  <html>
+  <html lang="en">
     <head>
+      <title>
+        ${Project.Name}
+      </title>
       <style>
         body {
           background-color: rgba(240, 240, 240, 1);
@@ -60,6 +63,7 @@ export function ExportMap() {
     </head>
     <body>
       <canvas id="RenderCanvas" class="RenderCanvas" width="800" height="600"></canvas>
+      <script></script>
     </body>
   </html>
   `
