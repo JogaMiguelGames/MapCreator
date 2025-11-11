@@ -2,6 +2,8 @@
 
 export const Project = {
   Name: "Project",
+  Language: "English",
+  lang: "en",
   File: {
     Name: {
       Map: null
