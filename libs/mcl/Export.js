@@ -54,6 +54,8 @@ export function ExportMap() {
   Export.download = Project.File.Name.Map;
   Export.click();
   URL.revokeObjectURL(Export.href);
+
+  console.log("ExportMap(); Iniciated.");
 }
 
 window.ExportMap = ExportMap;
