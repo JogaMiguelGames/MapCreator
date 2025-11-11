@@ -99,7 +99,7 @@ import { ExportButton, ExportMap } from '../../libs/mcl/Export.js';
   if (ExportButtonEl) {
     ExportButtonEl.addEventListener('click', (e) => {
       e.stopPropagation();
-      window.ExportMap();
+      ExportMap();
       fileBtn.classList.remove('open');
       fileBtn.setAttribute('aria-expanded','false');
     });
