@@ -1,6 +1,7 @@
 // scripts/services/menuStrip.js
 import { Project, Model, Page, Tree_View, Icon } from '../../libs/mcl/mcl.js';
 import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from '../../libs/mcl/add.js';
+import { ExportButton, ExportMap } from '../../libs/mcl/Export.js';
 
 (function(){
   const fileBtn = document.getElementById('fileMenuBtn');
