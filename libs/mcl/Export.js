@@ -50,7 +50,7 @@ export function ExportMap() {
   const json = JSON.stringify(ExportData, null, 2);
   const HTML = `
   <!DOCTYPE html>
-  <html lang="en">
+  <html lang=${Project.Lang}>
     <head>
       <title>
         ${Project.Name}
