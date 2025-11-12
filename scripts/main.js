@@ -609,16 +609,18 @@ function UpdateTreeView() {
       Page.Elements.Rotation.X.disabled = false;
       Page.Elements.Rotation.Y.disabled = false;
       Page.Elements.Rotation.Z.disabled = false;
-    
+
       Page.Elements.Input.Color.Hex_Input.disabled = false;
-      Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
-    
       HEX_Enabled = true;
+
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
+      
     } else {
       Page.Elements.Input.Color.Hex_Input.disabled = true;
       Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = true;
       HEX_Enabled = false;
     }
+
     projectContent.appendChild(item);
   });
 }
@@ -785,6 +787,7 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
 
 
