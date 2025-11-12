@@ -9,7 +9,6 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
   cube.receiveShadow = true;
   cube.userData.icon = "cube";
 
-  // === valores iniciais padrão ===
   cube.position.set(0, 0, 0);
   cube.rotation.set(0, 0, 0);
   cube.scale.set(1, 1, 1);
@@ -201,4 +200,5 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
