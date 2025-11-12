@@ -597,29 +597,28 @@ function UpdateTreeView() {
     console.log("Icon: ", icon.src);
     console.log("Name: ", object3D.name);
 
-    if (Model.Selected.Object && Model.Selected.Object.isObject3D) {
+    if (Model.Selected.Object instanceof THREE.Object3D) {
       Page.Elements.Scale.X.disabled = false;
       Page.Elements.Scale.Y.disabled = false;
       Page.Elements.Scale.Z.disabled = false;
-  
+    
       Page.Elements.Position.X.disabled = false;
       Page.Elements.Position.Y.disabled = false;
       Page.Elements.Position.Z.disabled = false;
-  
+    
       Page.Elements.Rotation.X.disabled = false;
       Page.Elements.Rotation.Y.disabled = false;
       Page.Elements.Rotation.Z.disabled = false;
-
+    
       Page.Elements.Input.Color.Hex_Input.disabled = false;
       Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
-  
+    
       HEX_Enabled = true;
     } else {
       Page.Elements.Input.Color.Hex_Input.disabled = true;
       Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = true;
       HEX_Enabled = false;
     }
-
     projectContent.appendChild(item);
   });
 }
@@ -786,6 +785,7 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
 
 
