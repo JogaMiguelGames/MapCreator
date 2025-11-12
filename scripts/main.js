@@ -608,22 +608,27 @@ function UpdateTreeView() {
   });
     
   setTimeout(() => {
-    if (Page?.Elements?.Input?.Color) {
-      Page.Elements.Input.Color.Hex_Input = document.querySelector('#Hex_Input_ID');
-      Page.Elements.Input.Color.RGB.RGB_Color_Input = document.querySelector('#RGB_Color_Input_ID');
+    try {
+      const hexInput = document.querySelector('#colorHex');
+      if (!hexInput) {
+        console.warn("⚠️ HEX_Input (#colorHex) ainda não existe no novo DOM.");
+        return;
+      }
+  
+      const obj = Model.Selected?.Object;
+      if (obj instanceof THREE.Object3D) {
+        hexInput.disabled = false;
+        hexInput.style.opacity = "1";
+        hexInput.style.pointerEvents = "auto";
+        HEX_Enabled = true;
+        console.log("🩵 HEX_Input (#colorHex) reativado após reconstrução da TreeView!");
+      } else {
+        console.log("HEX_Input detectado, mas não há objeto 3D selecionado.");
+      }
+    } catch (e) {
+      console.error("Erro ao reativar HEX_Input (#colorHex):", e);
     }
-
-    const obj = Model.Selected?.Object;
-    const hexInput = Page?.Elements?.Input?.Color?.Hex_Input;
-
-    if (obj instanceof THREE.Object3D && hexInput) {
-      hexInput.disabled = false;
-      hexInput.style.opacity = "1";
-      hexInput.style.pointerEvents = "auto";
-      HEX_Enabled = true;
-      console.log("🩵 HEX_Input reativado automaticamente após reconstrução da TreeView!");
-    }
-  }, 0);
+  }, 50);
 }
 
 window.UpdateTreeView = UpdateTreeView;
@@ -805,4 +810,5 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
