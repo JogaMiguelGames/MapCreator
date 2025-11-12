@@ -59,22 +59,58 @@ export function ExportMap() {
         body {
           background-color: rgba(240, 240, 240, 1);
         }
-        html, body {
-          margin: 0;
-          padding: 0;
-          width: 100%;
-          height: 100%;
-          overflow: hidden;
-        }
-        
         .RenderCanvas {
-          display: block;
-          background: #111;
+          background-color: rgba(255, 255, 255, 1);
         }
       </style>
     </head>
     <body>
       <canvas id="RenderCanvas" class="RenderCanvas" width="800" height="600"></canvas>
+      <script>
+        const RenderCanvas = document.getElementById("RenderCanvas");
+        const Graphic2D = RenderCanvas.getContext("2d");
+        
+        const Color = {
+            Red: "#FF0000FF",
+            Orange: "#FF5500FF",
+            Yellow: "#FFFF00FF",
+            Green: "#00FF00FF",
+            Blue: "#0000FFFF",
+            White: "#FFFFFFFF",
+            Black: "#000000FF"
+        };
+        
+        let x = 0;
+        let angle = 0;
+        
+        function Loading() {
+            Graphic2D.clearRect(0, 0, GameCanvas.width, GameCanvas.height);
+            
+            Graphic2D.font = "40px Arial";
+            Graphic2D.fillStyle = Color.Black;
+            Graphic2D.fillText("Loading...", 200, 50);
+            
+            Graphic2D.save();
+        
+        
+            Graphic2D.translate(x + 25, 200);
+            
+            Graphic2D.rotate(angle);
+            
+            Graphic2D.fillStyle = Color.Red;
+            Graphic2D.fillRect(-25, -25, 50, 50);
+            
+            Graphic2D.restore();
+            
+            x += 2;
+            if (x > RenderCanvas.width) x = -50;
+            angle += 0.05;
+        
+            requestAnimationFrame(Loading);
+        }
+        
+        Loading();
+      </script>
     </body>
   </html>
   `
