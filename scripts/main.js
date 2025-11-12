@@ -119,7 +119,7 @@ function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-async function loop() {
+function loop() {
   requestAnimationFrame(loop);
   renderer.render(scene, camera);
 
@@ -830,3 +830,4 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
