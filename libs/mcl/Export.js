@@ -29,37 +29,22 @@ export function ExportMap() {
       content: s.content || ''
     })),
     Objects: Model.Objects.map(obj => {
-      let type = 'Object';
-      let color = '#ffffff';
-      let textureData = null;
-
+      let type = 'cube';
       if (obj.geometry === sphere_geometry) type = 'sphere';
       else if (obj.geometry === cylinder_geometry) type = 'cylinder';
       else if (obj.geometry === cone_geometry) type = 'cone';
       else if (obj.geometry === plane_geometry) type = 'plane';
       else if (obj.userData?.isCameraModel) type = 'camera';
 
-      color = `#${obj.material?.color?.getHexString() || 'ffffff'}`;
-      if (obj.material?.map?.image?.src) textureData = obj.material.map.image.src;
+      const color = `#${obj.material?.color?.getHexString() || 'ffffff'}`;
+      const textureData = obj.material?.map?.image?.src || null;
 
       return {
         type,
         name: obj.name || 'Object',
-        position: {
-          x: obj.position?.x || 0,
-          y: obj.position?.y || 0,
-          z: obj.position?.z || 0
-        },
-        scale: {
-          x: obj.scale?.x || 1,
-          y: obj.scale?.y || 1,
-          z: obj.scale?.z || 1
-        },
-        rotation: {
-          x: obj.rotation?.x || 0,
-          y: obj.rotation?.y || 0,
-          z: obj.rotation?.z || 0
-        },
+        position: { x: obj.position.x, y: obj.position.y, z: obj.position.z },
+        scale: { x: obj.scale.x, y: obj.scale.y, z: obj.scale.z },
+        rotation: { x: obj.rotation.x, y: obj.rotation.y, z: obj.rotation.z },
         color,
         texture: textureData,
         icon: obj.userData.icon || 'cube'
@@ -67,7 +52,8 @@ export function ExportMap() {
     })
   };
 
-  const json = JSON.stringify(ExportData, null, 2);
+  const json = JSON.stringify(ExportData);
+
   const HTML = `
   <!DOCTYPE html>
   <html lang="${Project.Lang}">
@@ -83,122 +69,77 @@ export function ExportMap() {
           overflow: hidden;
           background-color: rgba(240, 240, 240, 1);
         }
-        canvas {
-          display: block;
-        }
+        canvas { display: block; }
       </style>
     </head>
     <body>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
       <script>
-        // -- Kernelium Framework -- kfw.js
-        
-        // --- Base Scene Setup ---
+        // --- Map Data ---
+        const mapData = ${json};
+
+        // --- Setup Scene ---
         const scene = new THREE.Scene();
-        scene.background = new THREE.Color('${ExportData.sceneColor}');
-        
-        const camera = new THREE.PerspectiveCamera(
-          75,
-          document.documentElement.clientWidth / document.documentElement.clientHeight,
-          0.1,
-          1000
-        );
-        camera.position.z = 5;
+        scene.background = new THREE.Color(mapData.sceneColor);
+
+        const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
+        camera.position.set(0, 2, 5);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
-        document.body.appendChild(renderer.domElement);
+        renderer.setSize(innerWidth, innerHeight);
         renderer.shadowMap.enabled = true;
         renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        
-        // --- Core Tools ---
-        const raycaster = new THREE.Raycaster();
-        const mouse = new THREE.Vector2();
-        const clock = new THREE.Clock();
-        const group = new THREE.Group();
-        
-        // --- Basic Mesh (placeholder) ---
-        const mesh = new THREE.Mesh();
-        
-        // --- Geometries (Core) ---
-        const box_geometry = new THREE.BoxGeometry(1, 1, 1);
-        const circle_geometry = new THREE.CircleGeometry(1, 16);
-        const cone_geometry = new THREE.ConeGeometry(1, 2, 32);
-        const pyramid_geometry = new THREE.ConeGeometry(1, 2, 4);
-        const cylinder_geometry = new THREE.CylinderGeometry(1, 1, 2, 16);
-        const dodecahedron_geometry = new THREE.DodecahedronGeometry(1, 0);
-        const extrude_geometry = new THREE.ExtrudeGeometry([], { depth: 1, bevelEnabled: false }); // precisa de Shape
-        const icosahedron_geometry = new THREE.IcosahedronGeometry(1, 0);
-        const lathe_geometry = new THREE.LatheGeometry([new THREE.Vector2(0,0), new THREE.Vector2(1,2)], 12);
-        const octahedron_geometry = new THREE.OctahedronGeometry(1, 0);
-        const plane_geometry = new THREE.PlaneGeometry(1, 1);
-        
-        const ring_geometry = new THREE.RingGeometry(0.5, 1, 32);
-        const shape_geometry = new THREE.ShapeGeometry([]); // precisa de Shape
-        const sphere_geometry = new THREE.SphereGeometry(0.5, 16, 8);
-        const tetrahedron_geometry = new THREE.TetrahedronGeometry(1, 0);
-        const torus_geometry = new THREE.TorusGeometry(1, 0.3, 16, 100);
-        const torus_knot_geometry = new THREE.TorusKnotGeometry(1, 0.3, 100, 16);
-        
-        // --- Geometry Helpers ---
-        const wireframe_geometry = new THREE.WireframeGeometry(box_geometry);
-        const edges_geometry = new THREE.EdgesGeometry(box_geometry);
-        
-        pyramid_geometry.rotateX(Math.PI / 2);
-        
-        // --- Geometries from examples/jsm (não fazem parte do core) ---
-        // import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
-        // import { TeapotGeometry } from 'three/examples/jsm/geometries/TeapotGeometry.js';
-        // import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry.js';
-        // import { ParametricGeometry } from 'three/examples/jsm/geometries/ParametricGeometry.js';
-        
-        // --- Materials ---
-        const white_material = new THREE.MeshStandardMaterial({ color: 0xffffff });
-        const basic_material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-        const phong_material = new THREE.MeshPhongMaterial({ color: 0x00ff00 });
-        const lambert_material = new THREE.MeshLambertMaterial({ color: 0x0000ff });
-        const physical_material = new THREE.MeshPhysicalMaterial({ color: 0xffff00 });
-        
-        // --- Lights ---
-        const ambient_light = new THREE.AmbientLight(0xffffff, 0.4);
-        const directional_light = new THREE.DirectionalLight(0xffffff, 1);
-        directional_light.position.set(5, 10, 5);
-        directional_light.castShadow = true;
-        
-        const point_light = new THREE.PointLight(0xffffff, 1, 100);
-        point_light.position.set(2, 5, 2);
-        
-        const spot_light = new THREE.SpotLight(0xffffff, 1);
-        spot_light.position.set(0, 5, 0);
-        
-        const hemisphere_light = new THREE.HemisphereLight(0x4040ff, 0x404000, 0.5);
-        
-        // --- Math / Utils ---
-        const v2 = new THREE.Vector2();
-        const v3 = new THREE.Vector3();
-        const v4 = new THREE.Vector4();
-        
-        const euler = new THREE.Euler();
-        const quat = new THREE.Quaternion();
-        const mat4 = new THREE.Matrix4();
-        const box3 = new THREE.Box3();
-        const color = new THREE.Color('#ffffff');
-      </script>
-      <script>
-        function resizeRenderer() {
-          const width = document.documentElement.clientWidth;
-          const height = document.documentElement.clientHeight;
-          renderer.setSize(width, height);
-          camera.aspect = width / height;
+        document.body.appendChild(renderer.domElement);
+
+        window.addEventListener('resize', () => {
+          renderer.setSize(innerWidth, innerHeight);
+          camera.aspect = innerWidth / innerHeight;
           camera.updateProjectionMatrix();
-        }
-        resizeRenderer();
-        window.addEventListener('resize', resizeRenderer);
+        });
 
         const ambient = new THREE.AmbientLight(0xffffff, 0.5);
         const directional = new THREE.DirectionalLight(0xffffff, 1);
         directional.position.set(5, 10, 5);
         scene.add(ambient, directional);
 
+        // --- Geometries ---
+        const box_geometry = new THREE.BoxGeometry(1, 1, 1);
+        const sphere_geometry = new THREE.SphereGeometry(0.5, 16, 8);
+        const cylinder_geometry = new THREE.CylinderGeometry(1, 1, 2, 16);
+        const cone_geometry = new THREE.ConeGeometry(1, 2, 32);
+        const plane_geometry = new THREE.PlaneGeometry(1, 1);
+
+        // --- Load Objects ---
+        const textureLoader = new THREE.TextureLoader();
+
+        mapData.Objects.forEach(data => {
+          let geometry;
+          switch (data.type) {
+            case 'sphere': geometry = sphere_geometry; break;
+            case 'cylinder': geometry = cylinder_geometry; break;
+            case 'cone': geometry = cone_geometry; break;
+            case 'plane': geometry = plane_geometry; break;
+            default: geometry = box_geometry;
+          }
+
+          const material = new THREE.MeshStandardMaterial({ color: data.color || '#ffffff' });
+          const mesh = new THREE.Mesh(geometry, material);
+          mesh.position.set(data.position.x, data.position.y, data.position.z);
+          mesh.scale.set(data.scale.x, data.scale.y, data.scale.z);
+          mesh.rotation.set(data.rotation.x, data.rotation.y, data.rotation.z);
+          mesh.castShadow = true;
+          mesh.receiveShadow = true;
+
+          if (data.texture) {
+            const tex = textureLoader.load(data.texture);
+            mesh.material.map = tex;
+            mesh.material.needsUpdate = true;
+          }
+
+          scene.add(mesh);
+        });
+
+        // --- Animate ---
         function animate() {
           requestAnimationFrame(animate);
           renderer.render(scene, camera);
@@ -216,7 +157,7 @@ export function ExportMap() {
   Export.click();
   URL.revokeObjectURL(Export.href);
 
-  console.log("ExportMap(); Iniciated.");
+  console.log("ExportMap(); completed and exported.");
 }
 
 window.ExportMap = ExportMap;
