@@ -60,14 +60,24 @@ export function ExportMap() {
           background-color: rgba(240, 240, 240, 1);
         }
         .RenderCanvas {
-          width: 100vw;
-          height: 100vh;
+          
         }
       </style>
     </head>
     <body>
       <canvas id="RenderCanvas" class="RenderCanvas" width="800" height="600"></canvas>
-      <script></script>
+      <script>
+        const RenderCanvas = document.getElementById("RenderCanvas");
+        const CanvasGraphics = RenderCanvas.getContext("2d");
+
+        function MainCanvas() {
+          RenderCanvas.width = window.innerWidth;
+          RenderCanvas.height = window.innerHeight;
+        }
+
+        window.addEventListener('resize', MainCanvas);
+        MainCanvas();
+      </script>
     </body>
   </html>
   `
