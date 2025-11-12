@@ -93,7 +93,7 @@ export function ExportMap() {
             Graphic2D.save();
         
         
-            Graphic2D.translate(x + 25, 200);
+            Graphic2D.translate(x + 25, 400);
             
             Graphic2D.rotate(angle);
             
