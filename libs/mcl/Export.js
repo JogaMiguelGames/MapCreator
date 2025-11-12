@@ -161,6 +161,7 @@ export function ExportMap() {
         const color = new THREE.Color('#ffffff');
       </script>
       <script>
+        const material = new THREE.MeshStandardMaterial({ color: 0xffffff });
         const cube = new THREE.Mesh(box_geometry.clone(), material);
         cube.position.set(0, 0, 0);
         
