@@ -59,6 +59,10 @@ export function ExportMap() {
         body {
           background-color: rgba(240, 240, 240, 1);
         }
+        .RenderCanvas {
+          width: 100vw;
+          height: 100vh;
+        }
       </style>
     </head>
     <body>
