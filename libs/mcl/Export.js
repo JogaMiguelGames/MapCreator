@@ -59,13 +59,9 @@ export function ExportMap() {
         body {
           background-color: rgba(240, 240, 240, 1);
         }
-        .RenderCanvas {
-          background-color: rgba(255, 255, 255, 1);
-        }
       </style>
     </head>
     <body>
-      <canvas id="RenderCanvas" class="RenderCanvas" width="800" height="600"></canvas>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
       <script>
         // -- Kernelium Framework -- kfw.js
