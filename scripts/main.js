@@ -1,4 +1,4 @@
-// === Map Creator - Main.js ===
+porque depois de eu criar um objeto 3D, eu não consigo mudar mais a cor, nem para HEX ou RGB? // === Map Creator - Main.js ===
 import { Project, Model, Page, Tree_View, Icon } from '../libs/mcl/mcl.js';
 import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from '../libs/mcl/add.js';
 import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSpheresVisibility, selectedSphere, plane, offset, intersection, dragRaycaster, mouseVec, onPointerDown, updateCursor, onPointerMove, onPointerUp, State, axisLines, addAxisLine, createHugeGrid, hugeGrid, gridGroup, gridStep, gridLimit, gridColor, updateGridAroundCameraCircle} from '../libs/mcl/objects.js';
@@ -659,11 +659,8 @@ canvas.addEventListener('click', onClick);
 
 Page.Elements.Input.Color.Hex_Input.addEventListener('input', e => {
   const val = e.target.value.trim();
-  const obj = Model.Selected.Object;
-  if (/^#([0-9a-f]{6})$/i.test(val) && obj && obj.material) {
-    if (obj.material.color) {
-      obj.material.color.set(val);
-    }
+  if (/^#([0-9a-f]{6})$/i.test(val) && Model.Selected.Object && Model.Selected.Object.material) {
+    Model.Selected.Object.material.color.set(val);
   }
 });
 
@@ -678,16 +675,18 @@ window.loopPaused = false;
 window.HEX_Enabled = true;
 
 Page.Elements.Input.Color.RGB.RGB_Color_Input.addEventListener('input', () => {
-  const obj = Model.Selected.Object;
-  if (!obj || !obj.material || !obj.material.color) return;
+  if (!Model.Selected.Object || !Model.Selected.Object.material) return;
   const val = Page.Elements.Input.Color.RGB.RGB_Color_Input.value.trim();
 
-  const match = val.match(/^rgb?\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$/i) ||
-                val.match(/^(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})$/i);
+  const match = val.match(/^rgb?\s*\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})\s*\)$|^(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})$/i);
+
   if (match) {
-    const [r, g, b] = match.slice(1).map(v => parseInt(v));
+    const r = parseInt(match[1] || match[4]);
+    const g = parseInt(match[2] || match[5]);
+    const b = parseInt(match[3] || match[6]);
+
     if (r <= 255 && g <= 255 && b <= 255) {
-      obj.material.color.setRGB(r / 255, g / 255, b / 255);
+      Model.Selected.Object.material.color.setRGB(r / 255, g / 255, b / 255);
     }
   }
 });
@@ -777,5 +776,3 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
-
-
