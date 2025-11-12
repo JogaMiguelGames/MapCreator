@@ -16,6 +16,8 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
   scene.add(cube);
   Model.Objects.push(cube);
   UpdateTreeView();
+
+  Model.Selected.Object = cube;
   return cube;
 }
   
@@ -35,6 +37,9 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
     scene.add(sphere);
     Model.Objects.push(sphere);
     UpdateTreeView();
+
+    Model.Selected.Object = sphere;
+    
     pushToHistory({ type: 'delete', object: sphere });
   }
   
@@ -55,6 +60,9 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
     scene.add(cylinder);
     Model.Objects.push(cylinder);
     UpdateTreeView();
+
+    Model.Selected.Object = cylinder;
+    
     pushToHistory({ type: 'delete', object: cylinder });
   }
   
@@ -75,6 +83,9 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
     scene.add(cone);
     Model.Objects.push(cone);
     UpdateTreeView();
+
+    Model.Selected.Object = cone;
+    
     pushToHistory({ type: 'delete', object: cone });
   }
   
@@ -95,6 +106,9 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
     scene.add(plane);
     Model.Objects.push(plane);
     UpdateTreeView();
+
+    Model.Selected.Object = plane;
+    
     pushToHistory({ type: 'delete', object: plane });
   }
   
@@ -186,4 +200,5 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
