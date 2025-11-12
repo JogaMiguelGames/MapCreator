@@ -610,6 +610,19 @@ function UpdateTreeView() {
 
 window.UpdateTreeView = UpdateTreeView;
 
+setTimeout(() => {
+  const hexInput = Page?.Elements?.Input?.Color?.Hex_Input;
+  const obj = Model.Selected?.Object;
+
+  if (obj instanceof THREE.Object3D && hexInput) {
+    hexInput.disabled = false;
+    hexInput.style.opacity = "1";
+    hexInput.style.pointerEvents = "auto";
+    HEX_Enabled = true;
+    console.log("🩵 HEX_Input reativado após TreeView completo!");
+  }
+}, 0);
+
 function renameCube(div, object3D){
   const text = div.querySelector('span');
   const input = document.createElement('input');
@@ -787,5 +800,3 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
-
-
