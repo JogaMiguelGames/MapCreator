@@ -603,25 +603,30 @@ function UpdateTreeView() {
       HEX_Enabled = true;
       console.log("✅ HEX_Input realmente habilitado no DOM!");
     }
-
+    
     projectContent.appendChild(item);
   });
+    
+  setTimeout(() => {
+    if (Page?.Elements?.Input?.Color) {
+      Page.Elements.Input.Color.Hex_Input = document.querySelector('#Hex_Input_ID');
+      Page.Elements.Input.Color.RGB.RGB_Color_Input = document.querySelector('#RGB_Color_Input_ID');
+    }
+
+    const obj = Model.Selected?.Object;
+    const hexInput = Page?.Elements?.Input?.Color?.Hex_Input;
+
+    if (obj instanceof THREE.Object3D && hexInput) {
+      hexInput.disabled = false;
+      hexInput.style.opacity = "1";
+      hexInput.style.pointerEvents = "auto";
+      HEX_Enabled = true;
+      console.log("🩵 HEX_Input reativado automaticamente após reconstrução da TreeView!");
+    }
+  }, 0);
 }
 
 window.UpdateTreeView = UpdateTreeView;
-
-setTimeout(() => {
-  const hexInput = Page?.Elements?.Input?.Color?.Hex_Input;
-  const obj = Model.Selected?.Object;
-
-  if (obj instanceof THREE.Object3D && hexInput) {
-    hexInput.disabled = false;
-    hexInput.style.opacity = "1";
-    hexInput.style.pointerEvents = "auto";
-    HEX_Enabled = true;
-    console.log("🩵 HEX_Input reativado após TreeView completo!");
-  }
-}, 0);
 
 function renameCube(div, object3D){
   const text = div.querySelector('span');
@@ -800,3 +805,4 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
