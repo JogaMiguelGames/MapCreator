@@ -4,20 +4,21 @@ import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSp
 
 export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
   const cube = new THREE.Mesh(box_geometry.clone(), material);
-  cube.position.copy(position);
   cube.name = name;
   cube.castShadow = true;
   cube.receiveShadow = true;
-  
   cube.userData.icon = "cube";
-  
+
+  // === valores iniciais padrão ===
+  cube.position.set(0, 0, 0);
+  cube.rotation.set(0, 0, 0);
+  cube.scale.set(1, 1, 1);
+
   addManipulationSpheres(cube);
-  
   scene.add(cube);
   Model.Objects.push(cube);
-  UpdateTreeView();
-
   Model.Selected.Object = cube;
+  UpdateTreeView();
   return cube;
 }
   
@@ -200,3 +201,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
