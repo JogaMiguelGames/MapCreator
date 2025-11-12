@@ -59,32 +59,22 @@ export function ExportMap() {
         body {
           background-color: rgba(240, 240, 240, 1);
         }
+        html, body {
+          margin: 0;
+          padding: 0;
+          width: 100%;
+          height: 100%;
+          overflow: hidden;
+        }
+        
         .RenderCanvas {
-          background-color: rgba(255, 255, 255, 1);
-          border: 2px solid rgba(0, 0, 0, 1);
+          display: block;
+          background: #111;
         }
       </style>
     </head>
     <body>
       <canvas id="RenderCanvas" class="RenderCanvas" width="800" height="600"></canvas>
-      <script>
-        const canvas = document.getElementById("RenderCanvas");
-        const ctx = canvas.getContext("2d");
-        
-        function resizeCanvas() {
-          const width = document.documentElement.clientWidth;
-          const height = document.documentElement.clientHeight;
-        
-          canvas.width = width;
-          canvas.height = height;
-        
-          canvas.style.width = width + "px";
-          canvas.style.height = height + "px";
-        }
-        
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
-      </script>
     </body>
   </html>
   `
