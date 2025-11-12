@@ -139,17 +139,14 @@ function loop() {
       hexInput.style.pointerEvents = "none";
     }
   }
-  
+
   if (!Model.Selected.Object) return;
 
   const object3D = Model.Selected.Object;
 
   if (Page?.Elements?.Input?.Color?.Hex_Input && object3D.material?.color) {
-
-    if (!window.loopPaused) {
-      if (HEX_Enabled) {
-        Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
-      }
+    if (!window.loopPaused && HEX_Enabled) {
+      Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
     }
   }
 
@@ -170,8 +167,6 @@ function loop() {
     Page.Elements.Input.Transform.Scale.Y.value = scl.y.toFixed(3);
     Page.Elements.Input.Transform.Scale.Z.value = scl.z.toFixed(3);
   }
-
-  requestAnimationFrame(loop);
 }
 requestAnimationFrame(loop);
 
@@ -830,4 +825,3 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
-
