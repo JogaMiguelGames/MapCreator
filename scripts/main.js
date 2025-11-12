@@ -179,9 +179,11 @@ function updatePanelForCube(object3D) {
   Page.Elements.Scale.X.disabled = false;
   Page.Elements.Scale.Y.disabled = false;
   Page.Elements.Scale.Z.disabled = false;
+  
   Page.Elements.Position.X.disabled = false;
   Page.Elements.Position.Y.disabled = false;
   Page.Elements.Position.Z.disabled = false;
+  
   Page.Elements.Rotation.X.disabled = false;
   Page.Elements.Rotation.Y.disabled = false;
   Page.Elements.Rotation.Z.disabled = false;
@@ -776,4 +778,5 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
