@@ -120,6 +120,26 @@ function sleep(ms) {
 }
 
 async function loop() {
+  requestAnimationFrame(loop);
+  renderer.render(scene, camera);
+
+  const hexInput = document.getElementById('colorHex');
+  if (hexInput) {
+    const selected = window.Model?.Selected?.Object;
+    const isObject3D = selected instanceof THREE.Object3D;
+
+    if (isObject3D && hexInput.disabled) {
+      hexInput.disabled = false;
+      hexInput.style.opacity = "1";
+      hexInput.style.pointerEvents = "auto";
+    } 
+    else if (!isObject3D && !hexInput.disabled) {
+      hexInput.disabled = true;
+      hexInput.style.opacity = "0.5";
+      hexInput.style.pointerEvents = "none";
+    }
+  }
+  
   if (!Model.Selected.Object) return;
 
   const object3D = Model.Selected.Object;
@@ -810,5 +830,3 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
-
-
