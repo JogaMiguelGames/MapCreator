@@ -60,7 +60,8 @@ export function ExportMap() {
           background-color: rgba(240, 240, 240, 1);
         }
         .RenderCanvas {
-          
+          background-color: rgba(255, 255, 255, 1);
+          border: 2px solid rgba(0, 0, 0, 1);
         }
       </style>
     </head>
