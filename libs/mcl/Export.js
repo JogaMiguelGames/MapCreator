@@ -68,16 +68,22 @@ export function ExportMap() {
     <body>
       <canvas id="RenderCanvas" class="RenderCanvas" width="800" height="600"></canvas>
       <script>
-        const RenderCanvas = document.getElementById("RenderCanvas");
-        const CanvasGraphics = RenderCanvas.getContext("2d");
-
-        function MainCanvas() {
-          RenderCanvas.width = window.innerWidth;
-          RenderCanvas.height = window.innerHeight;
+        const canvas = document.getElementById("GameCanvas");
+        const ctx = canvas.getContext("2d");
+        
+        function resizeCanvas() {
+          const width = document.documentElement.clientWidth;
+          const height = document.documentElement.clientHeight;
+        
+          canvas.width = width;
+          canvas.height = height;
+        
+          canvas.style.width = width + "px";
+          canvas.style.height = height + "px";
         }
-
-        window.addEventListener('resize', MainCanvas);
-        MainCanvas();
+        
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
       </script>
     </body>
   </html>
