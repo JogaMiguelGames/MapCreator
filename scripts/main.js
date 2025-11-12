@@ -1,4 +1,4 @@
-porque depois de eu criar um objeto 3D, eu não consigo mudar mais a cor, nem para HEX ou RGB? // === Map Creator - Main.js ===
+// === Map Creator - Main.js ===
 import { Project, Model, Page, Tree_View, Icon } from '../libs/mcl/mcl.js';
 import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from '../libs/mcl/add.js';
 import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSpheresVisibility, selectedSphere, plane, offset, intersection, dragRaycaster, mouseVec, onPointerDown, updateCursor, onPointerMove, onPointerUp, State, axisLines, addAxisLine, createHugeGrid, hugeGrid, gridGroup, gridStep, gridLimit, gridColor, updateGridAroundCameraCircle} from '../libs/mcl/objects.js';
@@ -776,3 +776,4 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
