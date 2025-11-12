@@ -84,7 +84,7 @@ export function ExportMap() {
         let angle = 0;
         
         function Loading() {
-            Graphic2D.clearRect(0, 0, GameCanvas.width, GameCanvas.height);
+            Graphic2D.clearRect(0, 0, GameCanvas.width, RenderCanvas.height);
             
             Graphic2D.font = "40px Arial";
             Graphic2D.fillStyle = Color.Black;
