@@ -1,13 +1,17 @@
 ```
-╔══════════════════════ Map Creator ═══════════════════════════╗
-║                                                              ║
-║• Create Maps And Export To .map Files                        ║
-║                                                              ║
-║• Program GScript                                             ║
-║                                                              ║
-║• Create Plugins For Customization                            ║
-║                                                              ║
-╚══════════════════════ Open Source! ══════════════════════════╝
+╔══════════════════════ Map Creator ═════════════════════════════════════╗
+║                                                                        ║
+║• Create Maps And Save and Load .Map Files                              ║
+║                                                                        ║
+║• And Export Your Map to HTML Project                                   ║
+║                                                                        ║
+║• Program Kernelium Script (Old GScript/Garry's Script)                 ║
+║                                                                        ║
+║• Create Plugins For Customization                                      ║
+║                                                                        ║
+║• Open source and royalty-free, Modify, Make Mods with Map Creator      ║
+║                                                                        ║
+╚════════════════════════════════════════════════════════════════════════╝
 ```
 
 - Creator Note (JogaMiguelGames):
