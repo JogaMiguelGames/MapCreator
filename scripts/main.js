@@ -787,15 +787,24 @@ function animate(time=0){
 }
 animate();
 
+const forceEnableHex = setInterval(() => {
+  const obj = Model.Selected?.Object;
+  const hexInput = Page?.Elements?.Input?.Color?.Hex_Input;
+  
+  if (!hexInput) return;
+  
+  if (obj instanceof THREE.Object3D) {
+    if (hexInput.disabled) {
+      hexInput.disabled = false;
+      HEX_Enabled = true;
+      hexInput.style.opacity = "1";
+      hexInput.style.pointerEvents = "auto";
+      console.log("🔥 HEX_Input reativado à força no DOM real!");
+    }
+  }
+}, 200);
+
 updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
-
-
-
-
-
-
-
-
