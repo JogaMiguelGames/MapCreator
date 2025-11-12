@@ -655,6 +655,14 @@ body.focusing-script #exitScriptFocusBtn {
   background-color: rgba(34, 34, 34, 1);
 }
 
+input#colorHex {
+  background: rgba(51, 51, 51, 1) !important;
+  color: white !important;
+  cursor: text !important;
+  pointer-events: auto !important;
+  opacity: 1 !important;
+}
+
 #topMenu { flex-wrap: nowrap; }
 
 #leftButtons::-webkit-scrollbar { height: 6px; }
