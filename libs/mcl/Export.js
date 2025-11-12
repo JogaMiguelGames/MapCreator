@@ -122,7 +122,7 @@ export function ExportMap() {
         
         pyramid_geometry.rotateX(Math.PI / 2);
         
-        // --- Geometries from examples/jsm (não fazem parte do core) ---
+        // --- Geometries from examples/jsm ---
         // import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
         // import { TeapotGeometry } from 'three/examples/jsm/geometries/TeapotGeometry.js';
         // import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry.js';
@@ -161,34 +161,12 @@ export function ExportMap() {
         const color = new THREE.Color('#ffffff');
       </script>
       <script>
-        const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
-        const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-        cube.castShadow = true;
-        cube.receiveShadow = true;
+        const cube = new THREE.Mesh(box_geometry.clone(), material);
+        cube.position.set(0, 0, 0);
+        
         scene.add(cube);
 
-        scene.add(ambient_light);
-        scene.add(directional_light);
-
-        camera.position.z = 3;
-
-        window.addEventListener('resize', () => {
-          camera.aspect = window.innerWidth / window.innerHeight;
-          camera.updateProjectionMatrix();
-          renderer.setSize(window.innerWidth, window.innerHeight);
-        });
-
-        function animate() {
-          requestAnimationFrame(animate);
-
-          cube.rotation.x += 0.01;
-          cube.rotation.y += 0.01;
-      
-          renderer.render(scene, camera);
-        }
-      
-        animate();
+        camera.position.set(1, 0, 0);
       </script>
     </body>
   </html>
