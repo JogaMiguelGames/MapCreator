@@ -620,9 +620,11 @@ function UpdateTreeView() {
       }
     
     } else if (!Model.Selected.Object || !(Model.Selected.Object instanceof THREE.Object3D)) {
-      Page.Elements.Input.Color.Hex_Input.disabled = true;
-      Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = true;
-      HEX_Enabled = false;
+      if (!Model.Selected.Object) {
+        Page.Elements.Input.Color.Hex_Input.disabled = true;
+        Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = true;
+        HEX_Enabled = false;
+      }
     }
 
     projectContent.appendChild(item);
@@ -808,3 +810,4 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
