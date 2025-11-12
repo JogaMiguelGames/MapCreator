@@ -569,17 +569,22 @@ function UpdateTreeView() {
     item.appendChild(text);
 
     let clickTimer = null;
+
     item.addEventListener('click', () => {
       if (clickTimer) clearTimeout(clickTimer);
       clickTimer = setTimeout(() => {
         Model.Selected.Object = object3D;
         Tree_View.Selected.Item = null;
-        updatePanelForCube(Model.Selected.Object);
+
         UpdateTreeView();
+
+        updatePanelForCube(Model.Selected.Object);
+    
         updateSpheresVisibility();
         clickTimer = null;
       }, 250);
     });
+
 
     item.addEventListener('dblclick', () => {
       if (clickTimer) clearTimeout(clickTimer);
@@ -595,7 +600,7 @@ function UpdateTreeView() {
     if (Model.Selected.Object === object3D) {
       item.style.backgroundColor = Selected_Color;
       item.style.color = 'white';
-      
+
       Page.Elements.Scale.X.disabled = false;
       Page.Elements.Scale.Y.disabled = false;
       Page.Elements.Scale.Z.disabled = false;
@@ -607,9 +612,11 @@ function UpdateTreeView() {
       Page.Elements.Rotation.X.disabled = false;
       Page.Elements.Rotation.Y.disabled = false;
       Page.Elements.Rotation.Z.disabled = false;
-      
+
       Page.Elements.Input.Color.Hex_Input.disabled = false;
       Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
+
+      HEX_Enabled = true;
     }
 
     projectContent.appendChild(item);
@@ -778,5 +785,6 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
 
