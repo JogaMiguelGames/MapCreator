@@ -123,23 +123,6 @@ function loop() {
   requestAnimationFrame(loop);
   renderer.render(scene, camera);
 
-  const hexInput = document.getElementById('colorHex');
-  if (hexInput) {
-    const selected = window.Model?.Selected?.Object;
-    const isObject3D = selected instanceof THREE.Object3D;
-
-    if (isObject3D && hexInput.disabled) {
-      hexInput.disabled = false;
-      hexInput.style.opacity = "1";
-      hexInput.style.pointerEvents = "auto";
-    } 
-    else if (!isObject3D && !hexInput.disabled) {
-      hexInput.disabled = true;
-      hexInput.style.opacity = "0.5";
-      hexInput.style.pointerEvents = "none";
-    }
-  }
-
   if (!Model.Selected.Object) return;
 
   const object3D = Model.Selected.Object;
@@ -169,6 +152,36 @@ function loop() {
   }
 }
 requestAnimationFrame(loop);
+
+let lastSelected = null;
+let lastHexState = null;
+
+setInterval(() => {
+  const obj = Model.Selected?.Object;
+  const hexInput = document.getElementById('colorHex');
+  if (!hexInput) return;
+
+  const is3D = obj instanceof THREE.Object3D;
+  const shouldEnable = !!is3D;
+
+  if (shouldEnable !== lastHexState || obj !== lastSelected) {
+    if (shouldEnable) {
+      hexInput.disabled = false;
+      hexInput.style.opacity = "1";
+      hexInput.style.pointerEvents = "auto";
+      HEX_Enabled = true;
+      console.log("🟢 HEX_Input habilitado (objeto 3D selecionado).");
+    } else {
+      hexInput.disabled = true;
+      hexInput.style.opacity = "0.5";
+      hexInput.style.pointerEvents = "none";
+      console.log("🔴 HEX_Input desabilitado (nenhum objeto 3D selecionado).");
+    }
+
+    lastHexState = shouldEnable;
+    lastSelected = obj;
+  }
+}, 200);
 
 function updatePanelForCube(object3D) {
   if (!object3D) {
@@ -803,23 +816,6 @@ function animate(time=0){
   renderer.render(scene, camera);
 }
 animate();
-
-const forceEnableHex = setInterval(() => {
-  const obj = Model.Selected?.Object;
-  const hexInput = Page?.Elements?.Input?.Color?.Hex_Input;
-  
-  if (!hexInput) return;
-  
-  if (obj instanceof THREE.Object3D) {
-    if (hexInput.disabled) {
-      hexInput.disabled = false;
-      HEX_Enabled = true;
-      hexInput.style.opacity = "1";
-      hexInput.style.pointerEvents = "auto";
-      console.log("🔥 HEX_Input reativado à força no DOM real!");
-    }
-  }
-}, 200);
 
 updatePanelForCube(object3D);
 UpdateTreeView();
