@@ -148,7 +148,7 @@ export function ExportMap() {
   const blob = new Blob([HTML], { type: 'text/html' });
   const Export = document.createElement('a');
   Export.href = URL.createObjectURL(blob);
-  Export.download = \`\${Project.Name}.html\`;
+  Export.download = `${Project.Name}.html`;
   Export.click();
   URL.revokeObjectURL(Export.href);
 
