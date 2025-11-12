@@ -199,9 +199,6 @@ export function ExportMap() {
         directional.position.set(5, 10, 5);
         scene.add(ambient, directional);
 
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshStandardMaterial({ color: 0x00AFFF });
-
         function animate() {
           requestAnimationFrame(animate);
           renderer.render(scene, camera);
