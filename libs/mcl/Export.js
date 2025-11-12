@@ -161,23 +161,33 @@ export function ExportMap() {
         const color = new THREE.Color('#ffffff');
       </script>
       <script>
-        const geometry = new THREE.BoxGeometry(1, 1, 1);
-        const material = new THREE.MeshStandardMaterial({ color: 0x00aaff });
-        const cube = new THREE.Mesh(geometry, material);
+        const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+        const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.castShadow = true;
+        cube.receiveShadow = true;
         scene.add(cube);
 
-        const light = new THREE.DirectionalLight(0xffffff, 1);
-        light.position.set(2, 2, 5);
-        scene.add(light);
+        scene.add(ambient_light);
+        scene.add(directional_light);
+
+        camera.position.z = 3;
+
+        window.addEventListener('resize', () => {
+          camera.aspect = window.innerWidth / window.innerHeight;
+          camera.updateProjectionMatrix();
+          renderer.setSize(window.innerWidth, window.innerHeight);
+        });
 
         function animate() {
           requestAnimationFrame(animate);
-    
+
           cube.rotation.x += 0.01;
           cube.rotation.y += 0.01;
-    
+      
           renderer.render(scene, camera);
         }
+      
         animate();
       </script>
     </body>
