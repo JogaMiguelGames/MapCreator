@@ -120,29 +120,40 @@ function sleep(ms) {
 }
 
 async function loop() {
-    while (true) {
-        if (HEX_Enabled === true) {
-          if (object3D.material && object3D.material.color) {
-            Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
-          } else {
-            Page.Elements.Input.Color.Hex_Input.value = '';
-          }
-          Page.Elements.Input.Color.Hex_Input.disabled = false;
-          Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = true;
-        } else {
-          if (object3D.material && object3D.material.color) {
-            const c = object3D.material.color;
-            Page.Elements.Input.Color.RGB.RGB_Color_Input.value =
-              `${Math.round(c.r * 255)}, ${Math.round(c.g * 255)}, ${Math.round(c.b * 255)}`;
-          } else {
-            Page.Elements.Input.Color.RGB.RGB_Color_Input.value = '';
-          }
-          Page.Elements.Input.Color.Hex_Input.disabled = true;
-          Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
-        }
-        await sleep(100);
+  if (!Model.Selected.Object) return;
+
+  const object3D = Model.Selected.Object;
+
+  if (Page?.Elements?.Input?.Color?.Hex_Input && object3D.material?.color) {
+
+    if (!window.loopPaused) {
+      if (HEX_Enabled) {
+        Page.Elements.Input.Color.Hex_Input.value = `#${object3D.material.color.getHexString()}`;
+      }
     }
+  }
+
+  if (Page?.Elements?.Input?.Transform) {
+    const pos = object3D.position;
+    const rot = object3D.rotation;
+    const scl = object3D.scale;
+
+    Page.Elements.Input.Transform.Position.X.value = pos.x.toFixed(3);
+    Page.Elements.Input.Transform.Position.Y.value = pos.y.toFixed(3);
+    Page.Elements.Input.Transform.Position.Z.value = pos.z.toFixed(3);
+
+    Page.Elements.Input.Transform.Rotation.X.value = (rot.x * 180 / Math.PI).toFixed(1);
+    Page.Elements.Input.Transform.Rotation.Y.value = (rot.y * 180 / Math.PI).toFixed(1);
+    Page.Elements.Input.Transform.Rotation.Z.value = (rot.z * 180 / Math.PI).toFixed(1);
+
+    Page.Elements.Input.Transform.Scale.X.value = scl.x.toFixed(3);
+    Page.Elements.Input.Transform.Scale.Y.value = scl.y.toFixed(3);
+    Page.Elements.Input.Transform.Scale.Z.value = scl.z.toFixed(3);
+  }
+
+  requestAnimationFrame(loop);
 }
+requestAnimationFrame(loop);
 
 function updatePanelForCube(object3D) {
   if (!object3D) {
@@ -646,13 +657,22 @@ function onClick(event){
 }
 canvas.addEventListener('click', onClick);
 
-Page.Elements.Input.Color.Hex_Input.addEventListener('input', () => {
-  if(!Model.Selected.Object || !Model.Selected.Object.material) return;
-  const val = Page.Elements.Input.Color.Hex_Input.value.trim();
-  if(/^#([0-9a-f]{6})$/i.test(val)){
+Page.Elements.Input.Color.Hex_Input.addEventListener('input', e => {
+  const val = e.target.value.trim();
+  if (/^#([0-9a-f]{6})$/i.test(val) && Model.Selected.Object && Model.Selected.Object.material) {
     Model.Selected.Object.material.color.set(val);
   }
 });
+
+Page.Elements.Input.Color.Hex_Input.addEventListener('focus', () => {
+  window.loopPaused = true;
+});
+Page.Elements.Input.Color.Hex_Input.addEventListener('blur', () => {
+  window.loopPaused = false;
+});
+
+window.loopPaused = false;
+window.HEX_Enabled = true;
 
 Page.Elements.Input.Color.RGB.RGB_Color_Input.addEventListener('input', () => {
   if (!Model.Selected.Object || !Model.Selected.Object.material) return;
@@ -756,3 +776,4 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
