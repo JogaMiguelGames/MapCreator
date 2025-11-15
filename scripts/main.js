@@ -600,9 +600,12 @@ function UpdateTreeView() {
 
     item.addEventListener('click', () => {
       if (clickTimer) clearTimeout(clickTimer);
-      clickTimer = setTimeout(() => {
+      clickTimer = setTimeout(() => {  
         Model.Selected.Object = object3D;
         Tree_View.Selected.Item = null;
+
+        item.style.backgroundColor = Selected_Color;
+        item.style.color = 'white';
 
         UpdateTreeView();
 
@@ -821,3 +824,4 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
