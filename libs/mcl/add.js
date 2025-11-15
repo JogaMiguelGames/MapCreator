@@ -189,16 +189,17 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
   if (e.key === "Enter") {
     const command = this.value.trim().toLowerCase();
 
-    if (command === "create.new.cube") createCube();
-    else if (command === "create.new.sphere") createSphere();
+    if (command === "create.new.cube") CreateCube();
+    else if (command === "create.new.sphere") CreateSphere();
     else if (command === "create.new.cylinder") createCylinder();
-    else if (command === "create.new.cone") createCone();
-    else if (command === "create.new.plane") createPlane();
-    else if (command === "create.new.camera") createCamera();
-    else if (command === "create.new.light") createLight();
+    else if (command === "create.new.cone") CreateCone();
+    else if (command === "create.new.plane") CreatePlane();
+    else if (command === "create.new.camera") CreateCamera();
+    else if (command === "create.new.light") CreateLight();
 
     this.value = "";
   }
 });
+
 
 
