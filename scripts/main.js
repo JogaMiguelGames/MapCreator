@@ -604,7 +604,7 @@ function UpdateTreeView() {
         Model.Selected.Object = object3D;
         Tree_View.Selected.Item = null;
 
-        item.style.backgroundColor = Selected_Color;
+        item.style.backgroundColor = '#3366ff';
         item.style.color = 'white';
 
         UpdateTreeView();
@@ -824,4 +824,5 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
