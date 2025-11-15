@@ -604,9 +604,6 @@ function UpdateTreeView() {
         Model.Selected.Object = object3D;
         Tree_View.Selected.Item = null;
 
-        item.style.backgroundColor = '#3366ff';
-        item.style.color = 'white';
-
         UpdateTreeView();
 
         updatePanelForCube(Model.Selected.Object);
@@ -633,6 +630,11 @@ function UpdateTreeView() {
       Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
       HEX_Enabled = true;
       console.log("✅ HEX_Input realmente habilitado no DOM!");
+    }
+
+    if (Model.Selected.Object === object3D) {
+      item.style.backgroundColor = Selected_Color;
+      item.style.color = 'white';
     }
     
     projectContent.appendChild(item);
@@ -824,5 +826,3 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
-
-
