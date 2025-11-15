@@ -669,8 +669,9 @@ window.UpdateTreeView = UpdateTreeView;
 function renameCube(div, object3D){
   const text = div.querySelector('span');
   const input = document.createElement('input');
+
   input.type = 'text';
-  input.value = Model.Object3D.name || 'Cube';
+  input.value = object3D.name || 'Cube';
   input.style.flex = '1';
   input.style.padding = '2px';
   input.style.border = '1px solid #ccc';
@@ -680,7 +681,7 @@ function renameCube(div, object3D){
   input.focus();
 
   function saveName() {
-    Model.Object3D.name = input.value.trim() || 'Unnamed';
+    object3D.name = input.value.trim() || 'Unnamed';
     UpdateTreeView();
   }
 
@@ -826,3 +827,4 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
