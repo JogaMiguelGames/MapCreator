@@ -163,11 +163,11 @@ async function runLines(lines) {
           const type = valueRaw.slice(11);
           variables[name] = () => {
             switch (type) {
-              case 'cube': if (typeof createCube === 'function') createCube(); else gconsole.print('Error: createCube not available'); break;
-              case 'sphere': if (typeof createSphere === 'function') createSphere(); else gconsole.print('Error: createSphere not available'); break;
-              case 'cylinder': if (typeof createCylinder === 'function') createCylinder(); else gconsole.print('Error: createCylinder not available'); break;
-              case 'cone': if (typeof createCone === 'function') createCone(); else gconsole.print('Error: createCone not available'); break;
-              case 'plane': if (typeof createPlane === 'function') createPlane(); else gconsole.print('Error: createPlane not available'); break;
+              case 'cube': if (typeof createCube === 'function') CreateCube(); else gconsole.print('Error: createCube not available'); break;
+              case 'sphere': if (typeof createSphere === 'function') CreateSphere(); else gconsole.print('Error: createSphere not available'); break;
+              case 'cylinder': if (typeof createCylinder === 'function') CreateCylinder(); else gconsole.print('Error: createCylinder not available'); break;
+              case 'cone': if (typeof createCone === 'function') CreateCone(); else gconsole.print('Error: createCone not available'); break;
+              case 'plane': if (typeof createPlane === 'function') CreatePlane(); else gconsole.print('Error: createPlane not available'); break;
               default: gconsole.print('Error: unknown create type -> ' + type);
             }
           };
@@ -273,4 +273,5 @@ document.addEventListener('DOMContentLoaded', () => {
     gconsole.print('All scripts finished.');
   });
 });
+
 
