@@ -1,3 +1,7 @@
+import { Project, Model, Page, Tree_View, Icon } from '../../libs/mcl/mcl.js';
+import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from '../../libs/mcl/add.js';
+import { ExportButton, ExportMap } from '../../libs/mcl/Export.js';
+
 const gconsole = {
   print: (text) => {
     const output = document.getElementById('scriptOutput');
@@ -273,5 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
     gconsole.print('All scripts finished.');
   });
 });
+
 
 
