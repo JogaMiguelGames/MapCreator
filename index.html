@@ -1,3 +1,6 @@
+<!-- Map Creator - index.html -->
+<!-- Open Source Web Engine -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,8 +13,9 @@
   <link id="PageTheme" rel="stylesheet" href="css/main.css" />
 </head>
 <body>
-  <!-- ================= MENU BAR ================= -->
+  <!-- Menu Strips -->
   <div id="menuBar" role="menubar" aria-label="Application menu">
+    <!-- Menu Strip - File -->
     <div class="menuItem" id="fileMenuBtn" role="menuitem" tabindex="0" aria-haspopup="true" aria-expanded="false">
       <span>File</span>
       <ul class="dropdown" role="menu" aria-label="File menu">
@@ -20,38 +24,47 @@
         <li id="ExportButton" role="menuitem" tabindex="-1">Export</li>
       </ul>
     </div>
+    <!-- Menu Strip - Add A Object -->
     <div class="menuItem" id="addMenuBtn" role="menuitem" tabindex="0" aria-haspopup="true" aria-expanded="false">
       <span>Add</span>
       <ul class="dropdown" role="menu" aria-label="Add menu">
+        <!-- Create A Cube Geometry/Box Geometry -->
         <li id="menuCube" role="menuitem" tabindex="-1">
           <img src="resources/images/ui/icons/cube.svg" alt="" class="menu-icon" />
           Create Cube
         </li>
+        <!-- Create A Cylinder Geometry -->
         <li id="menuCylinder" role="menuitem" tabindex="-1">
           <img src="resources/images/ui/icons/cylinder.png" alt="" class="menu-icon" />
           Create Cylinder
         </li>
+        <!-- Create A Sphere Geometry -->
         <li id="menuSphere" role="menuitem" tabindex="-1">
           <img src="resources/images/ui/icons/sphere.svg" alt="" class="menu-icon" />
           Create Sphere
         </li>
+        <!-- Create A Cone Geometry -->
         <li id="menuCone" role="menuitem" tabindex="-1">
           <img src="resources/images/ui/icons/cone.png" alt="" class="menu-icon" />
           Create Cone
         </li>
+        <!-- Create A Plane Geometry -->
         <li id="menuPlane" role="menuitem" tabindex="-1">
           <img src="resources/images/ui/icons/plane.png" alt="" class="menu-icon" />
           Create Plane
         </li>
+        <!-- Create A Camera Object -->
         <li id="menuCamera" role="menuitem" tabindex="-1">
           <img src="resources/images/ui/icons/camera.png" alt="" class="menu-icon" />
           Create Camera
         </li>
       </ul>
     </div>
+    <!-- Menu Strip - Precerences -->
     <div class="menuItem" id="PreferencesMenuButton" role="menuitem" tabindex="0" aria-haspopup="true" aria-expanded="false">
       <span>Preferences</span>
       <ul class="dropdown" role="menu" aria-label="Themes Button">
+        <!-- Open A Themes Menu -->
         <li id="ThemesButton" role="menuitem" tabindex="-1">
           Themes
         </li>
@@ -77,11 +90,13 @@
         <img src="resources/images/ui/buttons/stop.svg" role="presentation" />
       </button>
 
+      <!-- Edit Script -->
       <button id="focusScriptBtn" aria-label="Focus Script" title="Put the script in fullscreen">
         <img src="resources/images/ui/buttons/fullscreen.svg" />
-        <span>Script View</span>
+        <span>Edit Script</span>
       </button>
 
+      <!-- Import A Plugin (.Plugin File) -->
       <button id="pluginBtn" aria-label="Plugin" title="Import plugins for customization">
         <img src="resources/images/ui/icons/plugin.png" />
         <span>Import Plugin</span>
@@ -90,19 +105,22 @@
     </nav>
 
     <nav id="rightButtons">
+      <!-- Objects Wireframe -->
       <button id="wireframeToggleBtn" aria-label="Toggle Wireframe" title="Put in objects wireframe mode">
         <img src="resources/images/ui/buttons/wireframe.svg" role="presentation" />
         <span>Wireframe</span>
       </button>
 
-      <button id="importTextureBtn" aria-label="Import Texture" title="Import image file texture">
+      <!-- Set Texture To Objects -->
+      <button id="importTextureBtn" aria-label="Import Texture" title="Set Texture To Selected Object">
         <img src="resources/images/ui/icons/texture.svg" role="presentation" />
-        Import Texture
+        Set Texture
       </button>
       <input type="file" id="importButton" accept="image/png, image/jpeg" hidden />
 
+      <!-- Map Background Color -->
       <label for="bgColorInput" id="skyColorLabel" class="colorInputWrapper" title="Put a background color with HEX color code">
-        Sky Color:
+        Map Background Color:
         <input type="text" id="bgColorInput" maxlength="7" value="#00AFFF" placeholder="#00AFFF" autocomplete="off" />
       </label>
     </nav>
@@ -112,7 +130,7 @@
   <aside id="panel" aria-label="Map editor controls">
     <div id="panel-resize-handle" aria-hidden="true"></div>
 
-    <!-- Scale -->
+    <!-- Scale Objects -->
     <section class="control-group" aria-labelledby="scaleLabel">
       <h2 id="scaleLabel" class="sr-only">Scale Controls</h2>
       <label for="scaleX">Scale X: <input type="number" id="scaleX" step="0.1" min="0.1" value="1" disabled /></label>
@@ -120,7 +138,7 @@
       <label for="scaleZ">Scale Z: <input type="number" id="scaleZ" step="0.1" min="0.1" value="1" disabled /></label>
     </section>
 
-    <!-- Position -->
+    <!-- Position Objects -->
     <section class="control-group" aria-labelledby="positionLabel">
       <h2 id="positionLabel" class="sr-only">Position Controls</h2>
       <label for="posX">Position X: <input type="number" id="posX" step="0.1" value="0" disabled /></label>
@@ -128,7 +146,7 @@
       <label for="posZ">Position Z: <input type="number" id="posZ" step="0.1" value="0" disabled /></label>
     </section>
 
-    <!-- Rotation -->
+    <!-- Rotation Objects -->
     <section class="control-group" aria-labelledby="rotationLabel">
       <h2 id="rotationLabel" class="sr-only">Rotation Controls</h2>
       <label for="rotX">Rotation X: <input type="number" id="rotX" step="0.1" /></label>
@@ -136,17 +154,24 @@
       <label for="rotZ">Rotation Z: <input type="number" id="rotZ" step="0.1" /></label>
     </section>
     
-    <!-- Color -->
+    <!-- Colors Inputs/Parameters -->
     <section class="control-group color-center" aria-labelledby="colorLabel">
-      <button id="Color_Type" class="Color_Type_Button">RGB</button>
+      <!-- Change Color Type -->
+      
+      <button id="Color_Type" class="Color_Type_Button">Set Type To RGB</button>
+      
+      <!-- Hex Color Input -->
       <label for="colorHex" class="colorInputWrapper">
         HEX Color: <input type="text" id="colorHex" maxlength="7" pattern="#[0-9a-fA-F]{6}" placeholder="#ffffff"/>
       </label>
+      
+      <!-- RGB Color Input -->
       <label for="RGB_Color" class="RGB_Color_Input">
         RGB Color: <input type="text" id="RGB_Input_Color" maxlength="13" pattern="[0-9], [0-9], [0-9]{13}" placeholder="255, 255, 255" disabled />
       </label>
     </section>
 
+    <!-- Tree View Objects -->
     <section id="Tree_View" tabindex="0" aria-label="List of cubes"></section>
 
     <!-- Scripting -->
@@ -160,10 +185,15 @@
 
   <div id="addWindow" class="centerPopUp" style="display: none;">
     <div id="addWindowContent" class="centerPopUpContent">
+      <!-- Create Folder In Tree View -->
+      
       <button id="aW_CreateFolder" class="centerPopUpOption">
         <img src="resources/images/ui/icons/folder.svg" role="presentation" />
         Create Folder
       </button>
+      
+      <!-- Create Folder In Tree View -->
+      
       <button id="aW_CreateScript" class="centerPopUpOption">
         <img src="resources/images/ui/icons/kerneliumScript_File.svg" role="presentation" />
         Create Script
@@ -173,9 +203,14 @@
 
   <div id="ThemesWindow" class="centerPopUp" style="display: none;">
     <div id="ThemesWindowContent" class="centerPopUpContent">
+      <!-- Set Theme To Light -->
+      
       <button id="TW_Light" class="centerPopUpOption" onClick='SetTheme("css/theme/light.css");'>
         Light Teme
       </button>
+
+      <!-- Set Theme To Dark -->
+      
       <button id="TW_Dark" class="centerPopUpOption" onClick='SetTheme("css/theme/dark.css");'>
         Dark Theme
       </button>
@@ -183,9 +218,11 @@
   </div>
 
   <main id="sceneContainer" role="main"></main>
+  <!-- Camera FOV Display -->
+  
   <div id="fovDisplay">FOV: 75</div>
 
-  <!-- Command Line -->
+  <!-- Command Input-->
   <div id="commandLineWrapper">
     <input type="text" id="commandLine" placeholder="Type a command..." />
   </div>
@@ -193,34 +230,50 @@
   <!-- Hiden Inputs -->
   <input type="file" id="loadInput" accept=".map,application/json" hidden />
 
-  <!-- ================= LIBS ================= -->
+  <!-- Libraries | libs/ -->
 
-  <!-- Three.js Libs -->
+  <!-- Three.js | three.js/ -->
+  
   <script src="libs/three.js/three.min.js"></script>
   <script src="libs/three.js/objLoader.js"></script>
 
-  <!-- Map Creator Libs -->
+  <!-- Map Creator -->
+  
   <script src="libs/kfw.js"></script>
 
-  <!-- ================= SCRIPTS ================= -->
+  <!-- Scripts | scripts/ -->
+  
   <script type="module" src="scripts/main.js"></script>
 
+  <!-- Import | import/ -->
+  
   <script src="scripts/import/plugin.js"></script>
   <script src="scripts/import/texture.js"></script>
 
+  <!-- Objects | objects/ -->
+  
   <script src="scripts/objects/wireframe.js"></script>
   <script src="scripts/objects/history.js"></script>
 
+  <!-- Codes | codes/ -->
+  
   <script src="scripts/codes/scripting.js"></script>
   <script src="scripts/codes/json.js"></script>
 
+  <!-- Files | files/ -->
+  
   <script type="module" src="scripts/files/save.js"></script>
   <script type="module" src="scripts/files/load.js"></script>
+
+  <!-- Services | services/ -->
   
   <script type="module" src="scripts/services/menuStrip.js"></script>
   <script type="module" src="scripts/services/keys.js"></script>
+  
   <script src="scripts/services/lang.js"></script>
 
+  <!-- Interface | ui/ -->
+  
   <script src="scripts/ui/theme.js"></script>
 
   <script>
@@ -241,6 +294,7 @@
   </script>
 </body>
 </html>
+
 
 
 
