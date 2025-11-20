@@ -198,9 +198,13 @@ function updatePanelForCube(object3D) {
   Type_Color_Button.addEventListener("click", (e) => {
     HEX_Enabled = !HEX_Enabled;
     if (HEX_Enabled) {
-      Type_Color_Button.textContent = "RGB";
+      Type_Color_Button.textContent = "Set Type To RGB";
+      Page.Elements.Input.Color.Hex_Input.disabled = true;
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
     } else {
-      Type_Color_Button.textContent = "HEX";
+      Type_Color_Button.textContent = "Set Type To HEX";
+      Page.Elements.Input.Color.Hex_Input.disabled = false;
+      Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = true;
     }
   });
 
@@ -827,4 +831,5 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
