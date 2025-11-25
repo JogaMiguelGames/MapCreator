@@ -224,9 +224,6 @@ function updatePanelForCube(object3D) {
   Page.Elements.Rotation.Y.disabled = false;
   Page.Elements.Rotation.Z.disabled = false;
 
-  Page.Elements.Input.Color.Hex_Input.disabled = false;
-  Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
-
   Page.Elements.Rotation.X.value = THREE.MathUtils.radToDeg(object3D.rotation.x).toFixed(2);
   Page.Elements.Rotation.Y.value = THREE.MathUtils.radToDeg(object3D.rotation.y).toFixed(2);
   Page.Elements.Rotation.Z.value = THREE.MathUtils.radToDeg(object3D.rotation.z).toFixed(2);
@@ -612,6 +609,26 @@ function UpdateTreeView() {
         Model.Selected.Object = object3D;
         Tree_View.Selected.Item = null;
 
+        Page.Elements.Scale.X.disabled = true;
+        Page.Elements.Scale.Y.disabled = true;
+        Page.Elements.Scale.Z.disabled = true;
+        
+        Page.Elements.Position.X.disabled = true;
+        Page.Elements.Position.Y.disabled = true;
+        Page.Elements.Position.Z.disabled = true;
+        
+        Page.Elements.Rotation.X.disabled = true;
+        Page.Elements.Rotation.Y.disabled = true;
+        Page.Elements.Rotation.Z.disabled = true;
+
+        if (HEX_Enabled == true) {
+          Page.Elements.Input.Color.Hex_Input.disabled = false;
+          Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = true;
+        } else {
+          Page.Elements.Input.Color.Hex_Input.disabled = true;
+          Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
+        }
+        
         UpdateTreeView();
 
         updatePanelForCube(Model.Selected.Object);
@@ -834,6 +851,7 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
 
 
