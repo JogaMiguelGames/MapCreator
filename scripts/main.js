@@ -633,7 +633,7 @@ function UpdateTreeView() {
       Page.Elements.Input.Color.Hex_Input.disabled = false;
       Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
       HEX_Enabled = true;
-      console.log("✅ HEX_Input realmente habilitado no DOM!");
+      
     }
 
     if (Model.Selected.Object === object3D) {
@@ -830,6 +830,7 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
 
 
