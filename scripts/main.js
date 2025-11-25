@@ -197,7 +197,7 @@ function updatePanelForCube(object3D) {
   
   Type_Color_Button.addEventListener("click", (e) => {
     HEX_Enabled = !HEX_Enabled;
-    if (HEX_Enabled) {
+    if (HEX_Enabled == true) {
       Type_Color_Button.textContent = "Set Type To RGB";
       HEX_Enabled = true;
       Page.Elements.Input.Color.Hex_Input.disabled = true;
