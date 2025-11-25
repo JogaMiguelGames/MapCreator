@@ -170,12 +170,10 @@ setInterval(() => {
       hexInput.style.opacity = "1";
       hexInput.style.pointerEvents = "auto";
       HEX_Enabled = true;
-      console.log("🟢 HEX_Input habilitado (objeto 3D selecionado).");
     } else {
       hexInput.disabled = true;
       hexInput.style.opacity = "0.5";
       hexInput.style.pointerEvents = "none";
-      console.log("🔴 HEX_Input desabilitado (nenhum objeto 3D selecionado).");
     }
 
     lastHexState = shouldEnable;
@@ -650,7 +648,7 @@ function UpdateTreeView() {
     try {
       const hexInput = document.querySelector('#colorHex');
       if (!hexInput) {
-        console.warn("⚠️ HEX_Input (#colorHex) ainda não existe no novo DOM.");
+        
         return;
       }
   
@@ -660,9 +658,8 @@ function UpdateTreeView() {
         hexInput.style.opacity = "1";
         hexInput.style.pointerEvents = "auto";
         HEX_Enabled = true;
-        console.log("🩵 HEX_Input (#colorHex) reativado após reconstrução da TreeView!");
       } else {
-        console.log("HEX_Input detectado, mas não há objeto 3D selecionado.");
+        
       }
     } catch (e) {
       console.error("Erro ao reativar HEX_Input (#colorHex):", e);
@@ -833,6 +830,7 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
 
 
