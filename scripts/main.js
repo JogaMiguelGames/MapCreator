@@ -199,10 +199,12 @@ function updatePanelForCube(object3D) {
     HEX_Enabled = !HEX_Enabled;
     if (HEX_Enabled) {
       Type_Color_Button.textContent = "Set Type To RGB";
+      HEX_Enabled = true;
       Page.Elements.Input.Color.Hex_Input.disabled = true;
       Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = false;
     } else {
       Type_Color_Button.textContent = "Set Type To HEX";
+      HEX_Enabled = false;
       Page.Elements.Input.Color.Hex_Input.disabled = false;
       Page.Elements.Input.Color.RGB.RGB_Color_Input.disabled = true;
     }
@@ -831,5 +833,6 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
 
