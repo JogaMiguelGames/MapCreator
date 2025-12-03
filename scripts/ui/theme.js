@@ -1,3 +1,5 @@
+// === Map Creator - scripts/ui/theme.js ===
+
 function LoadTheme() {
     const savedTheme = JSON.parse(localStorage.getItem('mapCreator.Theme'));
 
