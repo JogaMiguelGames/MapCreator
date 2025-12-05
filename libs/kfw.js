@@ -40,7 +40,7 @@ const octahedron_geometry = new THREE.OctahedronGeometry(1, 0);
 const plane_geometry = new THREE.PlaneGeometry(1, 1);
 
 const ring_geometry = new THREE.RingGeometry(0.5, 1, 32);
-const shape_geometry = new THREE.ShapeGeometry([]); // precisa de Shape
+const shape_geometry = new THREE.ShapeGeometry([]); // Need Shape
 const sphere_geometry = new THREE.SphereGeometry(0.5, 16, 8);
 const tetrahedron_geometry = new THREE.TetrahedronGeometry(1, 0);
 const torus_geometry = new THREE.TorusGeometry(1, 0.3, 16, 100);
@@ -52,7 +52,7 @@ const edges_geometry = new THREE.EdgesGeometry(box_geometry);
 
 pyramid_geometry.rotateX(Math.PI / 2);
 
-// --- Geometries from examples/jsm (não fazem parte do core) ---
+// --- Geometries from examples/jsm ---
 // import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 // import { TeapotGeometry } from 'three/examples/jsm/geometries/TeapotGeometry.js';
 // import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry.js';
