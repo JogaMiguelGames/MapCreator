@@ -851,13 +851,3 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
-
-
-
-
-
-
-
-
-
-
