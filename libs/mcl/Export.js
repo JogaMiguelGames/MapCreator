@@ -103,6 +103,7 @@ export function ExportMap() {
     <body>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
       <script>
+        let YCamPoint = CamPosY -90;
         // --- Map Data ---
         const mapData = ${json};
 
@@ -112,7 +113,7 @@ export function ExportMap() {
 
         const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
         camera.position.set(${CamPosX}, ${CamPosY}, ${CamPosZ});
-        camera.rotation.set(${CamRotX}, ${CamRotY}, ${CamRotZ});
+        camera.rotation.set(${CamRotX}, ${YCamPoint}, ${CamRotZ});
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(innerWidth, innerHeight);
