@@ -171,7 +171,7 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
           CamRotZ = object.rotation.z;
           
           console.log(`Camera POS: X-${CamPosX}, Y-${CamPosY}, Z-${CamPosZ}`);
-          console.log(`Camera POS: X-${CamRotX}, Y-${CamRotY}, Z-${CamRotZ}`);
+          console.log(`Camera ROT: X-${CamRotX}, Y-${CamRotY}, Z-${CamRotZ}`);
         }
 
         setInterval(CameraDebug, 500);
@@ -227,4 +227,5 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 })
+
 
