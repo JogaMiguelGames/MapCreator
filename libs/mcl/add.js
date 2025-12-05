@@ -150,7 +150,7 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
         pushToHistory({ type: "delete", object: object });
 
         function CameraDebug() {
-          console.log(object.position);  
+          alert(object.position);  
         }
 
         setInterval(CameraDebug, 500);
@@ -206,7 +206,3 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
-
-
-
-
