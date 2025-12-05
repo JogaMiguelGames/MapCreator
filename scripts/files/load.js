@@ -21,21 +21,21 @@ if (mapName) {
       try {
         mapData = JSON.parse(mapText);
       } catch (e) {
-        console.error("Arquivo não é JSON válido:", e);
-        alert("Erro: mapa não está em formato JSON");
+        console.error("The .Map file is not valid! This is the error:", e);
+        alert("Invalid Map File");
         return;
       }
       loadMapData(mapData);
     })
     .catch(err => {
-      console.error("Erro ao carregar mapa pelo link:", err);
-      alert("Erro ao carregar o mapa pelo link");
+      console.error("The map could not be loaded via URL. This is the error:", err);
+      alert("The map could not be loaded via URL.");
     });
 }
 
 function openMap() {
   if (!loadInput) {
-    console.error("openMap: #loadInput não encontrado no DOM.");
+    console.error("openMap: #loadInput Not found in DOM.");
     return;
   }
   loadInput.click();
@@ -53,7 +53,7 @@ loadInput?.addEventListener('change', () => {
       loadMapData(mapData);
       loadInput.value = '';
     } catch (err) {
-      alert('Erro ao carregar mapa: arquivo inválido ou corrompido.');
+      alert('Invalid .Map file!');
       console.error(err);
     }
   };
