@@ -6,6 +6,10 @@ export let CamPosX;
 export let CamPosY;
 export let CamPosZ;
 
+export let CamRotX;
+export let CamRotY;
+export let CamRotY;
+
 export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
   const cube = new THREE.Mesh(box_geometry.clone(), material);
   cube.name = name;
@@ -139,7 +143,11 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
         });
   
         object.position.set(0, 0, 0);
+        
+        object.rotation.set(0, 0, 0);
+        
         object.scale.set(0.3, 0.3, 0.3);
+        
         object.name = "Camera";
   
         object.userData.icon = "camera";
@@ -157,6 +165,10 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
           CamPosX = object.position.x;
           CamPosY = object.position.y;
           CamPosZ = object.position.z;
+
+          CamRotX = object.rotation.x;
+          CamRotY = object.rotation.y;
+          CamRotZ = object.rotation.z;
           
           console.log(`Camera POS: X-${CamPosX}, Y-${CamPosY}, Z-${CamPosZ}`);  
         }
@@ -214,4 +226,5 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 })
+
 
