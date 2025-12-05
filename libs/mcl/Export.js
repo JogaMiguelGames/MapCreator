@@ -7,7 +7,10 @@ import {
   CreateCone,
   CreatePlane,
   CreateCamera,
-  CreateLight
+  CreateLight,
+  CamPosX,
+  CamPosY,
+  CamPosZ
 } from './add.js';
 
 export const ExportButton = document.getElementById('ExportButton');
@@ -83,7 +86,7 @@ export function ExportMap() {
         scene.background = new THREE.Color(mapData.sceneColor);
 
         const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
-        camera.position.set(0, 2, 5);
+        camera.position.set(${CamPosX}, ${CamPosY}, ${CamPosZ});
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(innerWidth, innerHeight);
