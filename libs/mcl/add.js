@@ -2,6 +2,10 @@
 import { Project, Model, Page, Icon } from './mcl.js';
 import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSpheresVisibility, selectedSphere, plane, offset, intersection, dragRaycaster, mouseVec, onPointerDown, updateCursor, onPointerMove, onPointerUp } from './objects.js';
 
+export let CamPosX;
+export let CamPosY;
+export let CamPosZ;
+
 export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0), material = new THREE.MeshStandardMaterial({ color: 0xffffff })) {
   const cube = new THREE.Mesh(box_geometry.clone(), material);
   cube.name = name;
@@ -150,7 +154,11 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
         pushToHistory({ type: "delete", object: object });
 
         function CameraDebug() {
-          alert(`Camera POS: X-${object.position.x}, Y-${object.position.y}, Z-${object.position.z}`);  
+          CamPosX = object.position.x;
+          CamPosY = object.position.y;
+          CamPosZ = object.position.z;
+          
+          alert(`Camera POS: X-${CamPosX}, Y-${CamPosY}, Z-${CamPosZ}`);  
         }
 
         setInterval(CameraDebug, 5000);
@@ -206,4 +214,3 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 })
-
