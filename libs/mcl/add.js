@@ -148,6 +148,12 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
         UpdateTreeView();
   
         pushToHistory({ type: "delete", object: object });
+
+        function CameraDebug() {
+          console.log(object.position);  
+        }
+
+        setInterval(CameraDebug, 500);
       },
       (xhr) => console.log(`Loading model: ${(xhr.loaded / xhr.total) * 100}% complete`),
       (error) => console.error("Error loading OBJ model:", error)
@@ -200,6 +206,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 });
+
 
 
 
