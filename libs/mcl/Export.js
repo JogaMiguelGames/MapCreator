@@ -10,7 +10,10 @@ import {
   CreateLight,
   CamPosX,
   CamPosY,
-  CamPosZ
+  CamPosZ,
+  CamRotX,
+  CamRotY,
+  CamRotZ
 } from './add.js';
 
 export const ExportButton = document.getElementById('ExportButton');
@@ -87,6 +90,7 @@ export function ExportMap() {
 
         const camera = new THREE.PerspectiveCamera(75, innerWidth / innerHeight, 0.1, 1000);
         camera.position.set(${CamPosX}, ${CamPosY}, ${CamPosZ});
+        camera.rotation.set(${CamRotX}, ${CamRotY}, ${CamRotZ});
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
         renderer.setSize(innerWidth, innerHeight);
