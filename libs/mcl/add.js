@@ -158,10 +158,10 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
           CamPosY = object.position.y;
           CamPosZ = object.position.z;
           
-          alert(`Camera POS: X-${CamPosX}, Y-${CamPosY}, Z-${CamPosZ}`);  
+          console.log(`Camera POS: X-${CamPosX}, Y-${CamPosY}, Z-${CamPosZ}`);  
         }
 
-        setInterval(CameraDebug, 5000);
+        setInterval(CameraDebug, 500);
       },
       (xhr) => console.log(`Loading model: ${(xhr.loaded / xhr.total) * 100}% complete`),
       (error) => console.error("Error loading OBJ model:", error)
@@ -214,3 +214,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 })
+
