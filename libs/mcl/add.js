@@ -143,7 +143,7 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
         scene.add(object);
         Model.Objects.push(object);
   
-        selectedCube = object;
+        selectedObject3D = object;
         updatePanelForCube(object);
         UpdateTreeView();
   
@@ -205,5 +205,4 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
 
     this.value = "";
   }
-});
-
+})
