@@ -166,9 +166,9 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
           CamPosY = object.position.y;
           CamPosZ = object.position.z;
 
-          CamRotX = object.rotation.x;
-          CamRotY = object.rotation.y;
-          CamRotZ = object.rotation.z;
+          CamRotX = THREE.MathUtils.radToDeg(object.rotation.x);
+          CamRotY = THREE.MathUtils.radToDeg(object.rotation.y);
+          CamRotZ = THREE.MathUtils.radToDeg(object.rotation.z);
           
           console.log(`Camera POS: X-${CamPosX}, Y-${CamPosY}, Z-${CamPosZ}`);
           console.log(`Camera ROT: X-${CamRotX}, Y-${CamRotY}, Z-${CamRotZ}`);
@@ -227,5 +227,3 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
     this.value = "";
   }
 })
-
-
