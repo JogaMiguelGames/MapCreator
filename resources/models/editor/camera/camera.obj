@@ -1,11 +1,11 @@
 # MapCreator Camera OBJ Model
 # Version 3.0
 
-# == Modified file (Credits added only) ==
+# Modified file (Credits added only)
 
 # Export from Prisma3D 3.1.4
 mtllib camera.mtl
-o Material
+o Camera
 v -0,8567501 0,519246 0,0841288
 v -0,9729859 0,706022 -0,8981913
 v 0,9729863 0,706022 -0,8981909
