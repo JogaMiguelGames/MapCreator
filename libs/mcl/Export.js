@@ -58,11 +58,33 @@ export function ExportMap() {
     })
   };
 
+  const HtmlLangs = {
+    English: "en",
+      
+    EnglishOfUnitedKingdom: "en-GB",
+    EnglishOfUsa: "en-US",
+    EnglishOfCanada: "en-CA",
+    EnglishOfAustralia: "en-AU",
+    
+    Spanish: "es",
+    
+    SpanishOfSpain: "es-ES",
+    SpanishOfMexico: "es-MX",
+    SpanishOfArgentina: "es-AR",
+    
+    Portuguese: "pt",
+    
+    PortugueseOfPortugal: "pt-PT",
+    PortugueseOfBrazil: "pt-BR"
+  }
+
+  let PageLang = HtmlLangs[Project.Language] || "en";
+
   const json = JSON.stringify(ExportData);
 
   const HTML = `
   <!DOCTYPE html>
-  <html lang="${Project.Lang}">
+  <html lang="${PageLang}">
     <head>
       <meta charset="UTF-8">
       <title>${Project.Name}</title>
