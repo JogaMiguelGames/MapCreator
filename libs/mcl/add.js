@@ -150,7 +150,7 @@ export function CreateCube(name = "Cube", position = new THREE.Vector3(0, 0, 0),
         pushToHistory({ type: "delete", object: object });
 
         function CameraDebug() {
-          alert(object.position);  
+          alert(object.position.toArray());  
         }
 
         setInterval(CameraDebug, 500);
@@ -197,7 +197,7 @@ document.getElementById("commandLine").addEventListener("keydown", function(e) {
 
     if (command === "create.new.cube") CreateCube();
     else if (command === "create.new.sphere") CreateSphere();
-    else if (command === "create.new.cylinder") createCylinder();
+    else if (command === "create.new.cylinder") CreateCylinder();
     else if (command === "create.new.cone") CreateCone();
     else if (command === "create.new.plane") CreatePlane();
     else if (command === "create.new.camera") CreateCamera();
