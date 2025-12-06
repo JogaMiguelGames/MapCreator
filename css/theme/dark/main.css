@@ -1,4 +1,4 @@
-/* === style.css - Map Creator === */
+/* === dark/main.css - Map Creator === */
 
 *,
 *::before,
@@ -9,8 +9,8 @@
 body {
   margin: 0;
   font-family: system-ui, sans-serif;
-  background-color: rgba(17, 17, 17, 1);
-  color: rgba(255, 255, 255, 1);
+  background-color: #111111FF;
+  color: #FFFFFFFF;
   overflow-x: hidden;
 }
 
@@ -26,7 +26,7 @@ button:hover {
 
 #scriptInput {
   border-radius: 4px;
-  border: 1px solid rgba(51, 51, 51, 1);
+  border: 1px solid #333333FF;
 }
 
 #topMenu button {
@@ -76,9 +76,9 @@ canvas {
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 2px solid rgba(68, 68, 68, 1);
-  box-shadow: 0 0 2px rgba(0, 0, 0, 1);
-  background-color: rgba(0, 0, 0, 1);
+  border: 2px solid #444444FF;
+  box-shadow: 0 0 2px #000000FF;
+  background-color: #000000FF;
 }
 
 #topMenu {
@@ -87,8 +87,8 @@ canvas {
   left: 0;
   right: 280px;
   height: 70px;
-  background: rgba(26, 26, 26, 1);
-  border-bottom: 1px solid rgba(68, 68, 68, 1);
+  background: #1A1A1AFF;
+  border-bottom: 1px solid #444444FF;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -107,7 +107,7 @@ canvas {
 #rightButtons button {
   width: 60px;
   height: 60px;
-  background: rgba(51, 51, 51, 1);
+  background: #333333FF;
   border: none;
   border-radius: 6px;
   color: white;
@@ -147,7 +147,7 @@ canvas {
 #rightButtons button:hover,
 #leftButtons button:focus,
 #rightButtons button:focus {
-  background: rgba(68, 68, 68, 1);
+  background: #444444FF;
   outline: none;
 }
 
@@ -164,7 +164,7 @@ canvas {
   padding: 6px 8px;
   border: none;
   border-radius: 4px;
-  background: rgba(51, 51, 51, 1);
+  background: #333333FF;
   color: white;
   font-family: monospace;
   text-align: right;
@@ -172,7 +172,7 @@ canvas {
 }
 
 #rightButtons input[type="text"]:focus {
-  background: rgba(68, 68, 68, 1);
+  background: #444444FF;
   outline: none;
 }
 
@@ -188,10 +188,10 @@ canvas {
   right: 0;
   width: 280px;
   height: 100vh;
-  background: rgba(34, 34, 34, 1);
+  background: #222222FF;
   padding: 15px;
   overflow-y: auto;
-  border-left: 1px solid rgba(68, 68, 68, 1);
+  border-left: 1px solid #444444FF;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -212,7 +212,7 @@ canvas {
   max-height: 200px;
   min-height: 200px;
   overflow-y: auto;
-  background: rgba(26, 26, 26, 1);
+  background: #1A1A1AFF;
   border-radius: 6px;
   padding: 8px;
   font-size: 14px;
@@ -223,7 +223,7 @@ canvas {
 }
 
 #scriptingSection {
-  background: rgba(26, 26, 26, 1);
+  background: #1A1A1AFF;
   border-radius: 6px;
   padding: 10px;
   margin-top: 8px;
@@ -234,8 +234,8 @@ canvas {
 #scriptInput {
   width: 100%;
   height: 120px;
-  background: rgba(17, 17, 17, 1);
-  color: rgba(0, 255, 0, 1);
+  background: #111111FF;
+  color: #00FF00FF;
   border: none;
   resize: vertical;
   padding: 8px;
@@ -245,7 +245,7 @@ canvas {
 
 .Color_Type_Button {
   margin-top: 6px;
-  background: rgba(51, 51, 51, 1);
+  background: #333333FF;
   color: white;
   border: none;
   padding: 6px 12px;
@@ -254,18 +254,18 @@ canvas {
 }
 
 .Color_Type_Button:hover {
-  background: #444;
+  background: #444444FF;
 }
 
 #scriptOutput {
   margin-top: 8px;
-  background: rgba(17, 17, 17, 1);
-  color: rgba(0, 255, 0, 1);
+  background: #111111FF;
+  color: #00FF00FF;
   padding: 6px;
   height: 100px;
   overflow-y: auto;
   white-space: pre-wrap;
-  border: 1px solid rgba(51, 51, 51, 1);
+  border: 1px solid #333333FF;
   border-radius: 4px;
 }
 
@@ -290,7 +290,7 @@ canvas {
   margin-top: 4px;
   padding: 6px 8px;
   width: 100%;
-  background: rgba(51, 51, 51, 1);
+  background: #333333FF;
   color: white;
   font-family: monospace;
   font-size: 14px;
@@ -325,7 +325,7 @@ canvas {
 #Tree_View {
   max-height: 200px;
   overflow-y: auto;
-  background: rgba(26, 26, 26, 1);
+  background: #1A1A1AFF;
   border-radius: 6px;
   padding: 8px;
   font-size: 14px;
@@ -341,7 +341,7 @@ canvas {
 }
 
 .Tree_View_Item:hover {
-  background: rgba(51, 51, 51, 1);
+  background: #333333FF;
 }
 
 .sr-only {
@@ -371,7 +371,7 @@ body.focusing-script #panel {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(17, 17, 17, 0.95);
+  background: #111111F2;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -386,33 +386,33 @@ body.focusing-script #panel > *:not(#scriptingSection) {
 body.focusing-script #scriptingSection {
   width: 800px;
   height: 600px;
-  background: rgba(26, 26, 26, 1);
+  background: #1A1A1AFF;
   border-radius: 8px;
   padding: 20px;
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 20px rgba(0, 0, 0);
-  border: 1px solid rgba(51, 51, 51, 1);
+  box-shadow: 0 0 20px #000000FF;
+  border: 1px solid #333333FF;
 }
 
 body.focusing-script #scriptInput {
   flex-grow: 1;
   resize: none;
   font-size: 16px;
-  background: rgba(0, 0, 0, 1);
-  color: rgba(0, 255, 0, 1);
+  background: #000000FF;
+  color: #00FF00FF;
   padding: 10px;
   border-radius: 4px;
-  border: 1px solid rgba(51, 51, 51, 1);
+  border: 1px solid #333333FF;
 }
 
 body.focusing-script #scriptOutput {
   height: 120px;
-  background: rgba(0, 0, 0, 1);
-  color: rgba(0, 255, 0, 1);
+  background: #000000FF;
+  color: #00FF00FF;
   padding: 8px;
   border-radius: 4px;
-  border: 1px solid rgba(51, 51, 51, 1);
+  border: 1px solid #333333FF;
   margin-top: 8px;
   overflow-y: auto;
 }
@@ -420,7 +420,7 @@ body.focusing-script #scriptOutput {
 body.focusing-script #exitScriptFocusBtn {
   display: block !important;
   margin-bottom: 10px;
-  background: rgba(51, 51, 51, 1);
+  background: #333333FF;
   color: white;
   padding: 6px 10px;
   border: none;
@@ -435,8 +435,8 @@ body.focusing-script #exitScriptFocusBtn {
   left: 0;
   right: 280px;
   height: 50px;
-  background: rgba(26, 26, 26);
-  border-top: 1px solid rgba(51, 51, 51, 1);
+  background: #1A1A1AFF;
+  border-top: 1px solid #333333FF;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -450,15 +450,15 @@ body.focusing-script #exitScriptFocusBtn {
   font-size: 14px;
   border: none;
   border-radius: 6px;
-  background: rgba(17, 17, 17, 1);
-  color: rgba(0, 255, 0, 1);
+  background: #111111FF;
+  color: #00FF00FF;
   outline: none;
   transition: background 0.2s ease;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px #0000001A;
 }
 
 #commandLineWrapper input:focus {
-  background: rgba(34, 34, 34, 1);
+  background: #222222FF;
 }
 
 .icon-wrapper {
@@ -488,7 +488,7 @@ body.focusing-script #exitScriptFocusBtn {
   left: 0;
   right: 280px;
   height: 30px;
-  background: rgba(34, 34, 34, 1);
+  background: #222222FF;
   display: flex;
   align-items: center;
   padding: 0 8px;
@@ -501,7 +501,7 @@ body.focusing-script #exitScriptFocusBtn {
 .menuItem {
   position: relative;
   padding: 6px 8px;
-  color: rgba(255, 255, 255, 1);
+  color: #FFFFFFFF;
   font-size: 13px;
   cursor: pointer;
 }
@@ -512,8 +512,8 @@ body.focusing-script #exitScriptFocusBtn {
   top: 100%;
   left: 0;
   margin-top: 6px;
-  background: rgba(26, 26, 26, 1);
-  border: 1px solid rgba(51, 51, 51, 1);
+  background: #1A1A1AFF;
+  border: 1px solid #333333FF;
   border-radius: 6px;
   min-width: 140px;
   max-width: calc(100vw - 360px);
@@ -557,7 +557,7 @@ body.focusing-script #exitScriptFocusBtn {
   left: 0;
   right: 280px;
   height: 70px;
-  background: rgba(51, 51, 51, 1);
+  background: #333333FF;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -601,8 +601,8 @@ body.focusing-script #exitScriptFocusBtn {
   left: 8px;
   font-family: Consolas, monospace;
   font-size: 14px;
-  color: rgba(255, 255, 255, 1);
-  background: rgba(0, 0, 0, 0.5);
+  color: #00FF00FF;
+  background: #00000080;
   padding: 3px 6px;
   border-radius: 4px;
   pointer-events: none;
@@ -616,7 +616,7 @@ body.focusing-script #exitScriptFocusBtn {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(17, 17, 17, 0);
+  background: #111111FF;
   display: none;
   justify-content: center;
   align-items: center;
@@ -627,11 +627,11 @@ body.focusing-script #exitScriptFocusBtn {
 .centerPopUpContent {
   width: 800px;
   height: 600px;
-  background: rgba(26, 26, 26, 1);
+  background: #1A1A1AFF;
   border-radius: 8px;
   padding: 20px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 1);
-  border: 1px solid rgba(51, 51, 51, 1);
+  box-shadow: 0 0 20px #000000FF;
+  border: 1px solid #333333FF;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -642,8 +642,8 @@ body.focusing-script #exitScriptFocusBtn {
   width: 64;
   height: 32;
   border-radius: 15px;
-  border: 1px solid rgba(0, 0, 0, 1);
-  background-color: rgba(51, 51, 51, 1);
+  border: 1px solid #000000FF;
+  background-color: #333333FF;
   color: white;
   padding: 6px 8px;
   cursor: pointer;
@@ -661,18 +661,34 @@ body.focusing-script #exitScriptFocusBtn {
 }
 
 .centerPopUpOption:hover {
-  background-color: rgba(34, 34, 34, 1);
+  background-color: #222222FF;
 }
 
 input#colorHex {
-  background: rgba(51, 51, 51, 1) !important;
+  background: #333333FF !important;
   color: white !important;
   cursor: text !important;
   pointer-events: auto !important;
   opacity: 1 !important;
 }
 
+.Console {
+  background-color: #333333FF;
+}
+
+.ConsoleTopBar {
+
+}
+
+.ConsoleTitle {
+
+}
+
+.ConsoleCommandInput {
+
+}
+
 #topMenu { flex-wrap: nowrap; }
 
 #leftButtons::-webkit-scrollbar { height: 6px; }
-#leftButtons::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+#leftButtons::-webkit-scrollbar-thumb { background: #444444FF; border-radius: 3px; }
