@@ -473,7 +473,7 @@ body.focusing-script #exitScriptFocusBtn {
   pointer-events: none;
 }
 
-#menuBar {
+menu-strip {
   position: fixed;
   top: 0;
   left: 0;
