@@ -14,7 +14,6 @@ class MenuStripTag extends HTMLElement {
                   left: 0;
                   right: 280px;
                   height: 30px;
-                  background: #222222FF;
                   display: flex;
                   align-items: center;
                   padding: 0 8px;
