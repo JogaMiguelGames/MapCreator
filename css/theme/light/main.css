@@ -449,7 +449,7 @@ body.focusing-script #exitScriptFocusBtn {
 }
 
 #commandLineWrapper input:focus {
-  background: rgba(34, 34, 34, 1);
+  background: rgba(240, 240, 240, 1);
 }
 
 .icon-wrapper {
