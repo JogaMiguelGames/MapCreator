@@ -616,7 +616,7 @@ menu-strip {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: #111111FF;
+  background: #11111100;
   display: none;
   justify-content: center;
   align-items: center;
