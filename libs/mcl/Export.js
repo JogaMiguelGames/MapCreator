@@ -103,7 +103,6 @@ export function ExportMap() {
     <body>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
       <script>
-        let YCamPoint = CamPosY -90;
         // --- Map Data ---
         const mapData = ${json};
 
