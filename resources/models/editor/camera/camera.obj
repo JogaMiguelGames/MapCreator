@@ -1,5 +1,11 @@
+# MapCreator Camera OBJ Model
+# Version 4.0
+
+# Modified file (Credits added only)
+
 # Blender 4.5.3 LTS
 # www.blender.org
+
 mtllib Camera.mtl
 o Camera
 v 0.972986 -0.706022 0.898191
