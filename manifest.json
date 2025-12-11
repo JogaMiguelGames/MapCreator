@@ -1,6 +1,8 @@
 {
   "page": {
     "title": "Map Creator",
-    "icon": "resources/images/ui/icon.png"
+    "icon": "resources/images/ui/icon.png",
+
+    "lang": "en"
   }
 }
