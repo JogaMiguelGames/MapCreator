@@ -85,7 +85,7 @@ import { ExportButton, ExportMap } from '../../libs/mcl/Export.js';
     });
   }
   document.addEventListener("keydown", (event) => {
-    if (event.ctrlKey && event.code === "KeyO") => {
+    if (event.ctrlKey && event.code === "KeyO") {
       event.stopPropagation();
       
       safeInvoke(['openMap','loadMap','openFileDialog'], 'loadButton', 'loadInput');
