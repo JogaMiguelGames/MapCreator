@@ -168,6 +168,9 @@ function loadMapData(mapData) {
 
 document.addEventListener("keydown", (event) => {
   if (event.ctrlKey && event.code === "KeyO") {
-    openMap();
+    e.stopPropagation();
+    safeInvoke(['openMap','loadMap','openFileDialog'], 'loadButton', 'loadInput');
+    fileBtn.classList.remove('open');
+    fileBtn.setAttribute('aria-expanded','false');
   }
 });
