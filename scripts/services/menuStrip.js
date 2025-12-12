@@ -84,11 +84,13 @@ import { ExportButton, ExportMap } from '../../libs/mcl/Export.js';
       fileBtn.setAttribute('aria-expanded','false');
     });
   }
-  if (event.ctrlKey && event.code === "KeyO", (e) => {
-    e.stopPropagation();
-    safeInvoke(['openMap','loadMap','openFileDialog'], 'loadButton', 'loadInput');
-    fileBtn.classList.remove('open');
-    fileBtn.setAttribute('aria-expanded','false');
+  document.addEventListener("keydown", (event) => {
+    if (event.ctrlKey && event.code === "KeyO", (e) => {
+      e.stopPropagation();
+      safeInvoke(['openMap','loadMap','openFileDialog'], 'loadButton', 'loadInput');
+      fileBtn.classList.remove('open');
+      fileBtn.setAttribute('aria-expanded','false');
+    });
   });
 
   document.getElementById('ThemesButton')?.addEventListener('click', () => {
