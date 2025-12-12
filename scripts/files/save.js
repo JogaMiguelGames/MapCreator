@@ -56,4 +56,11 @@ function saveMap() {
   URL.revokeObjectURL(a.href);
 }
 
+document.addEventListener("keydown", (event) => {
+  if (event.ctrlKey && event.code === "KeyS") {
+    saveMap();
+  }
+});
+
 saveButton?.addEventListener('click', saveMap);
+
