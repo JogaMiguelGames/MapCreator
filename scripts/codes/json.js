@@ -18,6 +18,10 @@ fetch('manifest.json')
         }
         link.href = manifest.page.icon;
       }
+
+      if (manifest.page.lang) {
+        document.documentElement.lang = manifest.page.lang;
+      }
     }
   })
   .catch(error => {
