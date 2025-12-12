@@ -165,3 +165,9 @@ function loadMapData(mapData) {
   window.UpdateTreeView();
   window.updateSpheresVisibility();
 }
+
+document.addEventListener("keydown", (event) => {
+  if (event.ctrlKey && event.code === "KeyO") {
+    openMap();
+  }
+});
