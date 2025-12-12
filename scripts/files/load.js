@@ -165,12 +165,3 @@ function loadMapData(mapData) {
   window.UpdateTreeView();
   window.updateSpheresVisibility();
 }
-
-document.addEventListener("keydown", (event) => {
-  if (event.ctrlKey && event.code === "KeyO") {
-    e.stopPropagation();
-    safeInvoke(['openMap','loadMap','openFileDialog'], 'loadButton', 'loadInput');
-    fileBtn.classList.remove('open');
-    fileBtn.setAttribute('aria-expanded','false');
-  }
-});
