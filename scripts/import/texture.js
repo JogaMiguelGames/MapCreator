@@ -2,7 +2,7 @@ document.getElementById('importButton').addEventListener('change', function(even
   const file = event.target.files[0];
   if (!file) return;
 
-  if (!selectedCube) {
+  if (!selectedObject3D) {
     alert("Nenhum modelo selecionado!");
     return;
   }
@@ -23,7 +23,7 @@ document.getElementById('importButton').addEventListener('change', function(even
       texture.rotation = rotationRadians;
       texture.needsUpdate = true;
 
-      selectedCube.traverse(child => {
+      selectedObjet3D.traverse(child => {
         if (child.isMesh && !child.userData.isManipulator) {
           const scale = child.scale;
           texture.repeat.set(scale.x / repeatFactor, scale.z / repeatFactor);
@@ -32,11 +32,9 @@ document.getElementById('importButton').addEventListener('change', function(even
         }
       });
 
-      // Marca que o cubo tem textura
-      selectedCube.hasTexture = true;
+      selectedObject3D.hasTexture = true;
 
-      // Atualiza o TreeView
-      updateCubeList();
+      UpdateTreeView();
     };
 
     img.src = e.target.result;
