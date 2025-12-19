@@ -23,11 +23,11 @@ import {
    Objects ID System
 ===================================================== */
 
-function isIDUsed(id) {
+export function isIDUsed(id) {
   return Model.Objects.some(obj => obj.userData?.id === id);
 }
 
-function generateUniqueID(prefix) {
+export function generateUniqueID(prefix) {
   let id;
   do {
     id = `${prefix}_${crypto.randomUUID()}`;
@@ -35,7 +35,7 @@ function generateUniqueID(prefix) {
   return id;
 }
 
-function assignUniqueID(object, prefix) {
+export function assignUniqueID(object, prefix) {
   const id = generateUniqueID(prefix);
 
   if (isIDUsed(id)) {
@@ -45,6 +45,24 @@ function assignUniqueID(object, prefix) {
 
   object.userData.id = id;
   return true;
+}
+
+export function getObjectById(id) {
+  if (!id) {
+    console.warn("[getObjectById] Invalid ID:", id);
+    return null;
+  }
+
+  const object = Model.Objects.find(
+    obj => obj.userData && obj.userData.id === id
+  );
+
+  if (!object) {
+    console.warn(`[getObjectById] Object with ID "${id}" not found.`);
+    return null;
+  }
+
+  return object;
 }
 
 /* =====================================================
@@ -336,4 +354,5 @@ document.getElementById("commandLine").addEventListener("keydown", function (e) 
 
   this.value = "";
 });
+
 
