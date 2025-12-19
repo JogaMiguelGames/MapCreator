@@ -53,6 +53,9 @@ export const Page = {
       Y: document.getElementById('rotY'),
       Z: document.getElementById('rotZ')
     },
+    ID: {
+
+    },
     Script: {
       Input: document.getElementById('scriptInput')
     },
