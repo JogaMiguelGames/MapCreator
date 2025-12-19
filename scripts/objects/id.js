@@ -1,6 +1,14 @@
 import { MCL, Add } from '../../libs/mcl/Index.js';
 
-const IDInput = MCL.Page.Elements.ID.Input;
-const ID = window.selectedObject3D.userData.id;
+function updateIDInputFromSelection() {
+  const input = MCL.Page.Elements.ID.Input;
+  const selected = MCL.Model.Selected?.Object;
 
-IDInput.value = ID;
+  if (!selected || !selected.userData?.id) {
+    input.value = "";
+    input.placeholder = "No object selected";
+    return;
+  }
+
+  input.value = selected.userData.id;
+}
