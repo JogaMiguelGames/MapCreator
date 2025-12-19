@@ -43,6 +43,8 @@ export function assignUniqueID(object, prefix) {
     return false;
   }
 
+  console.log(id);
+
   object.userData.id = id;
   return true;
 }
@@ -354,5 +356,6 @@ document.getElementById("commandLine").addEventListener("keydown", function (e) 
 
   this.value = "";
 });
+
 
 
