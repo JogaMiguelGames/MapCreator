@@ -1,6 +1,6 @@
 import { MCL, Add } from '../../libs/mcl/Index.js';
 
-function updateIDInputFromSelection() {
+window.updateIDInputFromSelection = function () {
   const input = MCL.Page.Elements.ID.Input;
   const selected = MCL.Model.Selected?.Object;
 
@@ -11,6 +11,4 @@ function updateIDInputFromSelection() {
   }
 
   input.value = selected.userData.id;
-}
-
-window.updateIDInputFromSelection = updateIDInputFromSelection;
+};
