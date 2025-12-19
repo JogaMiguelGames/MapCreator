@@ -23,7 +23,7 @@ document.getElementById('importButton').addEventListener('change', function(even
       texture.rotation = rotationRadians;
       texture.needsUpdate = true;
 
-      selectedObjet3D.traverse(child => {
+      selectedObject3D.traverse(child => {
         if (child.isMesh && !child.userData.isManipulator) {
           const scale = child.scale;
           texture.repeat.set(scale.x / repeatFactor, scale.z / repeatFactor);
@@ -42,3 +42,4 @@ document.getElementById('importButton').addEventListener('change', function(even
 
   reader.readAsDataURL(file);
 });
+
