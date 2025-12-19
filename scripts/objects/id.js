@@ -13,4 +13,4 @@ function updateIDInputFromSelection() {
   input.value = selected.userData.id;
 }
 
-window.updateIDInputFromSelection = updateIDInputFromSelection();
+window.updateIDInputFromSelection = updateIDInputFromSelection;
