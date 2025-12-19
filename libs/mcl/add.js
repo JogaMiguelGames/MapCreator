@@ -330,9 +330,10 @@ export function CreateLight() {
 
   const sphere = new THREE.Mesh(sphere_geometry.clone(), sphereMat);
 
-  sphere.name = "Point Light";
-  
+  sphere.position.set(0, 0, 0);
+  sphere.rotation.set(0, 0, 0);
   sphere.scale.set(0.2, 0.2, 0.2);
+  
   sphere.userData.icon = "light";
 
   light.add(sphere);
@@ -366,9 +367,3 @@ document.getElementById("commandLine").addEventListener("keydown", function (e) 
 
   this.value = "";
 });
-
-
-
-
-
-
