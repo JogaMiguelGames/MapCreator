@@ -20,7 +20,7 @@ import {
 } from './objects.js';
 
 /* =====================================================
-   SISTEMA DE ID ÚNICO (LOCAL AO ADD.JS)
+   Objects ID System
 ===================================================== */
 
 function isIDUsed(id) {
@@ -336,3 +336,4 @@ document.getElementById("commandLine").addEventListener("keydown", function (e) 
 
   this.value = "";
 });
+
