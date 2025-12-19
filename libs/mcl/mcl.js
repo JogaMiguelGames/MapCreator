@@ -26,7 +26,7 @@ export const Model = (() => {
   const Objects = [Object3D];
 
   const Selected = {
-    Object: Object3D,
+    Object: Object3D
   };
 
   return {
