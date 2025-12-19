@@ -54,7 +54,7 @@ export const Page = {
       Z: document.getElementById('rotZ')
     },
     ID: {
-
+      Input: document.getElementById('ID-Input')
     },
     Script: {
       Input: document.getElementById('scriptInput')
