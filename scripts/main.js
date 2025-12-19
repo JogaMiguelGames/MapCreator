@@ -606,7 +606,7 @@ function UpdateTreeView() {
           Page.Elements.Input.Color.Hex_Input.disabled = true;
         }
 
-        updateIDInputFromSelection()
+        window.updateIDInputFromSelection();
         
         UpdateTreeView();
 
@@ -812,6 +812,7 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
 
 
