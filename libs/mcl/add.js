@@ -315,6 +315,11 @@ export function CreateLight() {
   const light = new THREE.PointLight(0xffffff, 2, 15);
   light.castShadow = true;
 
+  light.name = "Point Light";
+
+  light.position.set(0, 0, 0);
+  light.rotation.set(0, 0, 0);
+
   if (!assignUniqueID(light, "light")) return null;
 
   const sphereMat = new THREE.MeshBasicMaterial({
@@ -324,6 +329,9 @@ export function CreateLight() {
   });
 
   const sphere = new THREE.Mesh(sphere_geometry.clone(), sphereMat);
+
+  sphere.name = "Point Light";
+  
   sphere.scale.set(0.2, 0.2, 0.2);
   sphere.userData.icon = "light";
 
@@ -358,6 +366,7 @@ document.getElementById("commandLine").addEventListener("keydown", function (e) 
 
   this.value = "";
 });
+
 
 
 
