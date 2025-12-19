@@ -122,6 +122,11 @@ import { ExportButton, ExportMap } from '../../libs/mcl/Export.js';
     CreatePlane();
     addBtn.classList.remove('open');
   });
+
+  document.getElementById('menuLight')?.addEventListener('click', () => {
+    CreateLight();
+    addBtn.classList.remove('open');
+  });
   
   document.getElementById('menuCamera')?.addEventListener('click', () => {
     CreateCamera();
