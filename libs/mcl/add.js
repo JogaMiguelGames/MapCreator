@@ -110,7 +110,7 @@ export function CreateCube(
   Model.Objects.push(cube);
   Model.Selected.Object = cube;
 
-  updateIDInputFromSelection();
+  window.updateIDInputFromSelection();
 
   UpdateTreeView();
   return cube;
@@ -358,6 +358,7 @@ document.getElementById("commandLine").addEventListener("keydown", function (e) 
 
   this.value = "";
 });
+
 
 
 
