@@ -36,3 +36,5 @@ This text is a translant of google translant, the translation cannot be perfect.
 == Update, Approximately 30 minutes later ==
 
 I made a new repository for Kernelium Engine, with using Git, i program the project in VS Code => Send to github repository using git.
+
+The repository is "https://github.com/JogaMiguelGames/Kernelium-Engine/"
