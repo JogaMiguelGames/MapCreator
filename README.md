@@ -32,3 +32,7 @@ Well, I'm doing this on my own website, no longer on GitHub Pages, I won't be ab
 When I figure out a way when I change a file in my project, it updates my GitHub repository, but as I said before I don't know how to do that right now, maybe it's with Git, I don't know how to do it.
 
 This text is a translant of google translant, the translation cannot be perfect.
+
+== Update, Approximately 30 minutes later ==
+
+I made a new repository for Kernelium Engine, with using Git, i program the project in VS Code => Send to github repository using git.
