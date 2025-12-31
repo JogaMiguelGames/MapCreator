@@ -18,13 +18,13 @@
 
 - Creator Note (JogaMiguelGames):
 
-I will never, ever mess with Objects Hex Color Input again, Wow, that's such a pain to correct, I spent between two and five hours trying to fix the Hex Input, and I'm not even kidding, I'm serious 😫!
+I will never, ever mess with Objects Hex Color Input again, Wow, that's such a pain to correct, I spent between two and five hours trying to fix the Hex Input, and I'm not even kidding, I'm serious!
 
-Really, i hate Hex Color Input 😅!
+Really, i hate Hex Color Input!
 
 If anyone is going to troll with the source code in any way, please Troll All Script, except the Hex Color Input PLEASE!
 
-31/12/2025 - Creating Kernelium Engine...
+== 31/12/2025 - Creating Kernelium Engine, the successor of the Map Creator... ==
 Much better than Map Creator, I just decided to create another Engine with some parts of the code coming directly from Map Creator, because Map Creator was bad, this time in WebGL, and not more Three.js.
 
 Well, I'm doing this on my own website, no longer on GitHub Pages, I won't be able to put it here for now, because even though it's public, there are reasons, one that is my IPv6 and another that GitHub for security reasons probably won't let me put my website which for now is Node.js which is still in HTTP protocol and without its own Domain and DNS, in short the link is http://[My IPv6]:3000/Engine (This URL not working.).
