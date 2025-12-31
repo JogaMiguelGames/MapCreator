@@ -23,3 +23,6 @@ I will never, ever mess with Objects Hex Color Input again, Wow, that's such a p
 Really, i hate Hex Color Input 😅!
 
 If anyone is going to troll with the source code in any way, please Troll All Script, except the Hex Color Input PLEASE!
+
+31/12/2025 - Creating Kernelium Engine...
+Much better than Map Creator, I just decided to create another Engine with some parts of the code coming directly from Map Creator, because Map Creator was bad, this time in WebGL, and not more Three.js.
