@@ -30,3 +30,5 @@ Much better than Map Creator, I just decided to create another Engine with some 
 Well, I'm doing this on my own website, no longer on GitHub Pages, I won't be able to put it here for now, because even though it's public, there are reasons, one that is my IPv6 and another that GitHub for security reasons probably won't let me put my website which for now is Node.js which is still in HTTP protocol and without its own Domain and DNS, in short the link is http://[My IPv6]:3000 (This URL not working.).
 
 When I figure out a way when I change a file in my project, it updates my GitHub repository, but as I said before I don't know how to do that right now, maybe it's with Git, I don't know how to do it.
+
+This text is a translant of google translant, the translation cannot be perfect.
