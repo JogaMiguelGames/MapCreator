@@ -3,6 +3,27 @@ import { Project, Model, Page, Tree_View, Icon } from '../libs/mcl/mcl.js';
 import { CreateCube, CreateSphere, CreateCylinder, CreateCone, CreatePlane, CreateCamera, CreateLight } from '../libs/mcl/add.js';
 import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSpheresVisibility, selectedSphere, plane, offset, intersection, dragRaycaster, mouseVec, onPointerDown, updateCursor, onPointerMove, onPointerUp, State, axisLines, addAxisLine, createHugeGrid, hugeGrid, gridGroup, gridStep, gridLimit, gridColor, updateGridAroundCameraCircle} from '../libs/mcl/objects.js';
 
+// Is a test!
+
+var canvas =  document.getElementById('gl_map-canvas');
+
+var WebGL  =  canvas.getContext('webgl');
+var WebGL2 =  canvas.getContext('webgl2');
+
+if (!WebGL) {
+    console.error("WebGL is not supported on this browser or device!");
+
+    alert("WebGL is not supported on this browser or device!");
+}
+
+if (!WebGL2) {
+    console.error("WebGL2 is not supported on this browser or device!");
+
+    alert("WebGL2 is not supported on this browser or device!");
+}
+
+// Is a test! 
+
 let object3D;
 object3D = Model.Object3D;
 
@@ -812,6 +833,7 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
 
 
