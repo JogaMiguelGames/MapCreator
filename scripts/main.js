@@ -5,10 +5,10 @@ import { sphereGeometrySmall, spheres, offsets, addManipulationSpheres, updateSp
 
 // Is a test!
 
-var canvas =  document.getElementById('gl_map-canvas');
+var Testcanvas =  document.getElementById('gl_map-canvas');
 
-var WebGL  =  canvas.getContext('webgl');
-var WebGL2 =  canvas.getContext('webgl2');
+var WebGL  =  Testcanvas.getContext('webgl');
+var WebGL2 =  Testcanvas.getContext('webgl2');
 
 if (!WebGL) {
     console.error("WebGL is not supported on this browser or device!");
@@ -833,6 +833,7 @@ updatePanelForCube(object3D);
 UpdateTreeView();
 updateSpheresVisibility();
 loop();
+
 
 
 
